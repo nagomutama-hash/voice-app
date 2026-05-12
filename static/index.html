@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>声診断アプリ</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-dark), #818cf8);
+            color: white;
+            text-align: center;
+            padding: 2.5rem 1rem 2rem;
+        }
+
+        header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        header p {
+            margin-top: 0.5rem;
+            opacity: 0.82;
+            font-size: 0.95rem;
+        }
+
+        .container {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 2rem 1rem 3rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.07), 0 4px 20px rgba(0,0,0,0.04);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1.25rem;
+        }
+
+        /* ---- Recording ---- */
+        .record-area { text-align: center; }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+        .btn-record {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 2px 10px rgba(99,102,241,0.4);
+        }
+        .btn-record:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 18px rgba(99,102,241,0.5);
+        }
+        .btn-record.is-recording {
+            background: var(--danger);
+            box-shadow: 0 2px 10px rgba(239,68,68,0.4);
+            animation: recPulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes recPulse {
+            0%, 100% { box-shadow: 0 2px 10px rgba(239,68,68,0.4); }
+            50%       { box-shadow: 0 2px 28px rgba(239,68,68,0.7); }
+        }
+
+        .btn-stop {
+            background: #f1f5f9;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        .btn-stop:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background: #e2e8f0;
+        }
+
+        .timer {
+            font-size: 3rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+            color: var(--text);
+            margin: 0.5rem 0 0.75rem;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+            min-height: 26px;
+        }
+
+        .rec-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: var(--danger);
+            display: none;
+            flex-shrink: 0;
+            animation: blink 1s ease-in-out infinite;
+        }
+        .rec-dot.active { display: inline-block; }
+
+        @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.15 } }
+
+        audio {
+            width: 100%;
+            margin-top: 1.25rem;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        /* ---- Analyzing ---- */
+        .analyzing {
+            display: none;
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--muted);
+        }
+        .analyzing.show { display: block; }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 0.75rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ---- Charts ---- */
+        .chart-wrap {
+            position: relative;
+            height: 230px;
+        }
+
+        /* ---- Stats ---- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
+        }
+
+        .hidden { display: none; }
+
+        /* ---- AI Advice ---- */
+        .advice-loading {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--muted);
+        }
+
+        .advice-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .advice-section {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 10px 10px 0;
+            padding: 1rem 1.25rem;
+        }
+
+        .advice-section-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .advice-section-body {
+            color: var(--text);
+            font-size: 0.92rem;
+            line-height: 1.75;
+        }
+
+        .advice-error {
+            color: var(--danger);
+            font-size: 0.88rem;
+            padding: 0.875rem 1rem;
+            background: #fef2f2;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+
+        .advice-no-pitch {
+            text-align: center;
+            padding: 1rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 580px) {
+            header h1 { font-size: 1.5rem; }
+            .timer { font-size: 2.2rem; }
+            .btn { padding: 0.75rem 1.25rem; font-size: 0.9rem; }
+            .chart-wrap { height: 180px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>&#127908; 声診断アプリ</h1>
+    <p>ボイストレーニング用 &#8226; 音声分析ツール</p>
+</header>
+
+<div class="container">
+
+    <!-- 録音カード -->
+    <div class="card">
+        <div class="card-title">録音</div>
+        <div class="record-area">
+            <div class="buttons">
+                <button class="btn btn-record" id="recordBtn">
+                    &#9210; &nbsp;録音開始
+                </button>
+                <button class="btn btn-stop" id="stopBtn" disabled>
+                    &#9209; &nbsp;停止
+                </button>
+            </div>
+            <div class="timer" id="timer">0:00</div>
+            <div class="status-row">
+                <span class="rec-dot" id="recDot"></span>
+                <span id="statusText">マイクを使って録音を開始してください</span>
+            </div>
+            <audio id="audioPlayer" controls class="hidden"></audio>
+        </div>
+    </div>
+
+    <!-- 解析中インジケーター -->
+    <div class="analyzing" id="analyzingEl">
+        <div class="spinner"></div>
+        <div>音声を解析しています。しばらくお待ちください...</div>
+    </div>
+
+    <!-- 結果エリア -->
+    <div id="results" class="hidden">
+
+        <!-- 波形グラフ -->
+        <div class="card">
+            <div class="card-title">音声波形</div>
+            <div class="chart-wrap">
+                <canvas id="waveformChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 音程グラフ -->
+        <div class="card">
+            <div class="card-title">音程グラフ (基本周波数 F0)</div>
+            <div class="chart-wrap">
+                <canvas id="pitchChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 分析結果 -->
+        <div class="card">
+            <div class="card-title">分析結果</div>
+            <div class="stats-grid" id="statsGrid"></div>
+        </div>
+
+        <!-- AIアドバイス -->
+        <div class="card" id="adviceCard">
+            <div class="card-title">AIアドバイス</div>
+            <div id="adviceLoading" class="advice-loading">
+                <div class="spinner"></div>
+                <div>ボイストレーナーAIがアドバイスを生成中...</div>
+            </div>
+            <div id="adviceSections" class="advice-sections hidden"></div>
+            <div id="adviceError" class="advice-error hidden"></div>
+            <div id="adviceNoPitch" class="advice-no-pitch hidden">音程データが検出されなかったため、アドバイスを生成できません。</div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ===== 状態管理 =====
+let mediaRecorder = null;
+let recordedChunks = [];
+let startTime = null;
+let timerInterval = null;
+let waveChart = null;
+let pitchChartInst = null;
+
+// ===== DOM 要素 =====
+const recordBtn    = document.getElementById('recordBtn');
+const stopBtn      = document.getElementById('stopBtn');
+const statusText   = document.getElementById('statusText');
+const recDot       = document.getElementById('recDot');
+const timerEl      = document.getElementById('timer');
+const audioPlayer  = document.getElementById('audioPlayer');
+const resultsEl    = document.getElementById('results');
+const analyzingEl  = document.getElementById('analyzingEl');
+
+// ===== 録音開始 =====
+recordBtn.addEventListener('click', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        recordedChunks = [];
+
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+            ? 'audio/webm;codecs=opus' : 'audio/webm';
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = onRecordingStop;
+        mediaRecorder.start(100);
+
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 200);
+
+        recordBtn.disabled = true;
+        recordBtn.classList.add('is-recording');
+        stopBtn.disabled = false;
+        recDot.classList.add('active');
+        setStatus('録音中...');
+        resultsEl.classList.add('hidden');
+        analyzingEl.classList.remove('show');
+
+    } catch (err) {
+        setStatus('エラー: マイクへのアクセスが拒否されました。ブラウザの設定を確認してください。');
+    }
+});
+
+// ===== 録音停止 =====
+stopBtn.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(t => t.stop());
+    }
+    clearInterval(timerInterval);
+    recordBtn.disabled = false;
+    recordBtn.classList.remove('is-recording');
+    stopBtn.disabled = true;
+    recDot.classList.remove('active');
+});
+
+function updateTimer() {
+    const s = Math.floor((Date.now() - startTime) / 1000);
+    timerEl.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+// ===== 録音完了後の処理 =====
+async function onRecordingStop() {
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    audioPlayer.src = URL.createObjectURL(blob);
+    audioPlayer.classList.remove('hidden');
+
+    setStatus('解析中...');
+    analyzingEl.classList.add('show');
+
+    try {
+        const wavBlob = await convertToWav(blob);
+        const data = await uploadAndAnalyze(wavBlob);
+        renderResults(data);
+        setStatus('解析完了');
+    } catch (err) {
+        setStatus('解析エラー: ' + err.message);
+    } finally {
+        analyzingEl.classList.remove('show');
+    }
+}
+
+function setStatus(msg) { statusText.textContent = msg; }
+
+// ===== WebM → WAV 変換 =====
+async function convertToWav(blob) {
+    const audioCtx = new AudioContext();
+    const arrayBuf = await blob.arrayBuffer();
+    const audioBuf = await audioCtx.decodeAudioData(arrayBuf);
+    return encodeWav(audioBuf);
+}
+
+function encodeWav(audioBuf) {
+    const sr  = audioBuf.sampleRate;
+    const len = audioBuf.length;
+    const ch  = audioBuf.numberOfChannels;
+
+    // モノラルにミックスダウン
+    const mono = new Float32Array(len);
+    for (let c = 0; c < ch; c++) {
+        const chData = audioBuf.getChannelData(c);
+        for (let i = 0; i < len; i++) mono[i] += chData[i] / ch;
+    }
+
+    const samples = new Int16Array(len);
+    for (let i = 0; i < len; i++) {
+        const v = Math.max(-1, Math.min(1, mono[i]));
+        samples[i] = v < 0 ? v * 0x8000 : v * 0x7FFF;
+    }
+
+    const wav = new ArrayBuffer(44 + samples.byteLength);
+    const dv  = new DataView(wav);
+
+    const ws = (off, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(off + i, s.charCodeAt(i)); };
+
+    ws(0, 'RIFF');
+    dv.setUint32(4,  36 + samples.byteLength, true);
+    ws(8, 'WAVE'); ws(12, 'fmt ');
+    dv.setUint32(16, 16, true);
+    dv.setUint16(20, 1, true);   // PCM
+    dv.setUint16(22, 1, true);   // モノラル
+    dv.setUint32(24, sr, true);
+    dv.setUint32(28, sr * 2, true);
+    dv.setUint16(32, 2, true);
+    dv.setUint16(34, 16, true);
+    ws(36, 'data');
+    dv.setUint32(40, samples.byteLength, true);
+    new Uint8Array(wav, 44).set(new Uint8Array(samples.buffer));
+
+    return new Blob([wav], { type: 'audio/wav' });
+}
+
+// ===== API 送信 =====
+async function uploadAndAnalyze(wavBlob) {
+    const fd = new FormData();
+    fd.append('file', wavBlob, 'recording.wav');
+    const res = await fetch('/analyze', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '不明なエラー');
+    return data;
+}
+
+// ===== グラフ・結果の描画 =====
+function renderResults(data) {
+    resultsEl.classList.remove('hidden');
+    drawWaveform(data.waveform);
+    drawPitch(data.pitch);
+    drawStats(data.stats, data.duration, data.sample_rate);
+    resetAdviceCard();
+    fetchAdvice(data.stats, data.duration);
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetAdviceCard() {
+    document.getElementById('adviceLoading').classList.remove('hidden');
+    document.getElementById('adviceSections').classList.add('hidden');
+    document.getElementById('adviceError').classList.add('hidden');
+    document.getElementById('adviceNoPitch').classList.add('hidden');
+}
+
+async function fetchAdvice(stats, duration) {
+    const adviceLoading   = document.getElementById('adviceLoading');
+    const adviceSections  = document.getElementById('adviceSections');
+    const adviceError     = document.getElementById('adviceError');
+    const adviceNoPitch   = document.getElementById('adviceNoPitch');
+
+    if (!stats.has_pitch) {
+        adviceLoading.classList.add('hidden');
+        adviceNoPitch.classList.remove('hidden');
+        return;
+    }
+
+    try {
+        const res = await fetch('/advice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                min_hz:    stats.min_hz,
+                max_hz:    stats.max_hz,
+                mean_hz:   stats.mean_hz,
+                min_note:  stats.min_note,
+                max_note:  stats.max_note,
+                mean_note: stats.mean_note,
+                duration,
+            }),
+        });
+        const data = await res.json();
+        if (!data.success) throw new Error(data.error || 'アドバイス生成エラー');
+
+        const sections = [
+            { title: '音域の特徴',   key: 'range_characteristics' },
+            { title: '声の安定性',   key: 'stability' },
+            { title: '改善のヒント', key: 'improvement_tips' },
+        ];
+
+        adviceSections.innerHTML = sections.map(s => `
+            <div class="advice-section">
+                <div class="advice-section-title">${s.title}</div>
+                <div class="advice-section-body">${data.advice[s.key]}</div>
+            </div>
+        `).join('');
+
+        adviceSections.classList.remove('hidden');
+    } catch (err) {
+        adviceError.textContent = 'アドバイスの生成に失敗しました: ' + err.message;
+        adviceError.classList.remove('hidden');
+    } finally {
+        adviceLoading.classList.add('hidden');
+    }
+}
+
+function drawWaveform(wf) {
+    if (waveChart) waveChart.destroy();
+    const pts = wf.time.map((t, i) => ({ x: t, y: wf.amplitude[i] }));
+    const ctx = document.getElementById('waveformChart').getContext('2d');
+    waveChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                data: pts,
+                borderColor: '#6366f1',
+                backgroundColor: 'rgba(99,102,241,0.07)',
+                borderWidth: 1.5,
+                fill: true,
+                pointRadius: 0,
+                tension: 0,
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: { display: true, text: '時間 (秒)', color: '#64748b', font: { size: 12 } },
+                    ticks: { callback: v => v.toFixed(1) + 's', maxTicksLimit: 8, color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+                y: {
+                    min: -1, max: 1,
+                    title: { display: true, text: '振幅', color: '#64748b', font: { size: 12 } },
+                    ticks: { stepSize: 0.5, color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+            },
+        }
+    });
+}
+
+function drawPitch(pd) {
+    if (pitchChartInst) pitchChartInst.destroy();
+
+    const pts = [];
+    for (let i = 0; i < pd.time.length; i++) {
+        if (pd.frequency[i] !== null) pts.push({ x: pd.time[i], y: pd.frequency[i] });
+    }
+
+    const ctx = document.getElementById('pitchChart').getContext('2d');
+    pitchChartInst = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                data: pts,
+                backgroundColor: '#10b981',
+                pointRadius: 3,
+                pointHoverRadius: 5,
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: c => `${c.parsed.x.toFixed(2)}秒：${c.parsed.y.toFixed(1)} Hz`,
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: { display: true, text: '時間 (秒)', color: '#64748b', font: { size: 12 } },
+                    ticks: { callback: v => v.toFixed(1) + 's', maxTicksLimit: 8, color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+                y: {
+                    min: 50,
+                    title: { display: true, text: '周波数 (Hz)', color: '#64748b', font: { size: 12 } },
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+            },
+        }
+    });
+}
+
+function drawStats(stats, duration, sr) {
+    const grid = document.getElementById('statsGrid');
+    grid.innerHTML = '';
+
+    const items = [
+        { label: '録音時間', value: duration + '秒', sub: null },
+        { label: 'サンプルレート', value: sr.toLocaleString() + ' Hz', sub: null },
+    ];
+
+    if (stats.has_pitch) {
+        items.push(
+            { label: '最低音程', value: stats.min_note, sub: stats.min_hz + ' Hz' },
+            { label: '最高音程', value: stats.max_note, sub: stats.max_hz + ' Hz' },
+            { label: '平均音程', value: stats.mean_note, sub: stats.mean_hz + ' Hz' },
+        );
+    } else {
+        items.push({ label: '音程', value: '検出不可', sub: '有声音が見つかりませんでした' });
+    }
+
+    for (const { label, value, sub } of items) {
+        const div = document.createElement('div');
+        div.className = 'stat-card';
+        div.innerHTML = `
+            <div class="stat-label">${label}</div>
+            <div class="stat-value">${value}</div>
+            ${sub ? `<div class="stat-sub">${sub}</div>` : ''}
+        `;
+        grid.appendChild(div);
+    }
+}
+</script>
+</body>
+</html>
