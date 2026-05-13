@@ -47,13 +47,18 @@ def _load_pdf_knowledge() -> str:
 def _build_advice_system() -> str:
     knowledge = _knowledge_text or "（専門知識ファイルが見つかりませんでした。一般的な知識でアドバイスしてください。）"
     return (
-        "あなたはボイストレーニング専門家です。"
-        "以下の専門教材（PDF）の知識を活かして、音声分析データをもとに利用者へ励ましを込めた具体的なアドバイスを日本語で提供してください。"
-        "各セクションは2〜3文で簡潔にまとめてください。\n\n"
+        "あなたはボイストレーニング専門家・玉井の声診断AIアシスタントです。\n"
+        "音声分析データをもとに、利用者の声の特徴を伝えるコメントを日本語で生成してください。\n\n"
+        "【重要なルール】\n"
+        "・「どう改善するか（HowTo）」は書かない。練習法・トレーニング方法は一切教えない。\n"
+        "・「あなたの声がどういう声か（WhatTo）」を中心に伝える。\n"
+        "・褒めて、可能性を示し、『もっと知りたい』という気持ちを引き出す。\n"
+        "・最後は必ずZoom無料診断への興味につながる締め方にする。\n"
+        "・各セクション2〜3文。温かく、背中を押すようなトーンで。\n\n"
         "=== ボイストレーニング専門知識 ===\n\n"
         + knowledge
         + "\n\n必ず以下のJSON形式のみで回答してください（他のテキストは不要）:\n"
-        '{"range_characteristics": "...", "stability": "...", "improvement_tips": "..."}'
+        '{"voice_character": "...", "potential": "...", "next_step": "..."}'
     )
 
 
@@ -90,7 +95,7 @@ async def generate_advice(req: AdviceRequest):
             else 0
         )
         user_prompt = (
-            f"以下の音声分析データをもとに、3つのセクションに分けてアドバイスをください。\n\n"
+            f"以下の音声分析データをもとに、3つのセクションで声診断コメントを生成してください。\n\n"
             f"【分析データ】\n"
             f"- 録音時間: {req.duration}秒\n"
             f"- 最低音: {req.min_note}（{req.min_hz} Hz）\n"
@@ -98,9 +103,9 @@ async def generate_advice(req: AdviceRequest):
             f"- 平均音程: {req.mean_note}（{req.mean_hz} Hz）\n"
             f"- 音域の幅: 約{semitones}半音\n\n"
             f"セクション:\n"
-            f"1. range_characteristics（音域の特徴とその評価）\n"
-            f"2. stability（声の安定性について）\n"
-            f"3. improvement_tips（具体的な改善のヒントと練習法）"
+            f"1. voice_character（この方の声の個性・特徴を具体的に伝える。褒めて、声の魅力を発見させる）\n"
+            f"2. potential（この声が持つ可能性と、現時点での課題をやんわり伝える。『もっと知りたい』を引き出す。HowToは書かない）\n"
+            f"3. next_step（練習法は教えず、『あなたの声をさらに詳しく診断したい』という気持ちを引き出し、玉井の20分Zoom無料声診断への興味につなげる締めの言葉）"
         )
 
         client = anthropic.AsyncAnthropic(api_key=_API_KEY)

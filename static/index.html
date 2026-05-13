@@ -556,9 +556,9 @@ async function fetchAdvice(stats, duration) {
         if (!data.success) throw new Error(data.error || 'アドバイス生成エラー');
 
         const sections = [
-            { title: '音域の特徴',   key: 'range_characteristics' },
-            { title: '声の安定性',   key: 'stability' },
-            { title: '改善のヒント', key: 'improvement_tips' },
+            { title: 'あなたの声の個性',   key: 'voice_character' },
+            { title: 'この声の可能性',     key: 'potential' },
+            { title: '次のステップへ',     key: 'next_step' },
         ];
 
         adviceSections.innerHTML = sections.map(s => `
