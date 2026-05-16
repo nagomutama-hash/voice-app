@@ -114,7 +114,7 @@ async def generate_advice(req: AdviceRequest):
 
         client = anthropic.AsyncAnthropic(api_key=_API_KEY)
         message = await client.messages.create(
-            model="claude-haiku-4-5-20251001",
+            model="claude-3-5-haiku-20241022",
             max_tokens=1024,
             system=[{
                 "type": "text",
@@ -125,7 +125,12 @@ async def generate_advice(req: AdviceRequest):
         )
 
         text = next(b.text for b in message.content if b.type == "text")
-        advice = json.loads(text)
+        # JSON部分だけを抽出（マークダウンコードブロックにも対応）
+        import re
+        json_match = re.search(r'\{.*\}', text, re.DOTALL)
+        if not json_match:
+            raise ValueError(f"JSONが見つかりません: {text[:200]}")
+        advice = json.loads(json_match.group())
         return JSONResponse({"success": True, "advice": advice})
 
     except Exception as e:
