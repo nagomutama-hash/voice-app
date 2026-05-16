@@ -11,7 +11,7 @@ import numpy as np
 import pdfplumber
 from dotenv import load_dotenv
 from fastapi import FastAPI, File, UploadFile
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -92,53 +92,57 @@ class AdviceRequest(BaseModel):
 
 @app.post("/advice")
 async def generate_advice(req: AdviceRequest):
-    try:
-        semitones = (
-            round(12 * math.log2(req.max_hz / req.min_hz), 1)
-            if req.min_hz > 0 and req.max_hz > req.min_hz
-            else 0
-        )
-        user_prompt = (
-            f"以下の音声分析データをもとに、3つのセクションで声診断コメントを生成してください。\n\n"
-            f"【分析データ】\n"
-            f"- 録音時間: {req.duration}秒\n"
-            f"- 最低音: {req.min_note}（{req.min_hz} Hz）\n"
-            f"- 最高音: {req.max_note}（{req.max_hz} Hz）\n"
-            f"- 平均音程: {req.mean_note}（{req.mean_hz} Hz）\n"
-            f"- 音域の幅: 約{semitones}半音\n\n"
-            f"セクション:\n"
-            f"1. voice_character：この方の声の個性・魅力を具体的に描写する。音域・音程・声質を言葉で表現し『自分の声ってそんな特徴があるの！』と気づかせる。褒めて、声への関心を高める。\n"
-            f"2. potential：この声が持つ可能性と課題の『入口』だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、その方法はあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」という流れで締める。\n"
-            f"3. next_step：玉井の20分Zoom無料声診断で『あなただけの声の設計図』が見えてくることを伝える。診断を受けることで何がわかるか・どう変わるかを魅力的に描写し、申込みへの一歩を後押しする言葉で締める。"
-        )
+    semitones = (
+        round(12 * math.log2(req.max_hz / req.min_hz), 1)
+        if req.min_hz > 0 and req.max_hz > req.min_hz
+        else 0
+    )
+    user_prompt = (
+        f"以下の音声分析データをもとに、3つのセクションで声診断コメントを生成してください。\n\n"
+        f"【分析データ】\n"
+        f"- 録音時間: {req.duration}秒\n"
+        f"- 最低音: {req.min_note}（{req.min_hz} Hz）\n"
+        f"- 最高音: {req.max_note}（{req.max_hz} Hz）\n"
+        f"- 平均音程: {req.mean_note}（{req.mean_hz} Hz）\n"
+        f"- 音域の幅: 約{semitones}半音\n\n"
+        f"セクション:\n"
+        f"1. voice_character：この方の声の個性・魅力を具体的に描写する。音域・音程・声質を言葉で表現し『自分の声ってそんな特徴があるの！』と気づかせる。褒めて、声への関心を高める。\n"
+        f"2. potential：この声が持つ可能性と課題の『入口』だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、その方法はあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」という流れで締める。\n"
+        f"3. next_step：玉井の20分Zoom無料声診断で『あなただけの声の設計図』が見えてくることを伝える。診断を受けることで何がわかるか・どう変わるかを魅力的に描写し、申込みへの一歩を後押しする言葉で締める。"
+    )
 
-        client = anthropic.AsyncAnthropic(api_key=_API_KEY)
-        message = await client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=1024,
-            system=[{
-                "type": "text",
-                "text": _build_advice_system(),
-                "cache_control": {"type": "ephemeral"},
-            }],
-            messages=[{"role": "user", "content": user_prompt}],
-        )
+    async def event_stream():
+        import re, traceback
+        try:
+            client = anthropic.AsyncAnthropic(api_key=_API_KEY)
+            full_text = ""
+            async with client.messages.stream(
+                model="claude-haiku-4-5-20251001",
+                max_tokens=1024,
+                system=[{
+                    "type": "text",
+                    "text": _build_advice_system(),
+                    "cache_control": {"type": "ephemeral"},
+                }],
+                messages=[{"role": "user", "content": user_prompt}],
+            ) as stream:
+                async for text in stream.text_stream:
+                    full_text += text
+                    yield f"data: {json.dumps({'type': 'chunk', 'text': text})}\n\n"
 
-        text = next(b.text for b in message.content if b.type == "text")
-        # JSON部分だけを抽出（マークダウンコードブロックにも対応）
-        import re
-        json_match = re.search(r'\{.*\}', text, re.DOTALL)
-        if not json_match:
-            raise ValueError(f"JSONが見つかりません: {text[:200]}")
-        advice = json.loads(json_match.group())
-        return JSONResponse({"success": True, "advice": advice})
+            json_match = re.search(r'\{.*\}', full_text, re.DOTALL)
+            if not json_match:
+                raise ValueError(f"JSONが見つかりません: {full_text[:200]}")
+            advice = json.loads(json_match.group())
+            yield f"data: {json.dumps({'type': 'done', 'advice': advice})}\n\n"
+        except Exception as e:
+            yield f"data: {json.dumps({'type': 'error', 'error': str(e), 'detail': traceback.format_exc()})}\n\n"
 
-    except Exception as e:
-        import traceback
-        return JSONResponse(
-            {"success": False, "error": str(e), "detail": traceback.format_exc()},
-            status_code=500,
-        )
+    return StreamingResponse(
+        event_stream(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @app.get("/")
@@ -159,17 +163,20 @@ async def analyze_audio(file: UploadFile = File(...)):
         waveform_samples = audio_data[::step]
         time_waveform = np.linspace(0, duration, len(waveform_samples))
 
-        # frame_length=1024, hop_length=256 で FFT サイズを縮小しつつ十分な精度を確保
-        f0, voiced_flag, voiced_probs = librosa.pyin(
+        # yin は pyin より約500倍高速（確率的 HMM なし）
+        # 無音フレームは fmax 超の値を返すので範囲フィルタで除去
+        _fmin = librosa.note_to_hz("C2")
+        _fmax = librosa.note_to_hz("C7")
+        f0 = librosa.yin(
             audio_data,
-            fmin=librosa.note_to_hz("C2"),
-            fmax=librosa.note_to_hz("C7"),
+            fmin=_fmin,
+            fmax=_fmax,
             sr=sr,
             frame_length=1024,
             hop_length=256,
         )
-        times_pitch = librosa.times_like(f0, sr=sr)
-        pitch_hz = [float(v) if not np.isnan(v) else None for v in f0]
+        times_pitch = librosa.times_like(f0, sr=sr, hop_length=256)
+        pitch_hz = [float(v) if _fmin < v <= _fmax else None for v in f0]
 
         voiced_f0 = [x for x in pitch_hz if x is not None]
         stats: dict = {"has_pitch": len(voiced_f0) > 0}

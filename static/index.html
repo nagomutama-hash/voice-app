@@ -547,12 +547,22 @@ async function fetchAdvice(stats, duration) {
     const adviceSections  = document.getElementById('adviceSections');
     const adviceError     = document.getElementById('adviceError');
     const adviceNoPitch   = document.getElementById('adviceNoPitch');
+    const msgEl           = document.getElementById('adviceLoadingMsg');
 
     if (!stats.has_pitch) {
         adviceLoading.classList.add('hidden');
         adviceNoPitch.classList.remove('hidden');
         return;
     }
+
+    // SSEストリーミングで進捗メッセージを更新
+    const progressMsgs = [
+        { at: 1,  msg: 'Claude AIが声を分析しています...' },
+        { at: 8,  msg: '声の個性を言葉にしています...' },
+        { at: 20, msg: 'あなたの可能性を考えています...' },
+        { at: 35, msg: '次のステップを提案しています...' },
+        { at: 50, msg: 'ほぼ完成です...' },
+    ];
 
     try {
         const res = await fetch('/advice', {
@@ -568,27 +578,55 @@ async function fetchAdvice(stats, duration) {
                 duration,
             }),
         });
-        const data = await res.json();
-        if (!data.success) throw new Error(data.error || 'アドバイス生成エラー');
 
-        const sections = [
-            { title: 'あなたの声の個性',   key: 'voice_character' },
-            { title: 'この声の可能性',     key: 'potential' },
-            { title: '次のステップへ',     key: 'next_step' },
-        ];
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let chunkCount = 0;
 
-        adviceSections.innerHTML = sections.map(s => `
-            <div class="advice-section">
-                <div class="advice-section-title">${s.title}</div>
-                <div class="advice-section-body">${data.advice[s.key]}</div>
-            </div>
-        `).join('');
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
 
-        adviceSections.classList.remove('hidden');
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                let data;
+                try { data = JSON.parse(line.slice(6)); } catch { continue; }
+
+                if (data.type === 'chunk') {
+                    chunkCount++;
+                    const hit = progressMsgs.findLast(m => chunkCount >= m.at);
+                    if (hit) msgEl.textContent = hit.msg;
+
+                } else if (data.type === 'done') {
+                    clearInterval(window._adviceMsgTimer);
+                    const sections = [
+                        { title: 'あなたの声の個性', key: 'voice_character' },
+                        { title: 'この声の可能性',   key: 'potential' },
+                        { title: '次のステップへ',   key: 'next_step' },
+                    ];
+                    adviceSections.innerHTML = sections.map(s => `
+                        <div class="advice-section">
+                            <div class="advice-section-title">${s.title}</div>
+                            <div class="advice-section-body">${data.advice[s.key]}</div>
+                        </div>
+                    `).join('');
+                    adviceSections.classList.remove('hidden');
+                    adviceLoading.classList.add('hidden');
+                    return;
+
+                } else if (data.type === 'error') {
+                    throw new Error(data.error || 'アドバイス生成エラー');
+                }
+            }
+        }
     } catch (err) {
         adviceError.textContent = 'アドバイスの生成に失敗しました: ' + err.message;
         adviceError.classList.remove('hidden');
-    } finally {
         adviceLoading.classList.add('hidden');
         clearInterval(window._adviceMsgTimer);
     }
