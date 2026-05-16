@@ -350,7 +350,7 @@
             <div class="card-title">AIアドバイス</div>
             <div id="adviceLoading" class="advice-loading">
                 <div class="spinner"></div>
-                <div>ボイストレーナーAIがアドバイスを生成中...</div>
+                <div id="adviceLoadingMsg">あなたの声の音域を計測中...</div>
             </div>
             <div id="adviceSections" class="advice-sections hidden"></div>
             <div id="adviceError" class="advice-error hidden"></div>
@@ -521,6 +521,20 @@ function renderResults(data) {
 
 function resetAdviceCard() {
     document.getElementById('adviceLoading').classList.remove('hidden');
+    const loadingMessages = [
+        'あなたの声の音域を計測中...',
+        '声の個性を分析しています...',
+        'AIが声の特徴を読み取っています...',
+        'あなただけの声の設計図を作成中...',
+        'もう少しで完成します...',
+    ];
+    let msgIndex = 0;
+    const msgEl = document.getElementById('adviceLoadingMsg');
+    const msgTimer = setInterval(() => {
+        msgIndex = (msgIndex + 1) % loadingMessages.length;
+        msgEl.textContent = loadingMessages[msgIndex];
+    }, 4000);
+    window._adviceMsgTimer = msgTimer;
     document.getElementById('adviceSections').classList.add('hidden');
     document.getElementById('adviceError').classList.add('hidden');
     document.getElementById('adviceNoPitch').classList.add('hidden');
@@ -574,6 +588,7 @@ async function fetchAdvice(stats, duration) {
         adviceError.classList.remove('hidden');
     } finally {
         adviceLoading.classList.add('hidden');
+        clearInterval(window._adviceMsgTimer);
     }
 }
 
