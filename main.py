@@ -150,7 +150,8 @@ async def root():
 async def analyze_audio(file: UploadFile = File(...)):
     try:
         contents = await file.read()
-        audio_data, sr = librosa.load(io.BytesIO(contents), sr=None, mono=True)
+        # 16 kHz にダウンサンプリング：pyin の計算量を大幅削減
+        audio_data, sr = librosa.load(io.BytesIO(contents), sr=16000, mono=True)
         duration = len(audio_data) / sr
 
         target_points = 1500
@@ -158,11 +159,14 @@ async def analyze_audio(file: UploadFile = File(...)):
         waveform_samples = audio_data[::step]
         time_waveform = np.linspace(0, duration, len(waveform_samples))
 
+        # frame_length=1024, hop_length=256 で FFT サイズを縮小しつつ十分な精度を確保
         f0, voiced_flag, voiced_probs = librosa.pyin(
             audio_data,
             fmin=librosa.note_to_hz("C2"),
             fmax=librosa.note_to_hz("C7"),
             sr=sr,
+            frame_length=1024,
+            hop_length=256,
         )
         times_pitch = librosa.times_like(f0, sr=sr)
         pitch_hz = [float(v) if not np.isnan(v) else None for v in f0]
