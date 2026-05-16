@@ -5,7 +5,11 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\climb\\\\Desktop\\\\voice-app\" -Recurse | Where-Object { -not $_.PSIsContainer } | Select-Object FullName, Length)",
       "Read(//mnt/c/Users/climb/Desktop/**)",
       "PowerShell(pip *)",
-      "Skill(claude-api)"
+      "Skill(claude-api)",
+      "Bash(pip install *)",
+      "Bash(python -c ' *)",
+      "Bash(python -c \"import main; print\\('syntax OK'\\)\")",
+      "Bash(python -m uvicorn main:app --reload)"
     ]
   }
 }
