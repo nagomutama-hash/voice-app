@@ -569,13 +569,17 @@ async function fetchAdvice(stats, duration) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                min_hz:    stats.min_hz,
-                max_hz:    stats.max_hz,
-                mean_hz:   stats.mean_hz,
-                min_note:  stats.min_note,
-                max_note:  stats.max_note,
-                mean_note: stats.mean_note,
+                min_hz:        stats.min_hz,
+                max_hz:        stats.max_hz,
+                mean_hz:       stats.mean_hz,
+                min_note:      stats.min_note,
+                max_note:      stats.max_note,
+                mean_note:     stats.mean_note,
                 duration,
+                pitch_std:     stats.pitch_std     || 0,
+                voiced_ratio:  stats.voiced_ratio  || 0,
+                rms_cv:        stats.rms_cv        || 0,
+                brightness_hz: stats.brightness_hz || 0,
             }),
         });
 
@@ -727,7 +731,6 @@ function drawStats(stats, duration, sr) {
 
     const items = [
         { label: '録音時間', value: duration + '秒', sub: null },
-        { label: 'サンプルレート', value: sr.toLocaleString() + ' Hz', sub: null },
     ];
 
     if (stats.has_pitch) {
@@ -736,6 +739,32 @@ function drawStats(stats, duration, sr) {
             { label: '最高音程', value: stats.max_note, sub: stats.max_hz + ' Hz' },
             { label: '平均音程', value: stats.mean_note, sub: stats.mean_hz + ' Hz' },
         );
+
+        // 声質データの表示ラベル（分析に使った値をわかりやすく）
+        if (stats.pitch_std !== undefined) {
+            const pitchCv = stats.mean_hz > 0 ? (stats.pitch_std / stats.mean_hz * 100) : 0;
+            let pitchLabel;
+            if      (pitchCv < 5)  pitchLabel = '控えめ';
+            else if (pitchCv < 15) pitchLabel = '自然';
+            else if (pitchCv < 25) pitchLabel = '豊か';
+            else                   pitchLabel = '揺れ大';
+
+            let dynamicLabel;
+            if      (stats.rms_cv < 20) dynamicLabel = '均一';
+            else if (stats.rms_cv < 45) dynamicLabel = '適度';
+            else                        dynamicLabel = '大きい';
+
+            let brightnessLabel;
+            if      (stats.brightness_hz < 700)  brightnessLabel = '深み・重め';
+            else if (stats.brightness_hz < 1300) brightnessLabel = 'バランス';
+            else                                 brightnessLabel = '明るめ';
+
+            items.push(
+                { label: '抑揚の幅',   value: pitchLabel,      sub: null },
+                { label: '声の強弱',   value: dynamicLabel,    sub: null },
+                { label: '声の明るさ', value: brightnessLabel, sub: null },
+            );
+        }
     } else {
         items.push({ label: '音程', value: '検出不可', sub: '有声音が見つかりませんでした' });
     }

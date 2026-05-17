@@ -52,8 +52,8 @@ def _build_advice_system() -> str:
         "【ゴール】\n"
         "読んだ人が『この声のことをもっと知りたい！玉井さんに診てもらいたい！』と感じること。\n\n"
         "【各セクションの役割】\n"
-        "1. voice_character：声の個性・魅力を具体的に描写して『自分の声ってそんな特徴があるの！』と気づかせる\n"
-        "2. potential：可能性の入口だけ見せて焦らす。改善のキーワード（例：共鳴・芯・表情）は出すが、方法は教えない。『答えはあなたの声を実際に聴かないとわかりません』で締める\n"
+        "1. voice_character：音域・音程の揺れ・声の強弱・明るさ・発声密度のデータをすべて組み合わせて、その人固有の声の個性・魅力を描写する。データが少しでも違えば必ず違う描写になるよう、具体的な数値的特徴を言葉に変換して『自分の声ってそんな特徴があるの！』と気づかせる\n"
+        "2. potential：その声のデータが示す具体的な課題の入口を見せて焦らす。共鳴・芯・表情・息の支えなどのキーワードは出すが方法は教えない。『答えはあなたの声を実際に聴かないとわかりません』で締める\n"
         "3. next_step：Zoom無料声診断で何が得られるかを魅力的に伝えて申込みへ誘導する\n\n"
         "【ルール】\n"
         "・具体的な練習法・エクササイズ・トレーニング手順は書かない\n"
@@ -88,6 +88,11 @@ class AdviceRequest(BaseModel):
     max_note: str
     mean_note: str
     duration: float
+    # 追加の声質データ（デフォルト0で後方互換性を維持）
+    pitch_std: float = 0.0      # F0標準偏差 Hz（音程の揺れ・抑揚の幅）
+    voiced_ratio: float = 0.0   # 有声区間の割合 %
+    rms_cv: float = 0.0         # 音量変動係数 %（強弱の幅）
+    brightness_hz: float = 0.0  # スペクトル重心 Hz（声の明るさ）
 
 
 @app.post("/advice")
@@ -97,17 +102,55 @@ async def generate_advice(req: AdviceRequest):
         if req.min_hz > 0 and req.max_hz > req.min_hz
         else 0
     )
+
+    # 声質データの解釈ラベル（Claudeが多彩な診断を出すための手がかり）
+    pitch_cv = (req.pitch_std / req.mean_hz * 100) if req.mean_hz > 0 else 0.0
+    if pitch_cv < 5:
+        pitch_label = "抑揚が控えめ・平坦な傾向（単調になりやすい）"
+    elif pitch_cv < 15:
+        pitch_label = "自然な抑揚の波がある"
+    elif pitch_cv < 25:
+        pitch_label = "音程の変化が豊か・声の表情が大きい"
+    else:
+        pitch_label = "音程の揺れが目立つ（ビブラートまたは不安定）"
+
+    if req.rms_cv < 20:
+        dynamic_label = "音量がほぼ一定・強弱が少ない（声のメリハリ不足の可能性）"
+    elif req.rms_cv < 45:
+        dynamic_label = "適度な強弱のコントラストがある"
+    else:
+        dynamic_label = "強弱の変化が大きい・メリハリのある発声"
+
+    if req.voiced_ratio < 35:
+        voiced_label = f"息継ぎや間が多め（発声率{req.voiced_ratio:.0f}%）"
+    elif req.voiced_ratio < 65:
+        voiced_label = f"声と間のバランスが良い（発声率{req.voiced_ratio:.0f}%）"
+    else:
+        voiced_label = f"連続した発声が多い・間が少ない（発声率{req.voiced_ratio:.0f}%）"
+
+    if req.brightness_hz < 700:
+        brightness_label = "低音成分が豊か・深みと重さのある声質"
+    elif req.brightness_hz < 1300:
+        brightness_label = "バランスの取れた声の明るさ"
+    else:
+        brightness_label = "高音成分が強い・明るく軽やかな声質"
+
     user_prompt = (
         f"以下の音声分析データをもとに、3つのセクションで声診断コメントを生成してください。\n\n"
-        f"【分析データ】\n"
+        f"【基本データ】\n"
         f"- 録音時間: {req.duration}秒\n"
         f"- 最低音: {req.min_note}（{req.min_hz} Hz）\n"
         f"- 最高音: {req.max_note}（{req.max_hz} Hz）\n"
         f"- 平均音程: {req.mean_note}（{req.mean_hz} Hz）\n"
         f"- 音域の幅: 約{semitones}半音\n\n"
+        f"【声質の特徴】\n"
+        f"- 抑揚・音程の揺れ: {pitch_label}\n"
+        f"- 声の強弱: {dynamic_label}\n"
+        f"- 発声の密度: {voiced_label}\n"
+        f"- 声の明るさ・声質: {brightness_label}\n\n"
         f"セクション:\n"
-        f"1. voice_character：この方の声の個性・魅力を具体的に描写する。音域・音程・声質を言葉で表現し『自分の声ってそんな特徴があるの！』と気づかせる。褒めて、声への関心を高める。\n"
-        f"2. potential：この声が持つ可能性と課題の『入口』だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、その方法はあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」という流れで締める。\n"
+        f"1. voice_character：この方の声の個性・魅力を具体的に描写する。基本データと声質の特徴を両方使って、この声ならではの個性を言葉にする。褒めて声への関心を高める。\n"
+        f"2. potential：この声のデータが示す課題の『入口』だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、その方法はあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」という流れで締める。\n"
         f"3. next_step：玉井の20分Zoom無料声診断で『あなただけの声の設計図』が見えてくることを伝える。診断を受けることで何がわかるか・どう変わるかを魅力的に描写し、申込みへの一歩を後押しする言葉で締める。"
     )
 
@@ -184,6 +227,22 @@ async def analyze_audio(file: UploadFile = File(...)):
             min_hz = float(min(voiced_f0))
             max_hz = float(max(voiced_f0))
             mean_hz = float(np.mean(voiced_f0))
+
+            # 追加分析① 音程の揺れ（抑揚の幅）
+            pitch_std = round(float(np.std(voiced_f0)) if len(voiced_f0) > 1 else 0.0, 1)
+
+            # 追加分析② 有声率（声を出している割合）
+            voiced_ratio = round(len(voiced_f0) / len(pitch_hz) * 100, 1) if len(pitch_hz) > 0 else 0.0
+
+            # 追加分析③ 音量の強弱（変動係数）
+            rms = librosa.feature.rms(y=audio_data, hop_length=256)[0]
+            rms_mean = float(np.mean(rms))
+            rms_cv = round(float(np.std(rms) / rms_mean * 100), 1) if rms_mean > 0 else 0.0
+
+            # 追加分析④ 声の明るさ（スペクトル重心）
+            spec_centroid = librosa.feature.spectral_centroid(y=audio_data, sr=sr, hop_length=256)[0]
+            brightness_hz = round(float(np.mean(spec_centroid)), 1)
+
             stats.update({
                 "min_hz": round(min_hz, 1),
                 "max_hz": round(max_hz, 1),
@@ -191,6 +250,10 @@ async def analyze_audio(file: UploadFile = File(...)):
                 "min_note": librosa.hz_to_note(min_hz),
                 "max_note": librosa.hz_to_note(max_hz),
                 "mean_note": librosa.hz_to_note(mean_hz),
+                "pitch_std": pitch_std,
+                "voiced_ratio": voiced_ratio,
+                "rms_cv": rms_cv,
+                "brightness_hz": brightness_hz,
             })
 
         return JSONResponse({
