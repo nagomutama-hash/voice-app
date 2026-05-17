@@ -311,7 +311,6 @@
                 <span class="rec-dot" id="recDot"></span>
                 <span id="statusText">マイクを使って録音を開始してください</span>
                 <span style="display:block; margin-top:0.4rem; font-size:0.82rem; color:#64748b;">&#9201; 推奨：5〜10秒（長いと結果表示が遅くなります）</span>
-                <span style="display:block; margin-top:0.3rem; font-size:0.82rem; color:#94a3b8;">&#8987; 停止後、グラフは約1秒・診断コメントは約10秒で表示されます</span>
             </div>
             <audio id="audioPlayer" controls class="hidden"></audio>
         </div>
@@ -350,10 +349,10 @@
 
         <!-- AIアドバイス -->
         <div class="card" id="adviceCard">
-            <div class="card-title">AIアドバイス</div>
+            <div class="card-title">診断コメント</div>
             <div id="adviceLoading" class="advice-loading">
                 <div class="spinner"></div>
-                <div id="adviceLoadingMsg">あなたの声の音域を計測中...</div>
+                <div id="adviceLoadingMsg">診断コメントは約10秒で表示されます...</div>
             </div>
             <div id="adviceSections" class="advice-sections hidden"></div>
             <div id="adviceError" class="advice-error hidden"></div>
