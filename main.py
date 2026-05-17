@@ -66,6 +66,62 @@ def _build_advice_system() -> str:
     )
 
 
+def _compute_voice_scores(
+    pitch_std: float, mean_hz: float, rms_cv: float,
+    brightness_hz: float, harmonic_ratio: float,
+    speech_rate: float, rms_trend: float,
+) -> dict:
+    """各声質指標を1〜10のスコアに変換する（10が最良）"""
+    pitch_cv = (pitch_std / mean_hz * 100) if mean_hz > 0 else 0.0
+
+    if   pitch_cv < 3:  s_intonation = 3
+    elif pitch_cv < 8:  s_intonation = 6
+    elif pitch_cv < 15: s_intonation = 9
+    elif pitch_cv < 25: s_intonation = 7
+    else:               s_intonation = 4
+
+    if   rms_cv < 15:   s_dynamics = 3
+    elif rms_cv < 25:   s_dynamics = 6
+    elif rms_cv < 40:   s_dynamics = 9
+    elif rms_cv < 55:   s_dynamics = 8
+    else:               s_dynamics = 5
+
+    if   brightness_hz < 500:  s_brightness = 3
+    elif brightness_hz < 700:  s_brightness = 5
+    elif brightness_hz < 1000: s_brightness = 9
+    elif brightness_hz < 1300: s_brightness = 8
+    elif brightness_hz < 1800: s_brightness = 6
+    else:                      s_brightness = 4
+
+    if   harmonic_ratio < 30: s_resonance = 2
+    elif harmonic_ratio < 40: s_resonance = 4
+    elif harmonic_ratio < 55: s_resonance = 6
+    elif harmonic_ratio < 65: s_resonance = 8
+    else:                     s_resonance = 10
+
+    if   speech_rate < 0.5: s_tempo = 3
+    elif speech_rate < 0.8: s_tempo = 5
+    elif speech_rate < 1.5: s_tempo = 9
+    elif speech_rate < 2.0: s_tempo = 7
+    elif speech_rate < 2.5: s_tempo = 5
+    else:                   s_tempo = 3
+
+    if   rms_trend < -30: s_sustain = 2
+    elif rms_trend < -20: s_sustain = 4
+    elif rms_trend < 10:  s_sustain = 9
+    elif rms_trend < 25:  s_sustain = 7
+    else:                 s_sustain = 6
+
+    return {
+        "intonation": s_intonation,
+        "dynamics":   s_dynamics,
+        "brightness": s_brightness,
+        "resonance":  s_resonance,
+        "tempo":      s_tempo,
+        "sustain":    s_sustain,
+    }
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     global _knowledge_text
@@ -96,6 +152,13 @@ class AdviceRequest(BaseModel):
     harmonic_ratio: float = 0.0  # 倍音比率 %（声の響き・共鳴）
     speech_rate: float = 0.0     # 発話速度 フレーズ/秒（話す速さ）
     rms_trend: float = 0.0       # 音量傾向 %（正=後半強・負=後半フェード）
+    # スコア（1-10）
+    score_intonation: int = 5  # 抑揚の幅
+    score_dynamics:   int = 5  # 声の強弱
+    score_brightness: int = 5  # 声の明るさ
+    score_resonance:  int = 5  # 声の響き
+    score_tempo:      int = 5  # 話す速さ
+    score_sustain:    int = 5  # 声の持続力
 
 
 @app.post("/advice")
@@ -159,6 +222,21 @@ async def generate_advice(req: AdviceRequest):
     else:
         trend_label = "後半に向かって声が強まる・気持ちが乗ってくる傾向"
 
+    score_items = [
+        ("抑揚の幅",   req.score_intonation),
+        ("声の強弱",   req.score_dynamics),
+        ("声の明るさ", req.score_brightness),
+        ("声の響き",   req.score_resonance),
+        ("話す速さ",   req.score_tempo),
+        ("声の持続力", req.score_sustain),
+    ]
+    high_items = [f"{n}({s}点)" for n, s in score_items if s >= 7]
+    low_items  = [f"{n}({s}点)" for n, s in score_items if s <= 4]
+    score_guidance = (
+        (f"▶ 強み（高スコア）: {', '.join(high_items)}\n" if high_items else "") +
+        (f"▶ 課題（低スコア）: {', '.join(low_items)}\n"  if low_items  else "")
+    )
+
     user_prompt = (
         f"以下の音声分析データをもとに、3つのセクションで声診断コメントを生成してください。\n\n"
         f"【基本データ】\n"
@@ -167,7 +245,10 @@ async def generate_advice(req: AdviceRequest):
         f"- 最高音: {req.max_note}（{req.max_hz} Hz）\n"
         f"- 平均音程: {req.mean_note}（{req.mean_hz} Hz）\n"
         f"- 音域の幅: 約{semitones}半音\n\n"
-        f"【声質の特徴】\n"
+        f"【声質スコア（10点満点）】\n"
+        + "\n".join(f"- {n}: {s}点" for n, s in score_items) + "\n"
+        + score_guidance + "\n"
+        f"【声質の詳細特徴】\n"
         f"- 抑揚・音程の揺れ: {pitch_label}\n"
         f"- 声の強弱: {dynamic_label}\n"
         f"- 発声の密度: {voiced_label}\n"
@@ -176,8 +257,8 @@ async def generate_advice(req: AdviceRequest):
         f"- 話す速さ・テンポ: {rate_label}\n"
         f"- 声の持続力・傾向: {trend_label}\n\n"
         f"セクション:\n"
-        f"1. voice_character：この方の声の個性・魅力を具体的に描写する。基本データと声質の特徴を両方使って、この声ならではの個性を言葉にする。褒めて声への関心を高める。\n"
-        f"2. potential：この声のデータが示す課題の『入口』だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、その方法はあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」という流れで締める。\n"
+        f"1. voice_character：高スコア項目（強み）を中心に、この声の個性・魅力を具体的に描写する。音域データと組み合わせて『自分の声ってそんな特徴があるの！』と気づかせる。褒めて声への関心を高める。\n"
+        f"2. potential：低スコア項目（課題）を中心に、改善の入口だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、最適なアプローチはあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」で締める。\n"
         f"3. next_step：20分Zoom無料声診断で『あなただけの声の設計図』が見えてくることを伝える。診断を受けることで何がわかるか・どう変わるかを魅力的に描写し、申込みへの一歩を後押しする言葉で締める。人名・固有名詞は使わず『プロの声診断』『専門家』などの表現にとどめる。"
     )
 
@@ -289,6 +370,11 @@ async def analyze_audio(file: UploadFile = File(...)):
             else:
                 rms_trend = 0.0
 
+            voice_scores = _compute_voice_scores(
+                pitch_std, mean_hz, rms_cv, brightness_hz,
+                harmonic_ratio, speech_rate, rms_trend,
+            )
+
             stats.update({
                 "min_hz": round(min_hz, 1),
                 "max_hz": round(max_hz, 1),
@@ -303,6 +389,7 @@ async def analyze_audio(file: UploadFile = File(...)):
                 "harmonic_ratio": harmonic_ratio,
                 "speech_rate": speech_rate,
                 "rms_trend": rms_trend,
+                "scores": voice_scores,
             })
 
         return JSONResponse({

@@ -276,11 +276,39 @@
             font-size: 0.9rem;
         }
 
+        /* ---- Radar Chart ---- */
+        .radar-wrap {
+            height: 320px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .score-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .score-legend span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+
         @media (max-width: 580px) {
             header h1 { font-size: 1.5rem; }
             .timer { font-size: 2.2rem; }
             .btn { padding: 0.75rem 1.25rem; font-size: 0.9rem; }
             .chart-wrap { height: 180px; }
+            .radar-wrap { height: 260px; }
         }
     </style>
 </head>
@@ -347,6 +375,18 @@
             <div class="stats-grid" id="statsGrid"></div>
         </div>
 
+        <!-- 声質スコア レーダーチャート -->
+        <div class="card" id="radarCard">
+            <div class="card-title">声質スコア（10点満点）</div>
+            <div class="radar-wrap">
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="score-legend">
+                <span><span class="legend-dot" style="background:#6366f1"></span>あなたのスコア</span>
+                <span style="color:#94a3b8">7〜10点：強み　　4点以下：改善余地</span>
+            </div>
+        </div>
+
         <!-- AIアドバイス -->
         <div class="card" id="adviceCard">
             <div class="card-title">診断コメント</div>
@@ -370,6 +410,7 @@ let startTime = null;
 let timerInterval = null;
 let waveChart = null;
 let pitchChartInst = null;
+let radarChartInst = null;
 
 // ===== DOM 要素 =====
 const recordBtn    = document.getElementById('recordBtn');
@@ -516,6 +557,7 @@ function renderResults(data) {
     drawWaveform(data.waveform);
     drawPitch(data.pitch);
     drawStats(data.stats, data.duration, data.sample_rate);
+    drawRadarChart(data.stats);
     resetAdviceCard();
     fetchAdvice(data.stats, data.duration);
     resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -533,12 +575,78 @@ function resetAdviceCard() {
     document.getElementById('adviceNoPitch').classList.add('hidden');
 }
 
+function drawRadarChart(stats) {
+    if (radarChartInst) radarChartInst.destroy();
+
+    const scores = stats.scores || {};
+    const values = [
+        scores.intonation || 5,
+        scores.dynamics   || 5,
+        scores.brightness || 5,
+        scores.resonance  || 5,
+        scores.tempo      || 5,
+        scores.sustain    || 5,
+    ];
+
+    // スコアに応じた色分け（7以上=強み/青紫、4以下=課題/橙）
+    const pointColors = values.map(v =>
+        v >= 7 ? '#6366f1' : v <= 4 ? '#f97316' : '#94a3b8'
+    );
+
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    radarChartInst = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['抑揚の幅', '声の強弱', '声の明るさ', '声の響き', '話す速さ', '声の持続力'],
+            datasets: [{
+                data: values,
+                backgroundColor: 'rgba(99,102,241,0.12)',
+                borderColor: 'rgba(99,102,241,0.75)',
+                borderWidth: 2,
+                pointBackgroundColor: pointColors,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: c => `${c.raw}点 / 10点`,
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    min: 0,
+                    max: 10,
+                    ticks: {
+                        stepSize: 2,
+                        font: { size: 10 },
+                        color: '#94a3b8',
+                        backdropColor: 'transparent',
+                    },
+                    pointLabels: {
+                        font: { size: 12, weight: '700' },
+                        color: '#1e293b',
+                    },
+                    grid: { color: 'rgba(0,0,0,0.07)' },
+                    angleLines: { color: 'rgba(0,0,0,0.07)' },
+                }
+            },
+        }
+    });
+}
+
 async function fetchAdvice(stats, duration) {
     const adviceLoading   = document.getElementById('adviceLoading');
     const adviceSections  = document.getElementById('adviceSections');
     const adviceError     = document.getElementById('adviceError');
     const adviceNoPitch   = document.getElementById('adviceNoPitch');
-    const msgEl           = document.getElementById('adviceLoadingMsg');
 
     if (!stats.has_pitch) {
         adviceLoading.classList.add('hidden');
@@ -546,41 +654,39 @@ async function fetchAdvice(stats, duration) {
         return;
     }
 
-    // SSEストリーミングで進捗メッセージを更新
-    const progressMsgs = [
-        { at: 1,  msg: 'Claude AIが声を分析しています...' },
-        { at: 8,  msg: '声の個性を言葉にしています...' },
-        { at: 20, msg: 'あなたの可能性を考えています...' },
-        { at: 35, msg: '次のステップを提案しています...' },
-        { at: 50, msg: 'ほぼ完成です...' },
-    ];
+    const scores = stats.scores || {};
 
     try {
         const res = await fetch('/advice', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                min_hz:        stats.min_hz,
-                max_hz:        stats.max_hz,
-                mean_hz:       stats.mean_hz,
-                min_note:      stats.min_note,
-                max_note:      stats.max_note,
-                mean_note:     stats.mean_note,
+                min_hz:           stats.min_hz,
+                max_hz:           stats.max_hz,
+                mean_hz:          stats.mean_hz,
+                min_note:         stats.min_note,
+                max_note:         stats.max_note,
+                mean_note:        stats.mean_note,
                 duration,
-                pitch_std:      stats.pitch_std      || 0,
-                voiced_ratio:   stats.voiced_ratio   || 0,
-                rms_cv:         stats.rms_cv         || 0,
-                brightness_hz:  stats.brightness_hz  || 0,
-                harmonic_ratio: stats.harmonic_ratio || 0,
-                speech_rate:    stats.speech_rate    || 0,
-                rms_trend:      stats.rms_trend      || 0,
+                pitch_std:        stats.pitch_std      || 0,
+                voiced_ratio:     stats.voiced_ratio   || 0,
+                rms_cv:           stats.rms_cv         || 0,
+                brightness_hz:    stats.brightness_hz  || 0,
+                harmonic_ratio:   stats.harmonic_ratio || 0,
+                speech_rate:      stats.speech_rate    || 0,
+                rms_trend:        stats.rms_trend      || 0,
+                score_intonation: scores.intonation    || 5,
+                score_dynamics:   scores.dynamics      || 5,
+                score_brightness: scores.brightness    || 5,
+                score_resonance:  scores.resonance     || 5,
+                score_tempo:      scores.tempo         || 5,
+                score_sustain:    scores.sustain       || 5,
             }),
         });
 
         const reader = res.body.getReader();
         const decoder = new TextDecoder();
         let buffer = '';
-        let chunkCount = 0;
 
         while (true) {
             const { done, value } = await reader.read();
@@ -596,9 +702,7 @@ async function fetchAdvice(stats, duration) {
                 try { data = JSON.parse(line.slice(6)); } catch { continue; }
 
                 if (data.type === 'chunk') {
-                    chunkCount++;
-                    const hit = progressMsgs.findLast(m => chunkCount >= m.at);
-                    if (hit) msgEl.textContent = hit.msg;
+                    // チャンク受信中はローディングメッセージを維持
 
                 } else if (data.type === 'done') {
                     clearInterval(window._adviceMsgTimer);
@@ -734,49 +838,7 @@ function drawStats(stats, duration, sr) {
             { label: '平均音程', value: stats.mean_note, sub: stats.mean_hz + ' Hz' },
         );
 
-        // 声質データの表示ラベル（分析に使った値をわかりやすく）
-        if (stats.pitch_std !== undefined) {
-            const pitchCv = stats.mean_hz > 0 ? (stats.pitch_std / stats.mean_hz * 100) : 0;
-            let pitchLabel;
-            if      (pitchCv < 5)  pitchLabel = '控えめ';
-            else if (pitchCv < 15) pitchLabel = '自然';
-            else if (pitchCv < 25) pitchLabel = '豊か';
-            else                   pitchLabel = '揺れ大';
-
-            let dynamicLabel;
-            if      (stats.rms_cv < 20) dynamicLabel = '均一';
-            else if (stats.rms_cv < 45) dynamicLabel = '適度';
-            else                        dynamicLabel = '大きい';
-
-            let brightnessLabel;
-            if      (stats.brightness_hz < 700)  brightnessLabel = '深み・重め';
-            else if (stats.brightness_hz < 1300) brightnessLabel = 'バランス';
-            else                                 brightnessLabel = '明るめ';
-
-            let harmonicLabel;
-            if      (stats.harmonic_ratio < 40) harmonicLabel = '息混じり';
-            else if (stats.harmonic_ratio < 65) harmonicLabel = 'バランス';
-            else                                harmonicLabel = '倍音豊か';
-
-            let rateLabel;
-            if      (stats.speech_rate < 0.8) rateLabel = 'ゆっくり';
-            else if (stats.speech_rate < 2.0) rateLabel = '自然';
-            else                              rateLabel = '速め';
-
-            let trendLabel;
-            if      (stats.rms_trend < -20) trendLabel = '後半フェード';
-            else if (stats.rms_trend <  20) trendLabel = '安定持続';
-            else                            trendLabel = '後半強め';
-
-            items.push(
-                { label: '抑揚の幅',   value: pitchLabel,     sub: null },
-                { label: '声の強弱',   value: dynamicLabel,   sub: null },
-                { label: '声の明るさ', value: brightnessLabel, sub: null },
-                { label: '声の響き',   value: harmonicLabel,  sub: null },
-                { label: '話す速さ',   value: rateLabel,      sub: null },
-                { label: '声の持続力', value: trendLabel,     sub: null },
-            );
-        }
+        // 声質スコアはレーダーチャートで表示するのでラベルカードは不要
     } else {
         items.push({ label: '音程', value: '検出不可', sub: '有声音が見つかりませんでした' });
     }
