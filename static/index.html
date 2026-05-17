@@ -576,10 +576,13 @@ async function fetchAdvice(stats, duration) {
                 max_note:      stats.max_note,
                 mean_note:     stats.mean_note,
                 duration,
-                pitch_std:     stats.pitch_std     || 0,
-                voiced_ratio:  stats.voiced_ratio  || 0,
-                rms_cv:        stats.rms_cv        || 0,
-                brightness_hz: stats.brightness_hz || 0,
+                pitch_std:      stats.pitch_std      || 0,
+                voiced_ratio:   stats.voiced_ratio   || 0,
+                rms_cv:         stats.rms_cv         || 0,
+                brightness_hz:  stats.brightness_hz  || 0,
+                harmonic_ratio: stats.harmonic_ratio || 0,
+                speech_rate:    stats.speech_rate    || 0,
+                rms_trend:      stats.rms_trend      || 0,
             }),
         });
 
@@ -759,10 +762,28 @@ function drawStats(stats, duration, sr) {
             else if (stats.brightness_hz < 1300) brightnessLabel = 'バランス';
             else                                 brightnessLabel = '明るめ';
 
+            let harmonicLabel;
+            if      (stats.harmonic_ratio < 40) harmonicLabel = '息混じり';
+            else if (stats.harmonic_ratio < 65) harmonicLabel = 'バランス';
+            else                                harmonicLabel = '倍音豊か';
+
+            let rateLabel;
+            if      (stats.speech_rate < 0.8) rateLabel = 'ゆっくり';
+            else if (stats.speech_rate < 2.0) rateLabel = '自然';
+            else                              rateLabel = '速め';
+
+            let trendLabel;
+            if      (stats.rms_trend < -20) trendLabel = '後半フェード';
+            else if (stats.rms_trend <  20) trendLabel = '安定持続';
+            else                            trendLabel = '後半強め';
+
             items.push(
-                { label: '抑揚の幅',   value: pitchLabel,      sub: null },
-                { label: '声の強弱',   value: dynamicLabel,    sub: null },
+                { label: '抑揚の幅',   value: pitchLabel,     sub: null },
+                { label: '声の強弱',   value: dynamicLabel,   sub: null },
                 { label: '声の明るさ', value: brightnessLabel, sub: null },
+                { label: '声の響き',   value: harmonicLabel,  sub: null },
+                { label: '話す速さ',   value: rateLabel,      sub: null },
+                { label: '声の持続力', value: trendLabel,     sub: null },
             );
         }
     } else {

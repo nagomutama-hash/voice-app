@@ -93,6 +93,9 @@ class AdviceRequest(BaseModel):
     voiced_ratio: float = 0.0   # 有声区間の割合 %
     rms_cv: float = 0.0         # 音量変動係数 %（強弱の幅）
     brightness_hz: float = 0.0  # スペクトル重心 Hz（声の明るさ）
+    harmonic_ratio: float = 0.0  # 倍音比率 %（声の響き・共鳴）
+    speech_rate: float = 0.0     # 発話速度 フレーズ/秒（話す速さ）
+    rms_trend: float = 0.0       # 音量傾向 %（正=後半強・負=後半フェード）
 
 
 @app.post("/advice")
@@ -135,6 +138,27 @@ async def generate_advice(req: AdviceRequest):
     else:
         brightness_label = "高音成分が強い・明るく軽やかな声質"
 
+    if req.harmonic_ratio < 40:
+        harmonic_label = "息混じりの声・倍音が少なめ（声の通りにくさの可能性）"
+    elif req.harmonic_ratio < 65:
+        harmonic_label = "響きのバランスが取れている"
+    else:
+        harmonic_label = "倍音が豊か・よく響く声質"
+
+    if req.speech_rate < 0.8:
+        rate_label = "ゆっくりめの話し方・間が多い（丁寧な印象・もたつき感の可能性）"
+    elif req.speech_rate < 2.0:
+        rate_label = "自然なテンポで話している"
+    else:
+        rate_label = "テンポが速め・フレーズが細かい（早口気味の可能性）"
+
+    if req.rms_trend < -20:
+        trend_label = "後半に向かって声が弱まる傾向（息の支えが課題の可能性）"
+    elif req.rms_trend < 20:
+        trend_label = "音量が安定して持続している"
+    else:
+        trend_label = "後半に向かって声が強まる・気持ちが乗ってくる傾向"
+
     user_prompt = (
         f"以下の音声分析データをもとに、3つのセクションで声診断コメントを生成してください。\n\n"
         f"【基本データ】\n"
@@ -147,7 +171,10 @@ async def generate_advice(req: AdviceRequest):
         f"- 抑揚・音程の揺れ: {pitch_label}\n"
         f"- 声の強弱: {dynamic_label}\n"
         f"- 発声の密度: {voiced_label}\n"
-        f"- 声の明るさ・声質: {brightness_label}\n\n"
+        f"- 声の明るさ・声質: {brightness_label}\n"
+        f"- 声の響き・倍音: {harmonic_label}\n"
+        f"- 話す速さ・テンポ: {rate_label}\n"
+        f"- 声の持続力・傾向: {trend_label}\n\n"
         f"セクション:\n"
         f"1. voice_character：この方の声の個性・魅力を具体的に描写する。基本データと声質の特徴を両方使って、この声ならではの個性を言葉にする。褒めて声への関心を高める。\n"
         f"2. potential：この声のデータが示す課題の『入口』だけを見せる。『共鳴』『芯』『表情』『息の支え』などのキーワードは使ってよいが、具体的なやり方・練習法は絶対に書かない。「ただし、その方法はあなたの声の構造によって異なるため、実際の声を聴かないと判断できません」という流れで締める。\n"
@@ -243,6 +270,25 @@ async def analyze_audio(file: UploadFile = File(...)):
             spec_centroid = librosa.feature.spectral_centroid(y=audio_data, sr=sr, hop_length=256)[0]
             brightness_hz = round(float(np.mean(spec_centroid)), 1)
 
+            # 追加分析⑤ 声の響き（倍音比率）
+            harmonic = librosa.effects.harmonic(audio_data)
+            harmonic_energy = float(np.mean(harmonic ** 2))
+            total_energy = float(np.mean(audio_data ** 2))
+            harmonic_ratio = round(harmonic_energy / total_energy * 100, 1) if total_energy > 0 else 0.0
+
+            # 追加分析⑥ 話す速さ（発声セグメント開始回数 / 秒）
+            voiced_flags = np.array([1 if x is not None else 0 for x in pitch_hz])
+            transitions = int(np.sum(np.diff(voiced_flags) > 0))
+            speech_rate = round(transitions / duration, 2) if duration > 0 else 0.0
+
+            # 追加分析⑦ 声の持続力（RMS傾向）
+            if len(rms) > 1:
+                x_trend = np.linspace(0, 1, len(rms))
+                slope = float(np.polyfit(x_trend, rms, 1)[0])
+                rms_trend = round(slope / rms_mean * 100, 1) if rms_mean > 0 else 0.0
+            else:
+                rms_trend = 0.0
+
             stats.update({
                 "min_hz": round(min_hz, 1),
                 "max_hz": round(max_hz, 1),
@@ -254,6 +300,9 @@ async def analyze_audio(file: UploadFile = File(...)):
                 "voiced_ratio": voiced_ratio,
                 "rms_cv": rms_cv,
                 "brightness_hz": brightness_hz,
+                "harmonic_ratio": harmonic_ratio,
+                "speech_rate": speech_rate,
+                "rms_trend": rms_trend,
             })
 
         return JSONResponse({
