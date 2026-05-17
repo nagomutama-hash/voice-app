@@ -522,21 +522,12 @@ function renderResults(data) {
 }
 
 function resetAdviceCard() {
+    if (window._adviceMsgTimer) {
+        clearInterval(window._adviceMsgTimer);
+        window._adviceMsgTimer = null;
+    }
     document.getElementById('adviceLoading').classList.remove('hidden');
-    const loadingMessages = [
-        'あなたの声の音域を計測中...',
-        '声の個性を分析しています...',
-        'AIが声の特徴を読み取っています...',
-        'あなただけの声の設計図を作成中...',
-        'もう少しで完成します...',
-    ];
-    let msgIndex = 0;
-    const msgEl = document.getElementById('adviceLoadingMsg');
-    const msgTimer = setInterval(() => {
-        msgIndex = (msgIndex + 1) % loadingMessages.length;
-        msgEl.textContent = loadingMessages[msgIndex];
-    }, 4000);
-    window._adviceMsgTimer = msgTimer;
+    document.getElementById('adviceLoadingMsg').textContent = '診断コメントは約10秒で表示されます...';
     document.getElementById('adviceSections').classList.add('hidden');
     document.getElementById('adviceError').classList.add('hidden');
     document.getElementById('adviceNoPitch').classList.add('hidden');
