@@ -263,31 +263,47 @@ async def generate_advice(req: AdviceRequest):
     )
 
     async def event_stream():
-        import re, traceback
-        try:
-            client = anthropic.AsyncAnthropic(api_key=_API_KEY)
-            full_text = ""
-            async with client.messages.stream(
-                model="claude-haiku-4-5-20251001",
-                max_tokens=1024,
-                system=[{
-                    "type": "text",
-                    "text": _build_advice_system(),
-                    "cache_control": {"type": "ephemeral"},
-                }],
-                messages=[{"role": "user", "content": user_prompt}],
-            ) as stream:
-                async for text in stream.text_stream:
-                    full_text += text
-                    yield f"data: {json.dumps({'type': 'chunk', 'text': text})}\n\n"
+        import re, traceback, asyncio
+        max_retries = 2  # 最大2回リトライ（合計3回試みる）
 
-            json_match = re.search(r'\{.*\}', full_text, re.DOTALL)
-            if not json_match:
-                raise ValueError(f"JSONが見つかりません: {full_text[:200]}")
-            advice = json.loads(json_match.group())
-            yield f"data: {json.dumps({'type': 'done', 'advice': advice})}\n\n"
-        except Exception as e:
-            yield f"data: {json.dumps({'type': 'error', 'error': str(e), 'detail': traceback.format_exc()})}\n\n"
+        for attempt in range(max_retries + 1):
+            try:
+                client = anthropic.AsyncAnthropic(api_key=_API_KEY)
+                full_text = ""
+                async with client.messages.stream(
+                    model="claude-haiku-4-5-20251001",
+                    max_tokens=1024,
+                    system=[{
+                        "type": "text",
+                        "text": _build_advice_system(),
+                        "cache_control": {"type": "ephemeral"},
+                    }],
+                    messages=[{"role": "user", "content": user_prompt}],
+                ) as stream:
+                    async for text in stream.text_stream:
+                        full_text += text
+                        yield f"data: {json.dumps({'type': 'chunk', 'text': text})}\n\n"
+
+                json_match = re.search(r'\{.*\}', full_text, re.DOTALL)
+                if not json_match:
+                    raise ValueError(f"JSONが見つかりません: {full_text[:200]}")
+                advice = json.loads(json_match.group())
+                yield f"data: {json.dumps({'type': 'done', 'advice': advice})}\n\n"
+                return  # 成功
+
+            except Exception as e:
+                error_str = str(e)
+                is_overloaded = "overloaded" in error_str.lower()
+
+                if is_overloaded and attempt < max_retries:
+                    wait_sec = 4 * (attempt + 1)  # 4秒、8秒
+                    yield f"data: {json.dumps({'type': 'retrying', 'attempt': attempt + 1, 'wait': wait_sec})}\n\n"
+                    await asyncio.sleep(wait_sec)
+                    continue
+
+                # リトライ上限 or その他のエラー
+                yield f"data: {json.dumps({'type': 'error', 'error': error_str, 'overloaded': is_overloaded})}\n\n"
+                return
 
     return StreamingResponse(
         event_stream(),

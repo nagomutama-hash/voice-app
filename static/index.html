@@ -427,6 +427,8 @@ let timerInterval = null;
 let waveChart = null;
 let pitchChartInst = null;
 let radarChartInst = null;
+let lastStats = null;
+let lastDuration = null;
 
 // ===== DOM 要素 =====
 const recordBtn    = document.getElementById('recordBtn');
@@ -569,6 +571,8 @@ async function uploadAndAnalyze(wavBlob) {
 
 // ===== グラフ・結果の描画 =====
 function renderResults(data) {
+    lastStats = data.stats;
+    lastDuration = data.duration;
     resultsEl.classList.remove('hidden');
     drawWaveform(data.waveform);
     drawPitch(data.pitch);
@@ -737,16 +741,38 @@ async function fetchAdvice(stats, duration) {
                     adviceLoading.classList.add('hidden');
                     return;
 
+                } else if (data.type === 'retrying') {
+                    document.getElementById('adviceLoadingMsg').textContent =
+                        `AIサーバーが混み合っています。自動で再試行中... (${data.attempt}回目)`;
+
                 } else if (data.type === 'error') {
-                    throw new Error(data.error || 'アドバイス生成エラー');
+                    const isOverloaded = data.overloaded || (data.error && data.error.includes('overloaded'));
+                    throw Object.assign(new Error(data.error || 'アドバイス生成エラー'), { isOverloaded });
                 }
             }
         }
     } catch (err) {
-        adviceError.textContent = 'アドバイスの生成に失敗しました: ' + err.message;
+        const msg = err.isOverloaded
+            ? 'AI診断サーバーが混み合っています。<br>少し時間をおいて、もう一度お試しください🙏'
+            : '診断コメントの生成に失敗しました。<br>もう一度お試しください。';
+        adviceError.innerHTML = `
+            <div style="margin-bottom:12px;">${msg}</div>
+            <button onclick="retryAdvice()" style="
+                background:#6366f1; color:white; border:none; border-radius:8px;
+                padding:0.6rem 1.4rem; font-size:0.9rem; font-weight:600;
+                cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+                🔄 もう一度診断する
+            </button>`;
         adviceError.classList.remove('hidden');
         adviceLoading.classList.add('hidden');
         clearInterval(window._adviceMsgTimer);
+    }
+}
+
+function retryAdvice() {
+    if (lastStats && lastDuration !== null) {
+        resetAdviceCard();
+        fetchAdvice(lastStats, lastDuration);
     }
 }
 
