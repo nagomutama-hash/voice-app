@@ -349,6 +349,16 @@
                 <span style="display:block; margin-top:0.4rem; font-size:0.82rem; color:#64748b;">&#9201; 推奨：5〜10秒（長いと結果表示が遅くなります）</span>
             </div>
             <audio id="audioPlayer" controls class="hidden"></audio>
+
+            <!-- マイクエラー時のヘルプ -->
+            <div id="micErrorHelp" style="display:none; margin-top:1rem; padding:16px; background:#fff0f0; border-radius:10px; border-left:4px solid #e53e3e; text-align:center;">
+                <p style="font-size:0.9rem; color:#c53030; font-weight:bold; margin-bottom:6px;">⚠️ マイクへのアクセスが拒否されています</p>
+                <p style="font-size:0.83rem; color:#555; line-height:1.7; margin-bottom:12px;">ブラウザのマイク設定を変更する必要があります。<br>下のボタンで解決方法をご確認ください。</p>
+                <a href="http://www.max2000.jp/landing/micoff.html" target="_blank" rel="noopener"
+                   style="display:inline-block; background:#e53e3e; color:white; padding:10px 22px; border-radius:8px; text-decoration:none; font-size:0.88rem; font-weight:bold;">
+                    👉 マイクの設定方法を見る
+                </a>
+            </div>
         </div>
     </div>
 
@@ -484,11 +494,13 @@ recordBtn.addEventListener('click', async () => {
         stopBtn.disabled = false;
         recDot.classList.add('active');
         setStatus('録音中...');
+        document.getElementById('micErrorHelp').style.display = 'none';
         resultsEl.classList.add('hidden');
         analyzingEl.classList.remove('show');
 
     } catch (err) {
-        setStatus('エラー: マイクへのアクセスが拒否されました。ブラウザの設定を確認してください。');
+        setStatus('マイクへのアクセスが拒否されました。');
+        document.getElementById('micErrorHelp').style.display = 'block';
     }
 });
 
