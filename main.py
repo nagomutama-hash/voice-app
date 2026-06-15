@@ -41,6 +41,13 @@ def _load_pdf_knowledge() -> str:
                     sections.append(f"【{pdf_path.stem}】\n" + "\n".join(pages))
         except Exception as exc:
             print(f"PDF読み込みエラー [{pdf_path.name}]: {exc}")
+    for txt_path in sorted(KNOWLEDGE_DIR.glob("*.txt")):
+        try:
+            text = txt_path.read_text(encoding="utf-8")
+            if text.strip():
+                sections.append(f"【{txt_path.stem}】\n" + text)
+        except Exception as exc:
+            print(f"テキスト読み込みエラー [{txt_path.name}]: {exc}")
     return "\n\n---\n\n".join(sections)
 
 
