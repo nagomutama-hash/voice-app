@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>玉井智の信頼される声診断</title>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R9X1LQ8HG2"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-R9X1LQ8HG2');
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary: #0D1B2A;
+            --primary-dark: #08111d;
+            --accent: #C9A227;
+            --accent-soft: #F3E7BF;
+            --success: #C9A227;
+            --danger: #ef4444;
+            --bg: #f5f2ea;
+            --card: #ffffff;
+            --text: #1a2433;
+            --muted: #667085;
+            --border: #e5decd;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif;
+            background:
+                linear-gradient(180deg, #0D1B2A 0, #14263b 220px, var(--bg) 620px);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.7;
+        }
+
+        header {
+            background:
+                linear-gradient(145deg, rgba(8,17,29,0.98), rgba(13,27,42,0.94) 58%, rgba(36,44,58,0.9)),
+                url('data:image/svg+xml,%3Csvg width="160" height="120" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" stroke="%23C9A227" stroke-opacity="0.18"%3E%3Cpath d="M0 76c24-28 52-28 76 0s52 28 76 0"/%3E%3Cpath d="M8 34h144"/%3E%3Cpath d="M32 16v88M128 16v88"/%3E%3C/g%3E%3C/svg%3E');
+            color: white;
+            text-align: center;
+            padding: 2.4rem 1rem 1.2rem;
+        }
+
+        header h1 {
+            font-size: clamp(1.9rem, 6vw, 3.2rem);
+            font-weight: 800;
+            letter-spacing: 0;
+            line-height: 1.22;
+        }
+
+        header p {
+            margin-top: 0.5rem;
+            opacity: 0.92;
+            font-size: 0.98rem;
+        }
+
+        .hero-inner {
+            max-width: 920px;
+            margin: 0 auto;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0.75rem;
+            padding: 0.28rem 0.72rem;
+            border: 1px solid rgba(201,162,39,0.65);
+            border-radius: 999px;
+            color: #F7E7B0;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .hero-lead {
+            max-width: 700px;
+            margin: 0.75rem auto 0;
+            font-size: 1.04rem;
+        }
+
+        .authority-strip {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 0.7rem;
+            max-width: 780px;
+            margin: 1.35rem auto 0;
+        }
+
+        .authority-item {
+            padding: 0.72rem 0.65rem;
+            border: 1px solid rgba(201,162,39,0.3);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        .authority-value {
+            color: #F7E7B0;
+            font-size: 1.05rem;
+            font-weight: 800;
+            line-height: 1.2;
+        }
+
+        .authority-label {
+            margin-top: 0.2rem;
+            color: rgba(255,255,255,0.78);
+            font-size: 0.76rem;
+            font-weight: 700;
+        }
+
+        .profile-line {
+            margin-top: 1.1rem;
+            color: rgba(255,255,255,0.78);
+            font-size: 0.82rem;
+        }
+
+        .container {
+            max-width: 880px;
+            margin: 0 auto;
+            padding: 1rem 1rem 3rem;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 1.75rem;
+            border: 1px solid var(--border);
+            box-shadow: 0 14px 34px rgba(13,27,42,0.11);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 0;
+            margin-bottom: 1.25rem;
+        }
+
+        /* ---- Recording ---- */
+        .record-area { text-align: center; }
+
+        .record-card {
+            margin-top: 0;
+            border-top: 4px solid var(--accent);
+        }
+
+        .diagnosis-summary {
+            max-width: 680px;
+            margin: 0 auto 1rem;
+            color: var(--text);
+            font-size: 1.02rem;
+        }
+
+        .service-owner {
+            color: var(--primary);
+            font-size: 1.28rem;
+            font-weight: 800;
+            line-height: 1.45;
+            margin-bottom: 0.8rem;
+        }
+
+        .voice-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 0.6rem;
+            margin: 1.25rem 0;
+        }
+
+        .voice-metric {
+            border: 1px solid #eadfbf;
+            border-radius: 8px;
+            background: #fffaf0;
+            padding: 0.75rem 0.55rem;
+            font-weight: 700;
+            color: #5d4515;
+        }
+
+        .record-guide {
+            margin: 1.25rem auto 1.35rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: #f7f4ed;
+            border: 1px solid #e6d8b6;
+            color: #493d2d;
+            text-align: left;
+            max-width: 680px;
+        }
+
+        .record-guide strong {
+            display: block;
+            color: var(--primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+
+        .btn-record {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 6px 18px rgba(13,27,42,0.28);
+        }
+        .btn-record:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(13,27,42,0.35);
+        }
+        .btn-record.is-recording {
+            background: var(--danger);
+            box-shadow: 0 2px 10px rgba(239,68,68,0.4);
+            animation: recPulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes recPulse {
+            0%, 100% { box-shadow: 0 2px 10px rgba(239,68,68,0.4); }
+            50%       { box-shadow: 0 2px 28px rgba(239,68,68,0.7); }
+        }
+
+        .btn-stop {
+            background: #f1f5f9;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+        .btn-stop:hover:not(:disabled) {
+            transform: translateY(-2px);
+            background: #e2e8f0;
+        }
+
+        .timer {
+            font-size: 2.35rem;
+            font-weight: 800;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0;
+            color: var(--text);
+            margin: 0.5rem 0 0.75rem;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            color: var(--muted);
+            font-size: 0.95rem;
+            min-height: 26px;
+        }
+
+        .record-hint {
+            flex-basis: 100%;
+            margin-top: 0.15rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+        }
+
+        .rec-dot {
+            width: 9px; height: 9px;
+            border-radius: 50%;
+            background: var(--danger);
+            display: none;
+            flex-shrink: 0;
+            animation: blink 1s ease-in-out infinite;
+        }
+        .rec-dot.active { display: inline-block; }
+
+        @keyframes blink { 0%,100% { opacity:1 } 50% { opacity:0.15 } }
+
+        audio {
+            width: 100%;
+            margin-top: 1.25rem;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        /* ---- Analyzing ---- */
+        .analyzing {
+            display: none;
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--muted);
+        }
+        .analyzing.show { display: block; }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.75s linear infinite;
+            margin: 0 auto 0.75rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ---- Charts ---- */
+        .chart-wrap {
+            position: relative;
+            height: 230px;
+        }
+
+        /* ---- Stats ---- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.07em;
+            margin-bottom: 0.4rem;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-top: 0.25rem;
+        }
+
+        .hidden { display: none; }
+
+        /* ---- AI Advice ---- */
+        .advice-loading {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--muted);
+        }
+
+        .advice-sections {
+            display: flex;
+            flex-direction: column;
+            gap: 0.875rem;
+        }
+
+        .advice-section {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--primary);
+            border-radius: 0 8px 8px 0;
+            padding: 1rem 1.25rem;
+        }
+
+        .advice-section-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.5rem;
+        }
+
+        .advice-section-body {
+            color: var(--text);
+            font-size: 0.92rem;
+            line-height: 1.75;
+        }
+
+        .advice-error {
+            color: var(--danger);
+            font-size: 0.88rem;
+            padding: 0.875rem 1rem;
+            background: #fef2f2;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+
+        .advice-no-pitch {
+            text-align: center;
+            padding: 1rem;
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        /* ---- Radar Chart ---- */
+        .radar-wrap {
+            height: 320px;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .score-legend {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            color: var(--muted);
+        }
+
+        .score-legend span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .legend-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+
+        @media (max-width: 580px) {
+            header { padding: 1.55rem 1rem 1rem; }
+            header h1 { font-size: 1.85rem; }
+            .hero-lead { font-size: 0.96rem; }
+            .authority-strip { grid-template-columns: 1fr; gap: 0.45rem; margin-top: 1rem; }
+            .authority-item { padding: 0.52rem 0.55rem; }
+            .container { padding: 0.8rem 0.8rem 2.5rem; }
+            .card { padding: 1.15rem; }
+            .service-owner { font-size: 1.12rem; }
+            .voice-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .buttons { flex-direction: column; gap: 0.7rem; }
+            .btn { justify-content: center; width: 100%; padding: 0.85rem 1.25rem; font-size: 0.95rem; }
+            .timer { font-size: 1.9rem; }
+            .chart-wrap { height: 180px; }
+            .radar-wrap { height: 260px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="hero-inner">
+        <div class="hero-eyebrow">リアル・ボイストレーニング 代表 玉井智</div>
+        <h1>玉井智の<br>信頼される声診断</h1>
+        <p class="hero-lead">7秒の声から、あなたの声にある信頼力・安心感・伝わりやすさを見つけます。</p>
+        <div class="authority-strip" aria-label="玉井智の実績">
+            <div class="authority-item">
+                <div class="authority-value">35年以上</div>
+                <div class="authority-label">MC・ナレーター・DJの現場経験</div>
+            </div>
+            <div class="authority-item">
+                <div class="authority-value">20年以上</div>
+                <div class="authority-label">ボイストレーナー歴</div>
+            </div>
+            <div class="authority-item">
+                <div class="authority-value">2万人以上</div>
+                <div class="authority-label">受講者累計</div>
+            </div>
+        </div>
+        <p class="profile-line">現役MC・ナレーター・ラジオDJ・スタジアムDJの視点から診断します。</p>
+    </div>
+</header>
+
+<div class="container">
+
+    <!-- 録音カード -->
+    <div class="card record-card">
+        <div class="card-title">まずは7秒、声を聞かせてください</div>
+        <div class="record-area">
+            <div class="service-owner">あなたの声は、どんな安心感で相手に届いているのか。</div>
+            <p class="diagnosis-summary">
+                声の高さや大きさだけではなく、会話の相手が受け取る「信頼力」「安心感」「伝わりやすさ」「伸びしろ」を診断します。
+            </p>
+            <div class="voice-metrics" aria-label="分析する項目">
+                <div class="voice-metric">信頼力</div>
+                <div class="voice-metric">安心感</div>
+                <div class="voice-metric">伝わりやすさ</div>
+                <div class="voice-metric">伸びしろ</div>
+            </div>
+            <div class="record-guide">
+                <strong>何を話せばいい？</strong>
+                録音ボタンを押して、「私は〇〇です。普段は〇〇をしています。今日は自分の声の強みを知りたいです。」と7秒ほど話してください。声の印象から、あなたらしい強みを見つけます。
+            </div>
+            <div class="buttons">
+                <button class="btn btn-record" id="recordBtn">
+                    &#9210; &nbsp;7秒で声の強みを知る
+                </button>
+                <button class="btn btn-stop" id="stopBtn" disabled>
+                    &#9209; &nbsp;録音を止める
+                </button>
+            </div>
+            <div class="timer" id="timer">0:00</div>
+            <div class="status-row">
+                <span class="rec-dot" id="recDot"></span>
+                <span id="statusText">準備ができたら、上の例文を自然な声で話してください</span>
+                <span class="record-hint">&#9201; 推奨：5〜10秒（長いと結果表示が遅くなります）</span>
+            </div>
+            <audio id="audioPlayer" controls class="hidden"></audio>
+
+            <!-- マイクエラー時のヘルプ -->
+            <div id="micErrorHelp" style="display:none; margin-top:1rem; padding:16px; background:#fff0f0; border-radius:8px; border-left:4px solid #e53e3e; text-align:center;">
+                <p style="font-size:0.9rem; color:#c53030; font-weight:bold; margin-bottom:6px;">⚠️ マイクへのアクセスが拒否されています</p>
+                <p style="font-size:0.83rem; color:#555; line-height:1.7; margin-bottom:12px;">ブラウザのマイク設定を変更する必要があります。<br>下のボタンで解決方法をご確認ください。</p>
+                <a href="http://www.max2000.jp/landing/micoff.html" target="_blank" rel="noopener"
+                   style="display:inline-block; background:#e53e3e; color:white; padding:10px 22px; border-radius:8px; text-decoration:none; font-size:0.88rem; font-weight:bold;">
+                    👉 マイクの設定方法を見る
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 診断中インジケーター -->
+    <div class="analyzing" id="analyzingEl">
+        <div class="spinner"></div>
+        <div>玉井智の視点で、声の印象を診断しています...</div>
+    </div>
+
+    <!-- 結果エリア -->
+    <div id="results" class="hidden">
+
+        <!-- 波形グラフ -->
+        <div class="card">
+            <div class="card-title">診断の参考データ：声の波形</div>
+            <div class="chart-wrap">
+                <canvas id="waveformChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 音程グラフ -->
+        <div class="card">
+            <div class="card-title">診断の参考データ：声の高さ</div>
+            <div class="chart-wrap">
+                <canvas id="pitchChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 分析結果 -->
+        <div class="card">
+            <div class="card-title">声の印象データ</div>
+            <div class="stats-grid" id="statsGrid"></div>
+        </div>
+
+        <!-- 声質スコア レーダーチャート -->
+        <div class="card" id="radarCard">
+            <div class="card-title">あなたの声の強みレポート</div>
+            <div class="radar-wrap">
+                <canvas id="radarChart"></canvas>
+            </div>
+            <div class="score-legend">
+                <span><span class="legend-dot" style="background:#C9A227"></span>あなたのスコア</span>
+                <span style="color:#94a3b8">7〜10点：強み　　4点以下：改善余地</span>
+            </div>
+        </div>
+
+        <!-- AIアドバイス -->
+        <div class="card" id="adviceCard">
+            <div class="card-title">診断コメント</div>
+            <div id="adviceLoading" class="advice-loading">
+                <div class="spinner"></div>
+                <div id="adviceLoadingMsg">診断コメントは約10秒で表示されます...</div>
+            </div>
+            <div id="adviceSections" class="advice-sections hidden"></div>
+            <div id="adviceError" class="advice-error hidden"></div>
+            <div id="adviceNoPitch" class="advice-no-pitch hidden">音程データが検出されなかったため、アドバイスを生成できません。</div>
+        </div>
+
+        <!-- 複数回診断のすすめ -->
+        <div class="card" style="background:#fbf6e8; border-left: 4px solid #C9A227; padding: 1.5rem 1.75rem;">
+            <div class="card-title">💡 もう一度診断してみてください</div>
+            <p style="font-size:0.92rem; line-height:1.9; color:#334155;">
+                何回録音しても、声質スコア（10点満点）の中に、<br>
+                ほぼ同じ得点になる項目があるはずです。<br>
+                それがあなたに「染みついた声の癖」です。<br><br>
+                逆に、毎回スコアが変わる項目は<br>
+                まだ癖になっていない＝伸びしろです。<br><br>
+                自分の「固定の癖」に気づいたら、<br>
+                Zoom無料声診断でその癖を根本から診てもらいましょう。
+            </p>
+        </div>
+
+        <!-- LINE友達追加ボタン -->
+        <div class="card" style="text-align:center; padding: 2rem 1.75rem;">
+            <div class="card-title">無料声診断を予約する</div>
+            <p style="color:#64748b; font-size:0.93rem; margin-bottom:1.25rem; line-height:1.7;">
+                LINEを友だち追加して、<br>20分間のZoom無料声診断にお申し込みください。
+            </p>
+            <a href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener"
+               style="display:inline-flex; align-items:center; gap:0.6rem;
+                      background:#06C755; color:white; font-weight:700;
+                      font-size:1rem; padding:0.9rem 2.2rem; border-radius:8px;
+                      text-decoration:none; box-shadow:0 2px 12px rgba(6,199,85,0.4);">
+                <img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
+                     alt="友だち追加" height="28" style="display:block;">
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<script>
+// ===== 状態管理 =====
+let mediaRecorder = null;
+let recordedChunks = [];
+let startTime = null;
+let timerInterval = null;
+let waveChart = null;
+let pitchChartInst = null;
+let radarChartInst = null;
+let lastStats = null;
+let lastDuration = null;
+
+// ===== DOM 要素 =====
+const recordBtn    = document.getElementById('recordBtn');
+const stopBtn      = document.getElementById('stopBtn');
+const statusText   = document.getElementById('statusText');
+const recDot       = document.getElementById('recDot');
+const timerEl      = document.getElementById('timer');
+const audioPlayer  = document.getElementById('audioPlayer');
+const resultsEl    = document.getElementById('results');
+const analyzingEl  = document.getElementById('analyzingEl');
+
+// ===== 録音開始 =====
+recordBtn.addEventListener('click', async () => {
+    try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        recordedChunks = [];
+
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+            ? 'audio/webm;codecs=opus' : 'audio/webm';
+
+        mediaRecorder = new MediaRecorder(stream, { mimeType });
+        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = onRecordingStop;
+        mediaRecorder.start(100);
+
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 200);
+
+        recordBtn.disabled = true;
+        recordBtn.classList.add('is-recording');
+        stopBtn.disabled = false;
+        recDot.classList.add('active');
+        setStatus('声の印象を受け取っています...');
+        document.getElementById('micErrorHelp').style.display = 'none';
+        resultsEl.classList.add('hidden');
+        analyzingEl.classList.remove('show');
+
+    } catch (err) {
+        setStatus('マイクへのアクセスが拒否されました。');
+        document.getElementById('micErrorHelp').style.display = 'block';
+    }
+});
+
+// ===== 録音停止 =====
+stopBtn.addEventListener('click', () => {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(t => t.stop());
+    }
+    clearInterval(timerInterval);
+    recordBtn.disabled = false;
+    recordBtn.classList.remove('is-recording');
+    stopBtn.disabled = true;
+    recDot.classList.remove('active');
+});
+
+function updateTimer() {
+    const s = Math.floor((Date.now() - startTime) / 1000);
+    timerEl.textContent = `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`;
+}
+
+// ===== 録音完了後の処理 =====
+async function onRecordingStop() {
+    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+    audioPlayer.src = URL.createObjectURL(blob);
+    audioPlayer.classList.remove('hidden');
+
+    setStatus('声の強みを診断しています...');
+    analyzingEl.classList.add('show');
+
+    try {
+        const wavBlob = await convertToWav(blob);
+        const data = await uploadAndAnalyze(wavBlob);
+        renderResults(data);
+        setStatus('診断が完了しました');
+    } catch (err) {
+        setStatus('診断エラー: ' + err.message);
+    } finally {
+        analyzingEl.classList.remove('show');
+    }
+}
+
+function setStatus(msg) { statusText.textContent = msg; }
+
+// ===== WebM → WAV 変換 =====
+async function convertToWav(blob) {
+    const audioCtx = new AudioContext();
+    const arrayBuf = await blob.arrayBuffer();
+    const audioBuf = await audioCtx.decodeAudioData(arrayBuf);
+    return encodeWav(audioBuf);
+}
+
+function encodeWav(audioBuf) {
+    const sr  = audioBuf.sampleRate;
+    const len = audioBuf.length;
+    const ch  = audioBuf.numberOfChannels;
+
+    // モノラルにミックスダウン
+    const mono = new Float32Array(len);
+    for (let c = 0; c < ch; c++) {
+        const chData = audioBuf.getChannelData(c);
+        for (let i = 0; i < len; i++) mono[i] += chData[i] / ch;
+    }
+
+    const samples = new Int16Array(len);
+    for (let i = 0; i < len; i++) {
+        const v = Math.max(-1, Math.min(1, mono[i]));
+        samples[i] = v < 0 ? v * 0x8000 : v * 0x7FFF;
+    }
+
+    const wav = new ArrayBuffer(44 + samples.byteLength);
+    const dv  = new DataView(wav);
+
+    const ws = (off, s) => { for (let i = 0; i < s.length; i++) dv.setUint8(off + i, s.charCodeAt(i)); };
+
+    ws(0, 'RIFF');
+    dv.setUint32(4,  36 + samples.byteLength, true);
+    ws(8, 'WAVE'); ws(12, 'fmt ');
+    dv.setUint32(16, 16, true);
+    dv.setUint16(20, 1, true);   // PCM
+    dv.setUint16(22, 1, true);   // モノラル
+    dv.setUint32(24, sr, true);
+    dv.setUint32(28, sr * 2, true);
+    dv.setUint16(32, 2, true);
+    dv.setUint16(34, 16, true);
+    ws(36, 'data');
+    dv.setUint32(40, samples.byteLength, true);
+    new Uint8Array(wav, 44).set(new Uint8Array(samples.buffer));
+
+    return new Blob([wav], { type: 'audio/wav' });
+}
+
+// ===== API 送信 =====
+async function uploadAndAnalyze(wavBlob) {
+    const fd = new FormData();
+    fd.append('file', wavBlob, 'recording.wav');
+    const res = await fetch('/analyze', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.error || '不明なエラー');
+    return data;
+}
+
+// ===== グラフ・結果の描画 =====
+function renderResults(data) {
+    lastStats = data.stats;
+    lastDuration = data.duration;
+    resultsEl.classList.remove('hidden');
+    drawWaveform(data.waveform);
+    drawPitch(data.pitch);
+    drawStats(data.stats, data.duration, data.sample_rate);
+    drawRadarChart(data.stats);
+    resetAdviceCard();
+    fetchAdvice(data.stats, data.duration);
+    resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function resetAdviceCard() {
+    if (window._adviceMsgTimer) {
+        clearInterval(window._adviceMsgTimer);
+        window._adviceMsgTimer = null;
+    }
+    document.getElementById('adviceLoading').classList.remove('hidden');
+    document.getElementById('adviceLoadingMsg').textContent = '声の強みコメントは約10秒で表示されます...';
+    document.getElementById('adviceSections').classList.add('hidden');
+    document.getElementById('adviceError').classList.add('hidden');
+    document.getElementById('adviceNoPitch').classList.add('hidden');
+}
+
+function drawRadarChart(stats) {
+    if (radarChartInst) radarChartInst.destroy();
+
+    const scores = stats.scores || {};
+    const values = [
+        scores.intonation || 5,
+        scores.dynamics   || 5,
+        scores.brightness || 5,
+        scores.resonance  || 5,
+        scores.tempo      || 5,
+        scores.sustain    || 5,
+    ];
+
+    // スコアに応じた色分け（7以上=強み、4以下=改善余地）
+    const pointColors = values.map(v =>
+        v >= 7 ? '#C9A227' : v <= 4 ? '#B7791F' : '#94a3b8'
+    );
+
+    const ctx = document.getElementById('radarChart').getContext('2d');
+    radarChartInst = new Chart(ctx, {
+        type: 'radar',
+        data: {
+            labels: ['抑揚の幅', '声の強弱', '声の明るさ', '声の響き', '話す速さ', '声の持続力'],
+            datasets: [{
+                data: values,
+                backgroundColor: 'rgba(201,162,39,0.16)',
+                borderColor: 'rgba(201,162,39,0.82)',
+                borderWidth: 2,
+                pointBackgroundColor: pointColors,
+                pointRadius: 5,
+                pointHoverRadius: 7,
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: c => `${c.raw}点 / 10点`,
+                    }
+                }
+            },
+            scales: {
+                r: {
+                    min: 0,
+                    max: 10,
+                    ticks: {
+                        stepSize: 2,
+                        font: { size: 10 },
+                        color: '#94a3b8',
+                        backdropColor: 'transparent',
+                    },
+                    pointLabels: {
+                        font: { size: 12, weight: '700' },
+                        color: '#1e293b',
+                    },
+                    grid: { color: 'rgba(0,0,0,0.07)' },
+                    angleLines: { color: 'rgba(0,0,0,0.07)' },
+                }
+            },
+        }
+    });
+}
+
+async function fetchAdvice(stats, duration) {
+    const adviceLoading   = document.getElementById('adviceLoading');
+    const adviceSections  = document.getElementById('adviceSections');
+    const adviceError     = document.getElementById('adviceError');
+    const adviceNoPitch   = document.getElementById('adviceNoPitch');
+
+    if (!stats.has_pitch) {
+        adviceLoading.classList.add('hidden');
+        adviceNoPitch.classList.remove('hidden');
+        return;
+    }
+
+    const scores = stats.scores || {};
+
+    try {
+        const res = await fetch('/advice', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                min_hz:           stats.min_hz,
+                max_hz:           stats.max_hz,
+                mean_hz:          stats.mean_hz,
+                min_note:         stats.min_note,
+                max_note:         stats.max_note,
+                mean_note:        stats.mean_note,
+                duration,
+                pitch_std:        stats.pitch_std      || 0,
+                voiced_ratio:     stats.voiced_ratio   || 0,
+                rms_cv:           stats.rms_cv         || 0,
+                brightness_hz:    stats.brightness_hz  || 0,
+                harmonic_ratio:   stats.harmonic_ratio || 0,
+                speech_rate:      stats.speech_rate    || 0,
+                rms_trend:        stats.rms_trend      || 0,
+                score_intonation: scores.intonation    || 5,
+                score_dynamics:   scores.dynamics      || 5,
+                score_brightness: scores.brightness    || 5,
+                score_resonance:  scores.resonance     || 5,
+                score_tempo:      scores.tempo         || 5,
+                score_sustain:    scores.sustain       || 5,
+            }),
+        });
+
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                if (!line.startsWith('data: ')) continue;
+                let data;
+                try { data = JSON.parse(line.slice(6)); } catch { continue; }
+
+                if (data.type === 'chunk') {
+                    // チャンク受信中はローディングメッセージを維持
+
+                } else if (data.type === 'done') {
+                    clearInterval(window._adviceMsgTimer);
+                    const sections = [
+                        { title: 'あなたの声の個性', key: 'voice_character' },
+                        { title: 'この声の可能性',   key: 'potential' },
+                        { title: '次のステップへ',   key: 'next_step' },
+                    ];
+                    adviceSections.innerHTML = sections.map(s => `
+                        <div class="advice-section">
+                            <div class="advice-section-title">${s.title}</div>
+                            <div class="advice-section-body">${data.advice[s.key]}</div>
+                        </div>
+                    `).join('');
+                    adviceSections.classList.remove('hidden');
+                    adviceLoading.classList.add('hidden');
+                    return;
+
+                } else if (data.type === 'retrying') {
+                    document.getElementById('adviceLoadingMsg').textContent =
+                        `診断コメントの準備に少し時間がかかっています。自動で再試行中... (${data.attempt}回目)`;
+
+                } else if (data.type === 'error') {
+                    const isOverloaded = data.overloaded || (data.error && data.error.includes('overloaded'));
+                    throw Object.assign(new Error(data.error || 'アドバイス生成エラー'), { isOverloaded });
+                }
+            }
+        }
+    } catch (err) {
+        const msg = err.isOverloaded
+            ? '診断コメントの準備に時間がかかっています。<br>少し時間をおいて、もう一度お試しください。'
+            : '診断コメントの生成に失敗しました。<br>もう一度お試しください。';
+        adviceError.innerHTML = `
+            <div style="margin-bottom:12px;">${msg}</div>
+            <button onclick="retryAdvice()" style="
+                background:#0D1B2A; color:white; border:none; border-radius:8px;
+                padding:0.6rem 1.4rem; font-size:0.9rem; font-weight:600;
+                cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
+                🔄 もう一度診断する
+            </button>`;
+        adviceError.classList.remove('hidden');
+        adviceLoading.classList.add('hidden');
+        clearInterval(window._adviceMsgTimer);
+    }
+}
+
+function retryAdvice() {
+    if (lastStats && lastDuration !== null) {
+        resetAdviceCard();
+        fetchAdvice(lastStats, lastDuration);
+    }
+}
+
+function drawWaveform(wf) {
+    if (waveChart) waveChart.destroy();
+    const pts = wf.time.map((t, i) => ({ x: t, y: wf.amplitude[i] }));
+    const ctx = document.getElementById('waveformChart').getContext('2d');
+    waveChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            datasets: [{
+                data: pts,
+                borderColor: '#C9A227',
+                backgroundColor: 'rgba(201,162,39,0.1)',
+                borderWidth: 1.5,
+                fill: true,
+                pointRadius: 0,
+                tension: 0,
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: { display: true, text: '時間 (秒)', color: '#64748b', font: { size: 12 } },
+                    ticks: { callback: v => v.toFixed(1) + 's', maxTicksLimit: 8, color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+                y: {
+                    min: -1, max: 1,
+                    title: { display: true, text: '振幅', color: '#64748b', font: { size: 12 } },
+                    ticks: { stepSize: 0.5, color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+            },
+        }
+    });
+}
+
+function drawPitch(pd) {
+    if (pitchChartInst) pitchChartInst.destroy();
+
+    const pts = [];
+    for (let i = 0; i < pd.time.length; i++) {
+        if (pd.frequency[i] !== null) pts.push({ x: pd.time[i], y: pd.frequency[i] });
+    }
+
+    const ctx = document.getElementById('pitchChart').getContext('2d');
+    pitchChartInst = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+            datasets: [{
+                data: pts,
+                backgroundColor: '#C9A227',
+                pointRadius: 3,
+                pointHoverRadius: 5,
+            }]
+        },
+        options: {
+            animation: false,
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    callbacks: {
+                        label: c => `${c.parsed.x.toFixed(2)}秒：${c.parsed.y.toFixed(1)} Hz`,
+                    }
+                }
+            },
+            scales: {
+                x: {
+                    type: 'linear',
+                    title: { display: true, text: '時間 (秒)', color: '#64748b', font: { size: 12 } },
+                    ticks: { callback: v => v.toFixed(1) + 's', maxTicksLimit: 8, color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+                y: {
+                    min: 50,
+                    title: { display: true, text: '周波数 (Hz)', color: '#64748b', font: { size: 12 } },
+                    ticks: { color: '#64748b' },
+                    grid: { color: '#f1f5f9' },
+                },
+            },
+        }
+    });
+}
+
+function drawStats(stats, duration, sr) {
+    const grid = document.getElementById('statsGrid');
+    grid.innerHTML = '';
+
+    const items = [
+        { label: '録音時間', value: duration + '秒', sub: null },
+    ];
+
+    if (stats.has_pitch) {
+        items.push(
+            { label: '最低音程', value: stats.min_note, sub: stats.min_hz + ' Hz' },
+            { label: '最高音程', value: stats.max_note, sub: stats.max_hz + ' Hz' },
+            { label: '平均音程', value: stats.mean_note, sub: stats.mean_hz + ' Hz' },
+        );
+
+        // 声質スコアはレーダーチャートで表示するのでラベルカードは不要
+    } else {
+        items.push({ label: '音程', value: '検出不可', sub: '有声音が見つかりませんでした' });
+    }
+
+    for (const { label, value, sub } of items) {
+        const div = document.createElement('div');
+        div.className = 'stat-card';
+        div.innerHTML = `
+            <div class="stat-label">${label}</div>
+            <div class="stat-value">${value}</div>
+            ${sub ? `<div class="stat-sub">${sub}</div>` : ''}
+        `;
+        grid.appendChild(div);
+    }
+}
+</script>
+</body>
+</html>

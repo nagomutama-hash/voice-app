@@ -1,0 +1,11 @@
+.env
+__pycache__/
+*.pyc
+knowledge_archive/
+*.txt
+
+# local Codex/Claude settings
+.claude/
+
+# Render needs this file
+!requirements.txt
