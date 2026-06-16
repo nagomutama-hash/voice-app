@@ -45,11 +45,11 @@
                 url('data:image/svg+xml,%3Csvg width="160" height="120" viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" stroke="%23C9A227" stroke-opacity="0.18"%3E%3Cpath d="M0 76c24-28 52-28 76 0s52 28 76 0"/%3E%3Cpath d="M8 34h144"/%3E%3Cpath d="M32 16v88M128 16v88"/%3E%3C/g%3E%3C/svg%3E');
             color: white;
             text-align: center;
-            padding: 2.4rem 1rem 1.2rem;
+            padding: 1.45rem 1rem 0.9rem;
         }
 
         header h1 {
-            font-size: clamp(1.9rem, 6vw, 3.2rem);
+            font-size: clamp(1.68rem, 5.7vw, 2.85rem);
             font-weight: 800;
             letter-spacing: 0;
             line-height: 1.22;
@@ -82,40 +82,46 @@
         .hero-lead {
             max-width: 700px;
             margin: 0.75rem auto 0;
-            font-size: 1.04rem;
+            font-size: 1rem;
+            line-height: 1.65;
         }
 
         .authority-strip {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 0.7rem;
-            max-width: 780px;
-            margin: 1.35rem auto 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.45rem;
+            max-width: 760px;
+            margin: 0.9rem auto 0;
         }
 
         .authority-item {
-            padding: 0.72rem 0.65rem;
+            padding: 0.38rem 0.58rem;
             border: 1px solid rgba(201,162,39,0.3);
-            border-radius: 8px;
+            border-radius: 999px;
             background: rgba(255,255,255,0.08);
+            font-size: 0.75rem;
+            font-weight: 700;
         }
 
         .authority-value {
             color: #F7E7B0;
-            font-size: 1.05rem;
+            font-size: 0.78rem;
             font-weight: 800;
             line-height: 1.2;
+            display: inline;
         }
 
         .authority-label {
-            margin-top: 0.2rem;
+            margin-top: 0;
             color: rgba(255,255,255,0.78);
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             font-weight: 700;
+            display: inline;
         }
 
         .profile-line {
-            margin-top: 1.1rem;
+            margin-top: 0.72rem;
             color: rgba(255,255,255,0.78);
             font-size: 0.82rem;
         }
@@ -123,13 +129,13 @@
         .container {
             max-width: 880px;
             margin: 0 auto;
-            padding: 1rem 1rem 3rem;
+            padding: 0.72rem 1rem 3rem;
         }
 
         .card {
             background: var(--card);
             border-radius: 8px;
-            padding: 1.75rem;
+            padding: 1.35rem;
             border: 1px solid var(--border);
             box-shadow: 0 14px 34px rgba(13,27,42,0.11);
             margin-bottom: 1.5rem;
@@ -155,36 +161,37 @@
             max-width: 680px;
             margin: 0 auto 1rem;
             color: var(--text);
-            font-size: 1.02rem;
+            font-size: 0.96rem;
         }
 
         .service-owner {
             color: var(--primary);
-            font-size: 1.28rem;
+            font-size: 1.08rem;
             font-weight: 800;
             line-height: 1.45;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.55rem;
         }
 
         .voice-metrics {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.6rem;
-            margin: 1.25rem 0;
+            gap: 0.45rem;
+            margin: 0.85rem 0;
         }
 
         .voice-metric {
             border: 1px solid #eadfbf;
             border-radius: 8px;
             background: #fffaf0;
-            padding: 0.75rem 0.55rem;
+            padding: 0.48rem 0.45rem;
             font-weight: 700;
+            font-size: 0.84rem;
             color: #5d4515;
         }
 
         .record-guide {
-            margin: 1.25rem auto 1.35rem;
-            padding: 1rem;
+            margin: 0.82rem auto 0.95rem;
+            padding: 0.78rem 0.9rem;
             border-radius: 8px;
             background: #f7f4ed;
             border: 1px solid #e6d8b6;
@@ -193,21 +200,25 @@
             max-width: 680px;
         }
 
-        .record-guide strong {
-            display: block;
-            color: var(--primary);
-            margin-bottom: 0.25rem;
+        .record-guide strong { color: var(--primary); }
+
+        .cta-note {
+            margin-top: -0.35rem;
+            margin-bottom: 0.65rem;
+            color: #725819;
+            font-size: 0.82rem;
+            font-weight: 700;
         }
 
         .buttons {
             display: flex;
             gap: 1rem;
             justify-content: center;
-            margin-bottom: 1rem;
+            margin-bottom: 0.65rem;
         }
 
         .btn {
-            padding: 0.875rem 2rem;
+            padding: 0.9rem 2.1rem;
             border: none;
             border-radius: 8px;
             font-size: 1rem;
@@ -225,6 +236,7 @@
             background: var(--primary);
             color: white;
             box-shadow: 0 6px 18px rgba(13,27,42,0.28);
+            border: 1px solid rgba(201,162,39,0.55);
         }
         .btn-record:hover:not(:disabled) {
             transform: translateY(-2px);
@@ -257,7 +269,7 @@
             font-variant-numeric: tabular-nums;
             letter-spacing: 0;
             color: var(--text);
-            margin: 0.5rem 0 0.75rem;
+            margin: 0.25rem 0 0.45rem;
         }
 
         .status-row {
@@ -439,18 +451,27 @@
         }
 
         @media (max-width: 580px) {
-            header { padding: 1.55rem 1rem 1rem; }
-            header h1 { font-size: 1.85rem; }
-            .hero-lead { font-size: 0.96rem; }
-            .authority-strip { grid-template-columns: 1fr; gap: 0.45rem; margin-top: 1rem; }
-            .authority-item { padding: 0.52rem 0.55rem; }
-            .container { padding: 0.8rem 0.8rem 2.5rem; }
-            .card { padding: 1.15rem; }
-            .service-owner { font-size: 1.12rem; }
+            header { padding: 1.05rem 0.82rem 0.72rem; }
+            header h1 { font-size: 1.62rem; }
+            .hero-eyebrow { margin-bottom: 0.45rem; font-size: 0.72rem; }
+            .hero-lead { font-size: 0.9rem; margin-top: 0.45rem; }
+            .authority-strip { gap: 0.34rem; margin-top: 0.62rem; }
+            .authority-item { padding: 0.28rem 0.48rem; font-size: 0.68rem; }
+            .authority-value, .authority-label { font-size: 0.68rem; }
+            .profile-line { display: none; }
+            .container { padding: 0.55rem 0.72rem 2.5rem; }
+            .card { padding: 0.88rem; }
+            .card-title { margin-bottom: 0.55rem; }
+            .service-owner { font-size: 0.98rem; margin-bottom: 0.4rem; }
+            .diagnosis-summary { font-size: 0.84rem; margin-bottom: 0.55rem; }
             .voice-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .voice-metric { padding: 0.36rem 0.35rem; font-size: 0.78rem; }
+            .record-guide { margin: 0.55rem auto 0.7rem; padding: 0.58rem 0.68rem; font-size: 0.82rem; }
             .buttons { flex-direction: column; gap: 0.7rem; }
-            .btn { justify-content: center; width: 100%; padding: 0.85rem 1.25rem; font-size: 0.95rem; }
-            .timer { font-size: 1.9rem; }
+            .btn { justify-content: center; width: 100%; padding: 0.82rem 1.1rem; font-size: 0.98rem; }
+            .timer { font-size: 1.45rem; }
+            .status-row { font-size: 0.8rem; line-height: 1.45; }
+            .record-hint { font-size: 0.74rem; }
             .chart-wrap { height: 180px; }
             .radar-wrap { height: 260px; }
         }
@@ -462,15 +483,15 @@
     <div class="hero-inner">
         <div class="hero-eyebrow">リアル・ボイストレーニング 代表 玉井智</div>
         <h1>玉井智の<br>信頼される声診断</h1>
-        <p class="hero-lead">7秒の声から、あなたの声にある信頼力・安心感・伝わりやすさを見つけます。</p>
+        <p class="hero-lead">35年の現場経験から生まれた、声の強みと伸びしろがわかる無料診断です。</p>
         <div class="authority-strip" aria-label="玉井智の実績">
             <div class="authority-item">
                 <div class="authority-value">35年以上</div>
-                <div class="authority-label">MC・ナレーター・DJの現場経験</div>
+                <div class="authority-label">現場経験</div>
             </div>
             <div class="authority-item">
                 <div class="authority-value">20年以上</div>
-                <div class="authority-label">ボイストレーナー歴</div>
+                <div class="authority-label">指導歴</div>
             </div>
             <div class="authority-item">
                 <div class="authority-value">2万人以上</div>
@@ -485,11 +506,11 @@
 
     <!-- 録音カード -->
     <div class="card record-card">
-        <div class="card-title">まずは7秒、声を聞かせてください</div>
+        <div class="card-title">7秒で完了・無料診断</div>
         <div class="record-area">
-            <div class="service-owner">あなたの声は、どんな安心感で相手に届いているのか。</div>
+            <div class="service-owner">あなたの声は、どんな強みで相手に届いているのか。</div>
             <p class="diagnosis-summary">
-                声の高さや大きさだけではなく、会話の相手が受け取る「信頼力」「安心感」「伝わりやすさ」「伸びしろ」を診断します。
+                信頼力・安心感・伝わりやすさ・伸びしろを診断します。
             </p>
             <div class="voice-metrics" aria-label="分析する項目">
                 <div class="voice-metric">信頼力</div>
@@ -498,12 +519,13 @@
                 <div class="voice-metric">伸びしろ</div>
             </div>
             <div class="record-guide">
-                <strong>何を話せばいい？</strong>
-                録音ボタンを押して、「私は〇〇です。普段は〇〇をしています。今日は自分の声の強みを知りたいです。」と7秒ほど話してください。声の印象から、あなたらしい強みを見つけます。
+                <strong>話す内容：</strong>
+                「私は〇〇です。今日は自分の声の強みを知りたいです。」と自然に話してください。
             </div>
+            <div class="cta-note">無料・7秒で診断できます</div>
             <div class="buttons">
                 <button class="btn btn-record" id="recordBtn">
-                    &#9210; &nbsp;7秒で声の強みを知る
+                    &#9210; &nbsp;無料で声を診断する
                 </button>
                 <button class="btn btn-stop" id="stopBtn" disabled>
                     &#9209; &nbsp;録音を止める
@@ -512,7 +534,7 @@
             <div class="timer" id="timer">0:00</div>
             <div class="status-row">
                 <span class="rec-dot" id="recDot"></span>
-                <span id="statusText">準備ができたら、上の例文を自然な声で話してください</span>
+                <span id="statusText">準備ができたら、ボタンを押して自然な声で話してください</span>
                 <span class="record-hint">&#9201; 推奨：5〜10秒（長いと結果表示が遅くなります）</span>
             </div>
             <audio id="audioPlayer" controls class="hidden"></audio>
