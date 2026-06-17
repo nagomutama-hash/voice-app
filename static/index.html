@@ -260,6 +260,11 @@
             50%       { box-shadow: 0 8px 32px rgba(201,162,39,0.75); transform: scale(1.03); }
         }
 
+        @keyframes linePulse {
+            0%, 100% { box-shadow: 0 4px 20px rgba(6,199,85,0.5); transform: scale(1); }
+            50%       { box-shadow: 0 6px 32px rgba(6,199,85,0.85); transform: scale(1.025); }
+        }
+
         @keyframes recPulse {
             0%, 100% { box-shadow: 0 2px 10px rgba(239,68,68,0.4); }
             50%       { box-shadow: 0 2px 28px rgba(239,68,68,0.7); }
@@ -571,12 +576,12 @@
 
         <!-- 声質スコア レーダーチャート -->
         <div class="card" id="radarCard">
-            <div class="card-title">あなたの声の強みレポート</div>
+            <div class="card-title">声質スコア（10点満点）</div>
             <div class="radar-wrap">
                 <canvas id="radarChart"></canvas>
             </div>
             <div class="score-legend">
-                <span><span class="legend-dot" style="background:#C9A227"></span>あなたのスコア</span>
+                <span><span class="legend-dot" style="background:#e05c1a"></span>あなたのスコア</span>
                 <span style="color:#94a3b8">7〜10点：強み　　4点以下：改善余地</span>
             </div>
         </div>
@@ -593,34 +598,30 @@
             <div id="adviceNoPitch" class="advice-no-pitch hidden">音程データが検出されなかったため、アドバイスを生成できません。</div>
         </div>
 
-        <!-- 複数回診断のすすめ -->
-        <div class="card" style="background:#fbf6e8; border-left: 4px solid #C9A227; padding: 1.5rem 1.75rem;">
-            <div class="card-title">💡 もう一度診断してみてください</div>
-            <p style="font-size:0.92rem; line-height:1.9; color:#334155;">
-                何回録音しても、声質スコア（10点満点）の中に、<br>
-                ほぼ同じ得点になる項目があるはずです。<br>
-                それがあなたに「染みついた声の癖」です。<br><br>
-                逆に、毎回スコアが変わる項目は<br>
-                まだ癖になっていない＝伸びしろです。<br><br>
-                自分の「固定の癖」に気づいたら、<br>
-                Zoom無料声診断でその癖を根本から診てもらいましょう。
-            </p>
-        </div>
-
         <!-- LINE友達追加ボタン -->
-        <div class="card" style="text-align:center; padding: 2rem 1.75rem;">
-            <div class="card-title">無料声診断を予約する</div>
-            <p style="color:#64748b; font-size:0.93rem; margin-bottom:1.25rem; line-height:1.7;">
-                LINEを友だち追加して、<br>20分間のZoom無料声診断にお申し込みください。
+        <div class="card" style="text-align:center; padding: 1.75rem; background: linear-gradient(135deg, #f0fff4, #dcfce7); border: 2px solid #06C755;">
+            <div class="card-title" style="color:#047857; font-size:1rem;">🎯 次のステップ｜Zoom無料声診断を予約する</div>
+            <p style="color:#374151; font-size:0.9rem; margin-bottom:1.25rem; line-height:1.6;">
+                声の癖を根本から診てもらえる<strong>20分間のZoom無料声診断</strong>はこちらから
             </p>
             <a href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener"
-               style="display:inline-flex; align-items:center; gap:0.6rem;
-                      background:#06C755; color:white; font-weight:700;
-                      font-size:1rem; padding:0.9rem 2.2rem; border-radius:8px;
-                      text-decoration:none; box-shadow:0 2px 12px rgba(6,199,85,0.4);">
-                <img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
-                     alt="友だち追加" height="28" style="display:block;">
+               style="display:inline-flex; align-items:center; justify-content:center; gap:0.6rem;
+                      background:#06C755; color:white; font-weight:800;
+                      font-size:1.1rem; padding:1.1rem 2rem; border-radius:12px;
+                      text-decoration:none; width:100%; max-width:360px;
+                      box-shadow:0 4px 20px rgba(6,199,85,0.5);
+                      animation: linePulse 2s ease-in-out infinite;">
+                📲　LINE友だち追加して予約する
             </a>
+        </div>
+
+        <!-- 複数回診断のすすめ -->
+        <div class="card" style="background:#fbf6e8; border-left: 4px solid #C9A227; padding: 1rem 1.25rem;">
+            <div class="card-title">💡 もう一度診断してみてください</div>
+            <p style="font-size:0.88rem; line-height:1.75; color:#334155;">
+                何回録音しても同じスコアの項目＝「声の癖」。毎回変わる項目＝「伸びしろ」。<br>
+                固定の癖に気づいたら、Zoom診断でその癖を根本から診てもらいましょう。
+            </p>
         </div>
 
     </div>
@@ -818,9 +819,9 @@ function drawRadarChart(stats) {
         scores.sustain    || 5,
     ];
 
-    // スコアに応じた色分け（7以上=強み、4以下=改善余地）
+    // スコアに応じた色分け（7以上=強み＝青、4以下=要改善＝赤、中間=オレンジ）
     const pointColors = values.map(v =>
-        v >= 7 ? '#C9A227' : v <= 4 ? '#B7791F' : '#94a3b8'
+        v >= 7 ? '#3b82f6' : v <= 4 ? '#ef4444' : '#e05c1a'
     );
 
     const ctx = document.getElementById('radarChart').getContext('2d');
@@ -830,12 +831,14 @@ function drawRadarChart(stats) {
             labels: ['抑揚の幅', '声の強弱', '声の明るさ', '声の響き', '話す速さ', '声の持続力'],
             datasets: [{
                 data: values,
-                backgroundColor: 'rgba(201,162,39,0.16)',
-                borderColor: 'rgba(201,162,39,0.82)',
-                borderWidth: 2,
+                backgroundColor: 'rgba(59,130,246,0.15)',
+                borderColor: 'rgba(59,130,246,0.8)',
+                borderWidth: 2.5,
                 pointBackgroundColor: pointColors,
-                pointRadius: 5,
-                pointHoverRadius: 7,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 1.5,
+                pointRadius: 7,
+                pointHoverRadius: 9,
             }]
         },
         options: {
