@@ -581,8 +581,8 @@
                 <canvas id="radarChart"></canvas>
             </div>
             <div class="score-legend">
-                <span><span class="legend-dot" style="background:#e05c1a"></span>あなたのスコア</span>
-                <span style="color:#94a3b8">7〜10点：強み　　4点以下：改善余地</span>
+                <span><span class="legend-dot" style="background:#3b82f6"></span>7〜10点：強み</span>
+                <span><span class="legend-dot" style="background:#ef4444"></span>4点以下：改善余地</span>
             </div>
         </div>
 
@@ -819,9 +819,9 @@ function drawRadarChart(stats) {
         scores.sustain    || 5,
     ];
 
-    // スコアに応じた色分け（7以上=強み＝青、4以下=要改善＝赤、中間=オレンジ）
+    // スコアに応じた色分け（7以上=強み＝青、4以下=要改善＝赤、中間=グレー）
     const pointColors = values.map(v =>
-        v >= 7 ? '#3b82f6' : v <= 4 ? '#ef4444' : '#e05c1a'
+        v >= 7 ? '#3b82f6' : v <= 4 ? '#ef4444' : '#94a3b8'
     );
 
     const ctx = document.getElementById('radarChart').getContext('2d');
