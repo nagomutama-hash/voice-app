@@ -30,6 +30,8 @@
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
+        html { overflow-x: hidden; }
+
         body {
             font-family: 'Segoe UI', 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif;
             background:
@@ -37,6 +39,7 @@
             color: var(--text);
             min-height: 100vh;
             line-height: 1.7;
+            overflow-x: hidden;
         }
 
         header {
@@ -84,6 +87,8 @@
             margin: 0.75rem auto 0;
             font-size: 1rem;
             line-height: 1.65;
+            overflow-wrap: anywhere;
+            word-break: break-all;
         }
 
         .authority-strip {
@@ -130,6 +135,7 @@
             max-width: 880px;
             margin: 0 auto;
             padding: 0.72rem 1rem 3rem;
+            width: 100%;
         }
 
         .card {
@@ -139,6 +145,7 @@
             border: 1px solid var(--border);
             box-shadow: 0 14px 34px rgba(13,27,42,0.11);
             margin-bottom: 1.5rem;
+            max-width: 100%;
         }
 
         .card-title {
@@ -164,29 +171,30 @@
             font-size: 0.96rem;
         }
 
-        .service-owner {
-            color: var(--primary);
-            font-size: 1.08rem;
-            font-weight: 800;
-            line-height: 1.45;
-            margin-bottom: 0.55rem;
-        }
-
-        .voice-metrics {
-            display: grid;
-            grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 0.45rem;
-            margin: 0.85rem 0;
-        }
-
-        .voice-metric {
-            border: 1px solid #eadfbf;
+        .pre-diagnosis-copy {
+            max-width: 620px;
+            margin: 0.85rem auto;
+            padding: 0.85rem 1rem;
             border-radius: 8px;
             background: #fffaf0;
-            padding: 0.48rem 0.45rem;
-            font-weight: 700;
-            font-size: 0.84rem;
-            color: #5d4515;
+            border: 1px solid #eadfbf;
+            color: #493d2d;
+            text-align: center;
+            overflow-wrap: anywhere;
+            word-break: break-all;
+        }
+
+        .pre-diagnosis-copy strong {
+            display: block;
+            color: var(--primary);
+            font-size: 1.02rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .pre-diagnosis-copy span {
+            display: block;
+            font-size: 0.9rem;
+            line-height: 1.7;
         }
 
         .record-guide {
@@ -198,6 +206,8 @@
             color: #493d2d;
             text-align: left;
             max-width: 680px;
+            overflow-wrap: anywhere;
+            word-break: break-all;
         }
 
         .record-guide strong { color: var(--primary); }
@@ -281,6 +291,8 @@
             color: var(--muted);
             font-size: 0.95rem;
             min-height: 26px;
+            overflow-wrap: anywhere;
+            word-break: break-all;
         }
 
         .record-hint {
@@ -462,10 +474,10 @@
             .container { padding: 0.55rem 0.72rem 2.5rem; }
             .card { padding: 0.88rem; }
             .card-title { margin-bottom: 0.55rem; }
-            .service-owner { font-size: 0.98rem; margin-bottom: 0.4rem; }
             .diagnosis-summary { font-size: 0.84rem; margin-bottom: 0.55rem; }
-            .voice-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-            .voice-metric { padding: 0.36rem 0.35rem; font-size: 0.78rem; }
+            .pre-diagnosis-copy { margin: 0.55rem auto; padding: 0.58rem 0.68rem; }
+            .pre-diagnosis-copy strong { font-size: 0.92rem; }
+            .pre-diagnosis-copy span { font-size: 0.8rem; line-height: 1.55; }
             .record-guide { margin: 0.55rem auto 0.7rem; padding: 0.58rem 0.68rem; font-size: 0.82rem; }
             .buttons { flex-direction: column; gap: 0.7rem; }
             .btn { justify-content: center; width: 100%; padding: 0.82rem 1.1rem; font-size: 0.98rem; }
@@ -483,15 +495,11 @@
     <div class="hero-inner">
         <div class="hero-eyebrow">リアル・ボイストレーニング 代表 玉井智</div>
         <h1>玉井智の<br>信頼される声診断</h1>
-        <p class="hero-lead">35年の現場経験から生まれた、声の強みと伸びしろがわかる無料診断です。</p>
+        <p class="hero-lead">35年の現場経験から生まれた、<br>声の強みと伸びしろがわかる無料診断です。</p>
         <div class="authority-strip" aria-label="玉井智の実績">
             <div class="authority-item">
                 <div class="authority-value">35年以上</div>
                 <div class="authority-label">現場経験</div>
-            </div>
-            <div class="authority-item">
-                <div class="authority-value">20年以上</div>
-                <div class="authority-label">指導歴</div>
             </div>
             <div class="authority-item">
                 <div class="authority-value">2万人以上</div>
@@ -508,24 +516,18 @@
     <div class="card record-card">
         <div class="card-title">7秒で完了・無料診断</div>
         <div class="record-area">
-            <div class="service-owner">あなたの声は、どんな強みで相手に届いているのか。</div>
-            <p class="diagnosis-summary">
-                信頼力・安心感・伝わりやすさ・伸びしろを診断します。
-            </p>
-            <div class="voice-metrics" aria-label="分析する項目">
-                <div class="voice-metric">信頼力</div>
-                <div class="voice-metric">安心感</div>
-                <div class="voice-metric">伝わりやすさ</div>
-                <div class="voice-metric">伸びしろ</div>
+            <div class="pre-diagnosis-copy">
+                <strong>あなたの声の強みを分析します</strong>
+                <span>7秒話すだけで、<br>あなたの声の特徴と伸びしろがわかります。</span>
             </div>
             <div class="record-guide">
                 <strong>話す内容：</strong>
-                「私は〇〇です。今日は自分の声の強みを知りたいです。」と自然に話してください。
+                「私は〇〇です」と<br>7秒ほど自然に話してください。
             </div>
             <div class="cta-note">無料・7秒で診断できます</div>
             <div class="buttons">
                 <button class="btn btn-record" id="recordBtn">
-                    &#9210; &nbsp;無料で声を診断する
+                    &#9210; &nbsp;無料で声の強みを知る
                 </button>
                 <button class="btn btn-stop" id="stopBtn" disabled>
                     &#9209; &nbsp;録音を止める
@@ -534,7 +536,7 @@
             <div class="timer" id="timer">0:00</div>
             <div class="status-row">
                 <span class="rec-dot" id="recDot"></span>
-                <span id="statusText">準備ができたら、ボタンを押して自然な声で話してください</span>
+                <span id="statusText">ボタンを押して7秒ほど話してください</span>
                 <span class="record-hint">&#9201; 推奨：5〜10秒（長いと結果表示が遅くなります）</span>
             </div>
             <audio id="audioPlayer" controls class="hidden"></audio>
