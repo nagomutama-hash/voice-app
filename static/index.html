@@ -437,8 +437,8 @@
 
         /* ---- Radar Chart ---- */
         .radar-wrap {
-            height: 320px;
-            max-width: 420px;
+            height: 340px;
+            max-width: 460px;
             margin: 0 auto;
         }
 
@@ -460,6 +460,71 @@
         .legend-dot {
             width: 10px; height: 10px;
             border-radius: 50%;
+        }
+
+        .line-card {
+            text-align: center;
+            padding: 2rem 1.75rem;
+            background: #eafff2;
+            border: 2px solid #06C755;
+            box-shadow: 0 16px 38px rgba(6,199,85,0.16);
+        }
+
+        .line-card .card-title {
+            color: #075f35;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .line-copy {
+            color: #1f2933;
+            font-size: 0.94rem;
+            margin-bottom: 1.35rem;
+            line-height: 1.8;
+        }
+
+        .line-cta {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.7rem;
+            min-width: min(360px, 100%);
+            background: #06C755;
+            color: white;
+            font-weight: 800;
+            font-size: 1.08rem;
+            padding: 1rem 2.4rem;
+            border-radius: 8px;
+            text-decoration: none;
+            box-shadow: 0 12px 28px rgba(6,199,85,0.3);
+            animation: linePulse 2.8s ease-in-out infinite;
+        }
+
+        .line-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 16px 34px rgba(6,199,85,0.38);
+        }
+
+        .line-icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+
+        @keyframes linePulse {
+            0%, 100% { transform: translateY(0); box-shadow: 0 12px 28px rgba(6,199,85,0.28); }
+            50% { transform: translateY(-2px); box-shadow: 0 18px 38px rgba(6,199,85,0.42); }
+        }
+
+        .retry-card {
+            background: #fbf6e8;
+            border-left: 4px solid #C9A227;
+            padding: 1.35rem 1.55rem;
+        }
+
+        .retry-card p {
+            font-size: 0.92rem;
+            line-height: 1.9;
+            color: #334155;
         }
 
         @media (max-width: 580px) {
@@ -485,7 +550,10 @@
             .status-row { font-size: 0.8rem; line-height: 1.45; }
             .record-hint { font-size: 0.74rem; }
             .chart-wrap { height: 180px; }
-            .radar-wrap { height: 260px; }
+            .radar-wrap { height: 300px; }
+            .score-legend { flex-direction: column; align-items: center; gap: 0.35rem; }
+            .line-card { padding: 1.45rem 1rem; }
+            .line-cta { width: 100%; font-size: 1rem; padding: 0.95rem 1rem; }
         }
     </style>
 </head>
@@ -586,13 +654,13 @@
 
         <!-- 声質スコア レーダーチャート -->
         <div class="card" id="radarCard">
-            <div class="card-title">あなたの声の強みレポート</div>
+            <div class="card-title">声質スコア（10点満点）</div>
             <div class="radar-wrap">
                 <canvas id="radarChart"></canvas>
             </div>
             <div class="score-legend">
-                <span><span class="legend-dot" style="background:#C9A227"></span>あなたのスコア</span>
-                <span style="color:#94a3b8">7〜10点：強み　　4点以下：改善余地</span>
+                <span><span class="legend-dot" style="background:#3b82f6"></span>7〜10点：強み</span>
+                <span><span class="legend-dot" style="background:#ef4444"></span>4点以下：改善余地</span>
             </div>
         </div>
 
@@ -608,34 +676,25 @@
             <div id="adviceNoPitch" class="advice-no-pitch hidden">音程データが検出されなかったため、アドバイスを生成できません。</div>
         </div>
 
-        <!-- 複数回診断のすすめ -->
-        <div class="card" style="background:#fbf6e8; border-left: 4px solid #C9A227; padding: 1.5rem 1.75rem;">
-            <div class="card-title">💡 もう一度診断してみてください</div>
-            <p style="font-size:0.92rem; line-height:1.9; color:#334155;">
-                何回録音しても、声質スコア（10点満点）の中に、<br>
-                ほぼ同じ得点になる項目があるはずです。<br>
-                それがあなたに「染みついた声の癖」です。<br><br>
-                逆に、毎回スコアが変わる項目は<br>
-                まだ癖になっていない＝伸びしろです。<br><br>
-                自分の「固定の癖」に気づいたら、<br>
-                Zoom無料声診断でその癖を根本から診てもらいましょう。
+        <!-- LINE友達追加ボタン -->
+        <div class="card line-card">
+            <div class="card-title">🎯 次のステップ｜Zoom無料声診断を予約する</div>
+            <p class="line-copy">
+                声の癖を根本から診てもらえる<strong>20分間のZoom無料声診断</strong>はこちらから
             </p>
+            <a class="line-cta" href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener">
+                <span class="line-icon" aria-hidden="true">▦</span>
+                <span>LINE友だち追加して予約する</span>
+            </a>
         </div>
 
-        <!-- LINE友達追加ボタン -->
-        <div class="card" style="text-align:center; padding: 2rem 1.75rem;">
-            <div class="card-title">無料声診断を予約する</div>
-            <p style="color:#64748b; font-size:0.93rem; margin-bottom:1.25rem; line-height:1.7;">
-                LINEを友だち追加して、<br>20分間のZoom無料声診断にお申し込みください。
+        <!-- 複数回診断のすすめ -->
+        <div class="card retry-card">
+            <div class="card-title">💡 もう一度診断してみてください</div>
+            <p>
+                何回録音しても同じスコアの項目は「声の癖」。<br>
+                毎回変わる項目は「伸びしろ」です。固定の癖に気づいたら、Zoom診断で根本から診てもらいましょう。
             </p>
-            <a href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener"
-               style="display:inline-flex; align-items:center; gap:0.6rem;
-                      background:#06C755; color:white; font-weight:700;
-                      font-size:1rem; padding:0.9rem 2.2rem; border-radius:8px;
-                      text-decoration:none; box-shadow:0 2px 12px rgba(6,199,85,0.4);">
-                <img src="https://scdn.line-apps.com/n/line_add_friends/btn/ja.png"
-                     alt="友だち追加" height="28" style="display:block;">
-            </a>
         </div>
 
     </div>
@@ -835,7 +894,7 @@ function drawRadarChart(stats) {
 
     // スコアに応じた色分け（7以上=強み、4以下=改善余地）
     const pointColors = values.map(v =>
-        v >= 7 ? '#C9A227' : v <= 4 ? '#B7791F' : '#94a3b8'
+        v >= 7 ? '#3b82f6' : v <= 4 ? '#ef4444' : '#94a3b8'
     );
 
     const ctx = document.getElementById('radarChart').getContext('2d');
@@ -845,12 +904,14 @@ function drawRadarChart(stats) {
             labels: ['抑揚の幅', '声の強弱', '声の明るさ', '声の響き', '話す速さ', '声の持続力'],
             datasets: [{
                 data: values,
-                backgroundColor: 'rgba(201,162,39,0.16)',
-                borderColor: 'rgba(201,162,39,0.82)',
+                backgroundColor: 'rgba(59,130,246,0.16)',
+                borderColor: 'rgba(59,130,246,0.82)',
                 borderWidth: 2,
                 pointBackgroundColor: pointColors,
-                pointRadius: 5,
-                pointHoverRadius: 7,
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8,
             }]
         },
         options: {
