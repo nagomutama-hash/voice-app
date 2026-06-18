@@ -945,14 +945,21 @@ async function fetchAdvice(stats, duration) {
                     const sections = [
                         { title: 'あなたの声の個性', key: 'voice_character' },
                         { title: 'この声の可能性',   key: 'potential' },
-                        { title: '次のステップへ',   key: 'next_step' },
                     ];
                     adviceSections.innerHTML = sections.map(s => `
                         <div class="advice-section">
                             <div class="advice-section-title">${s.title}</div>
                             <div class="advice-section-body">${data.advice[s.key]}</div>
                         </div>
-                    `).join('');
+                    `).join('') + `
+                        <div class="advice-section" style="border-left-color:#06C755; background:#f0fff4;">
+                            <div class="advice-section-title" style="color:#047857;">次のステップへ</div>
+                            <div class="advice-section-body">
+                                この声の癖と可能性を、玉井智が直接20分で診断します。<br>
+                                LINEを友だち追加して、<strong>Zoom無料声診断</strong>にお申し込みください。
+                            </div>
+                        </div>
+                    `;
                     adviceSections.classList.remove('hidden');
                     adviceLoading.classList.add('hidden');
                     return;
