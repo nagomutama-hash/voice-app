@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本気の声タイプ診断｜玉井智</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Hiragino Kaku Gothic Pro', 'Noto Sans JP', sans-serif;
+            background: #0D1B2A;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1.25rem;
+        }
+
+        .wrap {
+            max-width: 480px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .eyebrow {
+            font-size: 0.78rem;
+            color: #F7E7B0;
+            border: 1px solid rgba(201,162,39,0.5);
+            border-radius: 999px;
+            display: inline-block;
+            padding: 0.25rem 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        h1 {
+            font-size: clamp(1.7rem, 6vw, 2.4rem);
+            font-weight: 900;
+            line-height: 1.3;
+            margin-bottom: 0.4rem;
+        }
+
+        h1 span {
+            color: #ef4444;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 1.5rem;
+        }
+
+        /* チェックリスト */
+        .checklist {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            padding: 0.55rem 0;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 0.97rem;
+            color: #1a2433;
+            font-weight: 600;
+        }
+
+        .checklist-item:last-child {
+            border-bottom: none;
+        }
+
+        .check-icon {
+            width: 22px;
+            height: 22px;
+            background: #c53030;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        .checklist-item.red {
+            color: #c53030;
+        }
+
+        /* 権威性 */
+        .authority {
+            background: linear-gradient(135deg, #C9A227, #a07d1c);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .authority-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: rgba(0,0,0,0.7);
+        }
+
+        .authority-stats {
+            display: flex;
+            justify-content: space-around;
+            gap: 0.5rem;
+        }
+
+        .authority-stat {
+            color: #0D1B2A;
+        }
+
+        .authority-stat .num {
+            font-size: 1.1rem;
+            font-weight: 900;
+            display: block;
+        }
+
+        .authority-stat .label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        /* CTAボタン */
+        .cta-btn {
+            display: block;
+            background: linear-gradient(135deg, #C9A227, #e6b830);
+            color: #0D1B2A;
+            font-size: 1.15rem;
+            font-weight: 900;
+            padding: 1.1rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            width: 100%;
+            margin-bottom: 0.75rem;
+            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 6px 24px rgba(201,162,39,0.5);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 6px 24px rgba(201,162,39,0.5); transform: scale(1); }
+            50%       { box-shadow: 0 8px 36px rgba(201,162,39,0.8); transform: scale(1.02); }
+        }
+
+        .cta-sub {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.55);
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="eyebrow">リアル・ボイストレーニング 代表 玉井智</div>
+
+    <h1>あなたの声は<br><span>距離を作って</span><br>いませんか？</h1>
+    <p class="subtitle">思い当たるものはありますか？</p>
+
+    <div class="checklist">
+        <div class="checklist-item">
+            <div class="check-icon">✔</div>
+            個別相談があと一歩で決まらない
+        </div>
+        <div class="checklist-item">
+            <div class="check-icon">✔</div>
+            説明が長いと反応が悪くなる
+        </div>
+        <div class="checklist-item red">
+            <div class="check-icon">✔</div>
+            頑張るほど声が力む
+        </div>
+    </div>
+
+    <div class="authority">
+        <div class="authority-title">35年超のデータが導く【本気の声タイプ診断】</div>
+        <div class="authority-stats">
+            <div class="authority-stat">
+                <span class="num">35年超</span>
+                <span class="label">現場経験</span>
+            </div>
+            <div class="authority-stat">
+                <span class="num">20年超</span>
+                <span class="label">トレーナー歴</span>
+            </div>
+            <div class="authority-stat">
+                <span class="num">2万人超</span>
+                <span class="label">受講者累計</span>
+            </div>
+        </div>
+    </div>
+
+    <a class="cta-btn" href="/">
+        🎤 今すぐ無料で声を診断する
+    </a>
+    <p class="cta-sub">所要時間：約1分　完全無料</p>
+
+</div>
+</body>
+</html>
