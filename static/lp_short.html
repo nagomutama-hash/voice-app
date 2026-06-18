@@ -96,17 +96,18 @@
 
         /* 権威性 */
         .authority {
-            background: linear-gradient(135deg, #C9A227, #a07d1c);
+            background: transparent;
+            border: 1px solid rgba(201,162,39,0.45);
             border-radius: 12px;
             padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1.75rem;
         }
 
         .authority-title {
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 700;
-            margin-bottom: 0.6rem;
-            color: rgba(0,0,0,0.7);
+            margin-bottom: 0.65rem;
+            color: #F7E7B0;
         }
 
         .authority-stats {
@@ -116,40 +117,43 @@
         }
 
         .authority-stat {
-            color: #0D1B2A;
+            color: white;
         }
 
         .authority-stat .num {
-            font-size: 1.1rem;
+            font-size: 1.15rem;
             font-weight: 900;
             display: block;
+            color: #F7E7B0;
         }
 
         .authority-stat .label {
             font-size: 0.68rem;
-            font-weight: 700;
+            font-weight: 600;
             display: block;
+            color: rgba(255,255,255,0.65);
         }
 
         /* CTAボタン */
         .cta-btn {
             display: block;
-            background: linear-gradient(135deg, #C9A227, #e6b830);
+            background: white;
             color: #0D1B2A;
-            font-size: 1.15rem;
+            font-size: 1.2rem;
             font-weight: 900;
-            padding: 1.1rem 1.5rem;
-            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            border-radius: 14px;
             text-decoration: none;
             width: 100%;
             margin-bottom: 0.75rem;
-            animation: pulse 2s ease-in-out infinite;
-            box-shadow: 0 6px 24px rgba(201,162,39,0.5);
+            animation: pulse 1.8s ease-in-out infinite;
+            box-shadow: 0 6px 28px rgba(255,255,255,0.35);
+            letter-spacing: 0.01em;
         }
 
         @keyframes pulse {
-            0%, 100% { box-shadow: 0 6px 24px rgba(201,162,39,0.5); transform: scale(1); }
-            50%       { box-shadow: 0 8px 36px rgba(201,162,39,0.8); transform: scale(1.02); }
+            0%, 100% { box-shadow: 0 6px 28px rgba(255,255,255,0.3); transform: scale(1); }
+            50%       { box-shadow: 0 10px 40px rgba(255,255,255,0.6); transform: scale(1.025); }
         }
 
         .cta-sub {
