@@ -324,6 +324,11 @@ async def root():
     return FileResponse(str(Path(__file__).resolve().parent / "static" / "index.html"))
 
 
+@app.get("/lp")
+async def lp():
+    return FileResponse(str(Path(__file__).resolve().parent / "static" / "lp.html"))
+
+
 @app.post("/analyze")
 async def analyze_audio(file: UploadFile = File(...)):
     try:
