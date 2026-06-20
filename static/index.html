@@ -1253,6 +1253,7 @@ function drawHints(stats) {
     const hintsCard  = document.getElementById('hintsCard');
     const hintsContent = document.getElementById('hintsContent');
 
+    // 4点以下の項目を抽出
     const keys     = ['intonation', 'dynamics', 'brightness', 'resonance', 'tempo', 'sustain'];
     const lowItems = keys.filter(k => (scores[k] || 5) <= 4);
 
@@ -1269,33 +1270,37 @@ function drawHints(stats) {
         return;
     }
 
-    let html = '';
-    for (const key of lowItems) {
-        const score = scores[key] || 0;
-        const level = score <= 2 ? 'very_low' : 'low';
-        const scoreClass = score <= 2 ? 'score-very-low' : 'score-low';
-        let hint;
-        if (key === 'tempo') {
-            const dir = speechRate < 0.8 ? 'slow' : 'fast';
-            hint = TEMPO_HINTS[dir][level];
-        } else {
-            hint = HINTS[key][level];
-        }
-        html += `
-            <div class="hint-item">
-                <div class="hint-label">
-                    <span class="hint-name">${HINT_LABELS[key]}</span>
-                    <span class="hint-score ${scoreClass}">${score}点</span>
-                </div>
-                <div class="hint-text">👉 ${hint}</div>
-            </div>`;
+    // 最低スコアを取得
+    const minScore = Math.min(...lowItems.map(k => scores[k] || 0));
+
+    // 同点の場合は「効果が出やすい順」で優先
+    const priority = ['tempo', 'intonation', 'brightness', 'dynamics', 'sustain', 'resonance'];
+    const tied = lowItems.filter(k => (scores[k] || 0) === minScore);
+    const key  = priority.find(p => tied.includes(p)) || tied[0];
+
+    const score      = scores[key] || 0;
+    const level      = score <= 2 ? 'very_low' : 'low';
+    const scoreClass = score <= 2 ? 'score-very-low' : 'score-low';
+    let hint;
+    if (key === 'tempo') {
+        const dir = speechRate < 0.8 ? 'slow' : 'fast';
+        hint = TEMPO_HINTS[dir][level];
+    } else {
+        hint = HINTS[key][level];
     }
 
-    html += `<button class="btn-rerecord" onclick="scrollToRecord()">
-        ↑ このヒントを意識して、もう一度録音する
-    </button>`;
+    hintsContent.innerHTML = `
+        <div class="hint-item" style="border-bottom:none;">
+            <div class="hint-label">
+                <span class="hint-name">${HINT_LABELS[key]}</span>
+                <span class="hint-score ${scoreClass}">${score}点</span>
+            </div>
+            <div class="hint-text">👉 ${hint}</div>
+        </div>
+        <button class="btn-rerecord" onclick="scrollToRecord()">
+            ↑ このヒントを意識して、もう一度録音する
+        </button>`;
 
-    hintsContent.innerHTML = html;
     hintsCard.classList.remove('hidden');
 }
 
