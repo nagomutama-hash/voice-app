@@ -1309,6 +1309,12 @@ function scrollToRecord() {
 }
 
 // ===== スコア前回比較 =====
+function scoreColor(n) {
+    if (n >= 7) return '#3b82f6';
+    if (n <= 4) return '#ef4444';
+    return '#64748b';
+}
+
 function drawScoreDiff(current, prev) {
     const el = document.getElementById('scoreDiff');
     if (!prev || !current) { el.classList.add('hidden'); return; }
@@ -1321,10 +1327,16 @@ function drawScoreDiff(current, prev) {
         const diff = cur - pre;
         const diffStr   = diff === 0 ? '→' : diff > 0 ? `▲ +${diff}` : `▼ ${diff}`;
         const diffClass = diff > 0 ? 'diff-up' : diff < 0 ? 'diff-down' : 'diff-same';
+        const preCol = scoreColor(pre);
+        const curCol = scoreColor(cur);
         html += `
             <div class="diff-item">
                 <div class="diff-label">${HINT_LABELS[key]}</div>
-                <div class="diff-scores">${pre} → ${cur}</div>
+                <div class="diff-scores">
+                    <span style="color:${preCol};font-weight:700;">${pre}</span>
+                    <span style="color:#94a3b8;"> → </span>
+                    <span style="color:${curCol};font-weight:700;">${cur}</span>
+                </div>
                 <div class="${diffClass}">${diffStr}</div>
             </div>`;
     }
