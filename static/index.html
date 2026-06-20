@@ -904,6 +904,9 @@ function renderResults(data) {
     drawStats(data.stats, data.duration, data.sample_rate);
     drawRadarChart(data.stats);
     drawScoreDiff(currentScores, prevScores);
+    if (prevScores) {
+        gtag('event', 'rerecord_complete', { event_category: 'engagement', event_label: '声診断_再録音完了' });
+    }
     prevScores = currentScores;
     drawHints(data.stats);
     resetAdviceCard();
@@ -1305,6 +1308,7 @@ function drawHints(stats) {
 }
 
 function scrollToRecord() {
+    gtag('event', 'rerecord_click', { event_category: 'engagement', event_label: '声診断_再録音ボタン' });
     document.getElementById('recordBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
