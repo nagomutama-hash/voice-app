@@ -483,6 +483,96 @@
             .chart-wrap { height: 180px; }
             .radar-wrap { height: 260px; }
         }
+
+        /* ---- Hints ---- */
+        .hint-item {
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .hint-item:last-of-type { border-bottom: none; }
+        .hint-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.4rem;
+        }
+        .hint-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.95rem;
+        }
+        .hint-score {
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: 20px;
+        }
+        .score-low      { background: #fef3c7; color: #92400e; }
+        .score-very-low { background: #fee2e2; color: #991b1b; }
+        .hint-text {
+            font-size: 0.92rem;
+            color: #374151;
+            line-height: 1.7;
+        }
+        .hint-treasure {
+            background: linear-gradient(135deg, #fef9ec, #fff7ed);
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 1.1rem 1.2rem;
+            line-height: 1.85;
+            font-size: 0.92rem;
+            color: #374151;
+        }
+        .hint-treasure p { margin-bottom: 0.6rem; }
+        .hint-treasure p:last-child { margin-bottom: 0; }
+        .hint-treasure strong { color: #92400e; }
+        .btn-rerecord {
+            display: block;
+            width: 100%;
+            margin-top: 1.25rem;
+            padding: 0.9rem;
+            background: var(--primary);
+            color: var(--accent);
+            border: none;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.03em;
+            transition: opacity 0.2s;
+        }
+        .btn-rerecord:hover { opacity: 0.82; }
+
+        /* ---- Score Diff ---- */
+        .score-diff-wrap {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+        .score-diff-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--muted);
+            text-align: center;
+            margin-bottom: 0.65rem;
+            letter-spacing: 0.05em;
+        }
+        .score-diff-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        .diff-item {
+            text-align: center;
+            padding: 0.5rem 0.25rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .diff-label  { font-weight: 700; color: var(--primary); font-size: 0.72rem; margin-bottom: 0.2rem; }
+        .diff-scores { color: var(--muted); font-size: 0.78rem; margin-bottom: 0.15rem; }
+        .diff-up   { color: #2563eb; font-weight: 800; font-size: 0.82rem; }
+        .diff-down { color: #ef4444; font-weight: 800; font-size: 0.82rem; }
+        .diff-same { color: #94a3b8; font-size: 0.82rem; }
     </style>
 </head>
 <body>
@@ -587,6 +677,14 @@
                 <span><span class="legend-dot" style="background:#3b82f6"></span>7〜10点：強み</span>
                 <span><span class="legend-dot" style="background:#ef4444"></span>4点以下：改善余地</span>
             </div>
+            <!-- 前回比較 -->
+            <div id="scoreDiff" class="score-diff-wrap hidden"></div>
+        </div>
+
+        <!-- 改善ヒント -->
+        <div class="card hidden" id="hintsCard">
+            <div class="card-title">💡 スコアアップのヒント</div>
+            <div id="hintsContent"></div>
         </div>
 
         <!-- AIアドバイス -->
@@ -647,6 +745,7 @@ let mediaRecorder = null;
 let recordedChunks = [];
 let startTime = null;
 let timerInterval = null;
+let prevScores = null;
 let waveChart = null;
 let pitchChartInst = null;
 let radarChartInst = null;
@@ -796,6 +895,7 @@ async function uploadAndAnalyze(wavBlob) {
 
 // ===== グラフ・結果の描画 =====
 function renderResults(data) {
+    const currentScores = data.stats.scores ? { ...data.stats.scores } : null;
     lastStats = data.stats;
     lastDuration = data.duration;
     resultsEl.classList.remove('hidden');
@@ -803,6 +903,9 @@ function renderResults(data) {
     drawPitch(data.pitch);
     drawStats(data.stats, data.duration, data.sample_rate);
     drawRadarChart(data.stats);
+    drawScoreDiff(currentScores, prevScores);
+    prevScores = currentScores;
+    drawHints(data.stats);
     resetAdviceCard();
     fetchAdvice(data.stats, data.duration);
     resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1097,6 +1200,132 @@ function drawPitch(pd) {
             },
         }
     });
+}
+
+// ===== ヒント定義 =====
+const HINT_LABELS = {
+    intonation: '抑揚の幅',
+    dynamics:   '声の強弱',
+    brightness: '声の明るさ',
+    resonance:  '声の響き',
+    tempo:      '話す速さ',
+    sustain:    '声の持続力',
+};
+
+const HINTS = {
+    intonation: {
+        low:      '子どもに語りかけるように、声の高低を少しつけて話してみてください',
+        very_low: '満面の笑顔で明るく楽しく話してみてください',
+    },
+    dynamics: {
+        low:      '大事な言葉を1つだけ、少し強く言ってみてください',
+        very_low: '相手に届けたい言葉を一つ決め、その前で一瞬だけ間を取ってみてください',
+    },
+    brightness: {
+        low:      '相手が目の前にいるつもりで、少し口角を上げて笑顔で話してみてください',
+        very_low: '口角を少し上げて、優しい目で目尻を1mm下げて話してみてください',
+    },
+    resonance: {
+        low:      '背筋を伸ばし肩を下げて、相手に笑顔で語りかけるように話してみてください',
+        very_low: '口角を少し上げニッコリして、「イ～～」と言いながら口の中の響きを確認してから話してみてください',
+    },
+    sustain: {
+        low:      '最後の一音まで、最初と同じ音量で話し切ることを意識してみてください',
+        very_low: '話し終わる+2秒後まで気持ちを切らさず伝えてみてください',
+    },
+};
+
+const TEMPO_HINTS = {
+    slow: {
+        low:      'オーケストラの指揮者のように、手を軽快に振りながら話してみてください',
+        very_low: '体の前で手のひらを合わせ、速くこすりながら話してみてください',
+    },
+    fast: {
+        low:      '句読点（、）の場所で一瞬止まってから続けてみてください',
+        very_low: '体の前で手のひらを合わせ、ゆっくりこすりながら話してみてください',
+    },
+};
+
+// ===== ヒント表示 =====
+function drawHints(stats) {
+    const scores     = stats.scores || {};
+    const speechRate = stats.speech_rate || 1.0;
+    const hintsCard  = document.getElementById('hintsCard');
+    const hintsContent = document.getElementById('hintsContent');
+
+    const keys     = ['intonation', 'dynamics', 'brightness', 'resonance', 'tempo', 'sustain'];
+    const lowItems = keys.filter(k => (scores[k] || 5) <= 4);
+
+    if (lowItems.length === 0) {
+        hintsContent.innerHTML = `
+            <div class="hint-treasure">
+                <p>6項目すべてが安定した、なかなか出ない結果です。</p>
+                <p>ただ、それはまだ序章にすぎません。<br>
+                あなたの声には、まだ目覚めていない<strong>「宝物」</strong>がたくさんあります。</p>
+                <p>基礎が整っているからこそ、宝物を目覚めさせるのは驚くほど簡単で、効果は絶大です。<br>
+                その宝物の在り処は、実際の声を聴くことで初めて見えてきます。</p>
+            </div>`;
+        hintsCard.classList.remove('hidden');
+        return;
+    }
+
+    let html = '';
+    for (const key of lowItems) {
+        const score = scores[key] || 0;
+        const level = score <= 2 ? 'very_low' : 'low';
+        const scoreClass = score <= 2 ? 'score-very-low' : 'score-low';
+        let hint;
+        if (key === 'tempo') {
+            const dir = speechRate < 0.8 ? 'slow' : 'fast';
+            hint = TEMPO_HINTS[dir][level];
+        } else {
+            hint = HINTS[key][level];
+        }
+        html += `
+            <div class="hint-item">
+                <div class="hint-label">
+                    <span class="hint-name">${HINT_LABELS[key]}</span>
+                    <span class="hint-score ${scoreClass}">${score}点</span>
+                </div>
+                <div class="hint-text">👉 ${hint}</div>
+            </div>`;
+    }
+
+    html += `<button class="btn-rerecord" onclick="scrollToRecord()">
+        ↑ このヒントを意識して、もう一度録音する
+    </button>`;
+
+    hintsContent.innerHTML = html;
+    hintsCard.classList.remove('hidden');
+}
+
+function scrollToRecord() {
+    document.getElementById('recordBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ===== スコア前回比較 =====
+function drawScoreDiff(current, prev) {
+    const el = document.getElementById('scoreDiff');
+    if (!prev || !current) { el.classList.add('hidden'); return; }
+
+    const keys = ['intonation', 'dynamics', 'brightness', 'resonance', 'tempo', 'sustain'];
+    let html = '<div class="score-diff-title">📊 前回との比較</div><div class="score-diff-grid">';
+    for (const key of keys) {
+        const cur  = current[key] || 0;
+        const pre  = prev[key]    || 0;
+        const diff = cur - pre;
+        const diffStr   = diff === 0 ? '→' : diff > 0 ? `▲ +${diff}` : `▼ ${diff}`;
+        const diffClass = diff > 0 ? 'diff-up' : diff < 0 ? 'diff-down' : 'diff-same';
+        html += `
+            <div class="diff-item">
+                <div class="diff-label">${HINT_LABELS[key]}</div>
+                <div class="diff-scores">${pre} → ${cur}</div>
+                <div class="${diffClass}">${diffStr}</div>
+            </div>`;
+    }
+    html += '</div>';
+    el.innerHTML = html;
+    el.classList.remove('hidden');
 }
 
 function drawStats(stats, duration, sr) {
