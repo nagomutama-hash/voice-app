@@ -265,8 +265,8 @@
 
 
         .mic-error-help {
-            margin-top: 0.85rem;
-            padding: 1rem;
+            margin-top: 0.72rem;
+            padding: 0.84rem;
             border-radius: 8px;
             background: #fff7ed;
             border: 1px solid #fed7aa;
@@ -281,38 +281,38 @@
 
         .mic-error-title {
             color: #0D1B2A;
-            font-size: 0.98rem;
+            font-size: 0.96rem;
             font-weight: 900;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.25rem;
         }
 
         .mic-error-copy {
             color: #334155;
-            font-size: 0.9rem;
-            line-height: 1.7;
-            margin-bottom: 0.75rem;
+            font-size: 0.88rem;
+            line-height: 1.58;
+            margin-bottom: 0.58rem;
         }
 
         .mic-error-steps {
             background: rgba(255,255,255,0.75);
             border-radius: 8px;
-            padding: 0.78rem 0.88rem;
-            margin-bottom: 0.8rem;
+            padding: 0.66rem 0.76rem;
+            margin-bottom: 0.62rem;
         }
 
         .mic-error-steps-title {
             color: #0D1B2A;
-            font-size: 0.86rem;
+            font-size: 0.84rem;
             font-weight: 900;
-            margin-bottom: 0.35rem;
+            margin-bottom: 0.26rem;
         }
 
         .mic-error-steps ol {
             margin: 0;
-            padding-left: 1.15rem;
+            padding-left: 1.08rem;
             color: #334155;
-            font-size: 0.84rem;
-            line-height: 1.75;
+            font-size: 0.82rem;
+            line-height: 1.58;
         }
 
         .mic-retry-btn {
@@ -324,8 +324,8 @@
             border-radius: 8px;
             background: #0D1B2A;
             color: #ffffff;
-            padding: 0.78rem 1rem;
-            font-size: 0.9rem;
+            padding: 0.7rem 0.9rem;
+            font-size: 0.88rem;
             font-weight: 900;
             cursor: pointer;
         }
@@ -335,10 +335,10 @@
         }
 
         .mic-error-note {
-            margin-top: 0.72rem;
+            margin-top: 0.56rem;
             color: #64748b;
-            font-size: 0.76rem;
-            line-height: 1.65;
+            font-size: 0.74rem;
+            line-height: 1.5;
         }
 
         .btn-stop {
@@ -764,13 +764,13 @@
             .buttons { flex-direction: column; gap: 0.58rem; margin-bottom: 0.42rem; }
             .btn { justify-content: center; width: 100%; padding: 0.78rem 1.05rem; font-size: 0.97rem; }
 
-            .mic-error-help { margin-top: 0.68rem; padding: 0.78rem; }
+            .mic-error-help { margin-top: 0.58rem; padding: 0.68rem; }
             .mic-error-title { font-size: 0.92rem; }
-            .mic-error-copy { font-size: 0.82rem; line-height: 1.58; margin-bottom: 0.55rem; }
-            .mic-error-steps { padding: 0.62rem 0.68rem; margin-bottom: 0.65rem; }
-            .mic-error-steps ol { font-size: 0.78rem; line-height: 1.58; }
-            .mic-retry-btn { padding: 0.72rem 0.88rem; font-size: 0.86rem; }
-            .mic-error-note { font-size: 0.72rem; line-height: 1.55; }
+            .mic-error-copy { font-size: 0.8rem; line-height: 1.5; margin-bottom: 0.45rem; }
+            .mic-error-steps { padding: 0.52rem 0.6rem; margin-bottom: 0.52rem; }
+            .mic-error-steps ol { font-size: 0.76rem; line-height: 1.5; }
+            .mic-retry-btn { padding: 0.66rem 0.8rem; font-size: 0.84rem; }
+            .mic-error-note { font-size: 0.7rem; line-height: 1.45; }
             .timer { font-size: 1.45rem; }
             .status-row { font-size: 0.8rem; line-height: 1.45; }
             .record-hint { font-size: 0.74rem; }
@@ -836,17 +836,17 @@
 
             <!-- マイクエラー時のヘルプ -->
             <div id="micErrorHelp" class="mic-error-help hidden" role="alert" aria-live="polite">
-                <div class="mic-error-title">マイクへのアクセスが許可されていません</div>
+                <div class="mic-error-title">マイクが許可されていません</div>
                 <p class="mic-error-copy">
-                    声診断を行うには、ブラウザのマイク使用を許可してください。
+                    診断するには、ブラウザのマイク使用を許可してください。
                 </p>
                 <div class="mic-error-steps">
                     <div class="mic-error-steps-title">確認方法</div>
                     <ol>
-                        <li>画面上部のアドレスバー左側にある鍵マーク、または設定アイコンを押す</li>
+                        <li>アドレスバー左側の鍵マーク、または設定アイコンを押す</li>
                         <li>「マイク」を許可に変更する</li>
                         <li>ページを再読み込みする</li>
-                        <li>もう一度「声を録音して無料診断する」を押す</li>
+                        <li>もう一度、録音ボタンを押す</li>
                     </ol>
                 </div>
                 <button class="mic-retry-btn" type="button" id="micRetryBtn">
@@ -998,7 +998,7 @@ function isMicPermissionError(err) {
 }
 
 function showMicError() {
-    setStatus('マイクへのアクセスが許可されていません。');
+    setStatus('マイクが許可されていません。');
     micErrorHelp.classList.remove('hidden');
     micErrorHelp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
