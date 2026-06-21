@@ -470,68 +470,8 @@
             border-radius: 50%;
         }
 
-        .action-insight-card {
-            background: linear-gradient(135deg, #fffaf0 0%, #ffffff 100%);
-            border-left: 4px solid #C9A227;
-        }
-
-        .action-insight-lead {
-            color: #0D1B2A;
-            font-size: 0.95rem;
-            line-height: 1.8;
-            margin-bottom: 1rem;
-        }
-
-        .action-insight-box {
-            background: #ffffff;
-            border: 1px solid #eadfbf;
-            border-radius: 8px;
-            padding: 1rem;
-        }
-
-        .action-insight-label {
-            color: #8a6a10;
-            font-size: 0.78rem;
-            font-weight: 800;
-            letter-spacing: 0.02em;
-            margin-bottom: 0.35rem;
-        }
-
-        .action-insight-title {
-            color: #0D1B2A;
-            font-size: 1rem;
-            font-weight: 800;
-            margin-bottom: 0.45rem;
-        }
-
-        .action-insight-text {
-            color: #334155;
-            font-size: 0.92rem;
-            line-height: 1.85;
-        }
-
-        .btn-rerecord {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            margin-top: 1rem;
-            padding: 0.9rem 1rem;
-            border: none;
-            border-radius: 8px;
-            background: #0D1B2A;
-            color: #ffffff;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 800;
-        }
-
-        .btn-rerecord:hover {
-            background: #15283d;
-        }
-
         .score-diff-wrap {
-            margin-top: 1rem;
+            margin-top: 1.05rem;
             padding-top: 1rem;
             border-top: 1px solid #eadfbf;
         }
@@ -541,37 +481,102 @@
             font-size: 0.9rem;
             font-weight: 800;
             margin-bottom: 0.75rem;
+            text-align: center;
         }
 
         .score-diff-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 0.5rem;
+            gap: 0.55rem;
         }
 
         .score-diff-item {
             background: #f8fafc;
             border-radius: 8px;
-            padding: 0.65rem 0.5rem;
+            padding: 0.62rem 0.5rem;
             text-align: center;
         }
 
         .score-diff-label {
-            color: #64748b;
-            font-size: 0.72rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
+            color: #0D1B2A;
+            font-size: 0.76rem;
+            font-weight: 800;
+            margin-bottom: 0.3rem;
+        }
+
+        .score-diff-scores {
+            color: #475569;
+            font-size: 0.82rem;
+            font-weight: 800;
+            margin-bottom: 0.22rem;
         }
 
         .score-diff-value {
-            color: #0D1B2A;
-            font-size: 0.9rem;
-            font-weight: 800;
+            font-size: 0.82rem;
+            font-weight: 900;
         }
 
         .diff-up { color: #2563eb; }
         .diff-down { color: #dc2626; }
         .diff-same { color: #64748b; }
+
+        .action-insight-card {
+            background: linear-gradient(135deg, #fffaf0 0%, #ffffff 100%);
+            border-left: 4px solid #C9A227;
+        }
+
+        .action-insight-box {
+            color: #0D1B2A;
+            font-size: 0.95rem;
+            line-height: 1.8;
+        }
+
+        .action-insight-label {
+            color: #0D1B2A;
+            font-size: 0.96rem;
+            font-weight: 900;
+            margin-bottom: 0.55rem;
+        }
+
+        .hint-score-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 0.35rem;
+            padding: 0.16rem 0.46rem;
+            border-radius: 999px;
+            background: #fee2e2;
+            color: #b91c1c;
+            font-size: 0.78rem;
+            font-weight: 900;
+            vertical-align: middle;
+        }
+
+        .action-insight-text {
+            color: #1f2937;
+            font-size: 0.94rem;
+            line-height: 1.75;
+        }
+
+        .btn-rerecord {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 1.15rem;
+            padding: 0.9rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #0D1B2A;
+            color: #C9A227;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 900;
+        }
+
+        .btn-rerecord:hover {
+            background: #15283d;
+        }
         .line-card {
             text-align: center;
             padding: 2rem 1.75rem;
@@ -807,14 +812,16 @@
             </div>
         </div>
 
+        <div id="scoreDiff" class="score-diff-wrap hidden"></div>
+
         <div class="card action-insight-card hidden" id="actionInsightCard">
-            <div class="card-title">30秒改善アドバイス</div>
+            <div class="card-title">💡 スコアアップのヒント</div>
             <div id="actionInsightContent"></div>
-            <div id="scoreDiff" class="score-diff-wrap hidden"></div>
             <button class="btn-rerecord" type="button" id="rerecordBtn">
-                アドバイスを意識して、もう一度診断する
+                このヒントを意識して、もう一度録音する
             </button>
         </div>
+
         <!-- AIアドバイス -->
         <div class="card" id="adviceCard">
             <div class="card-title">診断コメント</div>
@@ -1080,7 +1087,7 @@ const ACTION_HINTS = {
     brightness: '最初の一言を少し前に出すように話してみてください。明るさは大きな声ではなく、相手へ届く方向づけで変わります。',
     resonance: '胸や喉だけで押し出さず、息をゆっくり流しながら話してみてください。声の響きが整うと、安心感が伝わりやすくなります。',
     tempo: '一文ごとに短い間を入れてみてください。速さよりも「相手が受け取れる余白」を作ることで、信頼感が増します。',
-    sustain: '最後の言葉まで息を残す意識で話してみてください。語尾が安定すると、声全体の印象が落ち着いて聞こえます。',
+    sustain: '話し終わる＋2秒後まで、気持ちを切らさず伝えてみてください。',
 };
 
 const SCORE_PRIORITY = ['tempo', 'intonation', 'brightness', 'dynamics', 'sustain', 'resonance'];
@@ -1094,14 +1101,10 @@ function drawActionInsight(stats) {
 
     if (lowItems.length === 0) {
         content.innerHTML = `
-            <p class="action-insight-lead">
-                すでに声の土台があります。さらに磨くことで、信頼感や伝わり方が大きく伸びる可能性があります。
-            </p>
             <div class="action-insight-box">
                 <div class="action-insight-label">眠っている宝物</div>
-                <div class="action-insight-title">今の声には、まだ伸びる余白があります</div>
                 <div class="action-insight-text">
-                    数値が安定しているからこそ、声の響き・間・届け方を少し整えるだけで、相手に残る印象が大きく変わります。
+                    すでに声の土台があります。さらに磨くことで、信頼感や伝わり方が大きく伸びる可能性があります。
                 </div>
             </div>
         `;
@@ -1114,18 +1117,13 @@ function drawActionInsight(stats) {
     const key = SCORE_PRIORITY.find(item => tied.includes(item)) || tied[0];
 
     content.innerHTML = `
-        <p class="action-insight-lead">
-            まずは一つだけ意識して、もう一度声を出してみてください。
-        </p>
         <div class="action-insight-box">
-            <div class="action-insight-label">${SCORE_LABELS[key]}：${scores[key] || 0}点</div>
-            <div class="action-insight-title">30秒改善アドバイス</div>
-            <div class="action-insight-text">${ACTION_HINTS[key]}</div>
+            <div class="action-insight-label">${SCORE_LABELS[key]} <span class="hint-score-badge">${scores[key] || 0}点</span></div>
+            <div class="action-insight-text">👉 ${ACTION_HINTS[key]}</div>
         </div>
     `;
     card.classList.remove('hidden');
 }
-
 function drawScoreDiff(current, previous) {
     const wrap = document.getElementById('scoreDiff');
     if (!current || !previous) {
@@ -1135,19 +1133,22 @@ function drawScoreDiff(current, previous) {
     }
 
     const items = Object.keys(SCORE_LABELS).map(key => {
-        const diff = (current[key] || 0) - (previous[key] || 0);
-        const text = diff > 0 ? `+${diff}` : diff < 0 ? `${diff}` : '±0';
+        const cur = current[key] || 0;
+        const pre = previous[key] || 0;
+        const diff = cur - pre;
+        const text = diff > 0 ? `▲ +${diff}` : diff < 0 ? `▼ ${diff}` : '→';
         const cls = diff > 0 ? 'diff-up' : diff < 0 ? 'diff-down' : 'diff-same';
         return `
             <div class="score-diff-item">
                 <div class="score-diff-label">${SCORE_LABELS[key]}</div>
+                <div class="score-diff-scores">${pre} → ${cur}</div>
                 <div class="score-diff-value ${cls}">${text}</div>
             </div>
         `;
     }).join('');
 
     wrap.innerHTML = `
-        <div class="score-diff-title">前回との比較</div>
+        <div class="score-diff-title">📊 前回との比較</div>
         <div class="score-diff-grid">${items}</div>
     `;
     wrap.classList.remove('hidden');
