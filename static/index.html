@@ -895,6 +895,7 @@ async function uploadAndAnalyze(wavBlob) {
 
 // ===== グラフ・結果の描画 =====
 function renderResults(data) {
+    gtag('event', 'recording_complete', { event_category: 'engagement', event_label: '声診断_録音完了' });
     const currentScores = data.stats.scores ? { ...data.stats.scores } : null;
     lastStats = data.stats;
     lastDuration = data.duration;
