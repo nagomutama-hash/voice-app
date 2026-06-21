@@ -594,23 +594,24 @@
     <!-- 録音カード -->
     <div class="card record-card">
         <div class="record-area">
-            <div style="margin-bottom:0.75rem; padding:0.6rem 0.9rem; background:#fff7ed; border:1px solid #fed7aa; border-radius:8px; font-size:0.82rem; color:#92400e; text-align:center;">
-                ⚠️ マイクが動かない場合は <strong>Chrome または Safari</strong> で開いてください
+            <div style="margin-bottom:0.75rem; text-align:center;">
+                <div style="font-size:1.05rem; font-weight:800; color:var(--primary); margin-bottom:0.3rem;">あなたの声の強みを分析します</div>
+                <div style="font-size:0.85rem; color:var(--muted);">7秒話すだけで、あなたの声の特徴と伸びしろがわかります。</div>
             </div>
             <div class="record-guide">
-                <strong>👇 録音ボタンを押して、この文章を自然に話してください（5〜10秒）</strong>
+                <strong>話す内容：</strong>
                 <div style="margin-top:0.75rem; padding:0.85rem 1rem; background:#0D1B2A; border-radius:8px; border-left:4px solid #C9A227;">
                     <span style="color:#F7E7B0; font-size:1.05rem; font-weight:700; line-height:1.8;">
-                        「私は〇〇です。今日は自分の声の強みを知りたいです。」
+                        「私は〇〇です。今日は、<br>自分の声が相手にどう届いているのかを知りたいです。」
                     </span>
-                    <div style="margin-top:0.4rem; color:rgba(255,255,255,0.7); font-size:0.82rem;">
-                        ※ この文章に限らず、普段話す言葉で自然に話してもOKです
+                    <div style="margin-top:0.5rem; color:rgba(255,255,255,0.7); font-size:0.82rem;">
+                        と7秒ほど自然に話してください。
                     </div>
                 </div>
             </div>
             <div class="buttons">
                 <button class="btn btn-record" id="recordBtn">
-                    &#9210; &nbsp;7秒で声の強みを知る
+                    &#9210; &nbsp;声を録音して無料診断する
                 </button>
                 <button class="btn btn-stop" id="stopBtn" disabled>
                     &#9209; &nbsp;録音を止める
@@ -625,13 +626,25 @@
             <audio id="audioPlayer" controls class="hidden"></audio>
 
             <!-- マイクエラー時のヘルプ -->
-            <div id="micErrorHelp" style="display:none; margin-top:1rem; padding:16px; background:#fff0f0; border-radius:8px; border-left:4px solid #e53e3e; text-align:center;">
-                <p style="font-size:0.9rem; color:#c53030; font-weight:bold; margin-bottom:6px;">⚠️ マイクへのアクセスが拒否されています</p>
-                <p style="font-size:0.83rem; color:#555; line-height:1.7; margin-bottom:12px;">ブラウザのマイク設定を変更する必要があります。<br>下のボタンで解決方法をご確認ください。</p>
-                <a href="http://www.max2000.jp/landing/micoff.html" target="_blank" rel="noopener"
-                   style="display:inline-block; background:#e53e3e; color:white; padding:10px 22px; border-radius:8px; text-decoration:none; font-size:0.88rem; font-weight:bold;">
-                    👉 マイクの設定方法を見る
-                </a>
+            <div id="micErrorHelp" style="display:none; margin-top:1.2rem; padding:1.2rem; background:#fff5f5; border-radius:12px; border:1px solid #feb2b2;">
+                <p style="font-size:0.95rem; color:#c53030; font-weight:800; margin-bottom:0.75rem; text-align:center;">マイクが許可されていません</p>
+                <p style="font-size:0.85rem; color:#555; margin-bottom:0.75rem;">許可するには、ブラウザのマイク使用を許可してください。</p>
+                <p style="font-size:0.83rem; font-weight:700; color:#374151; margin-bottom:0.4rem;">確認方法</p>
+                <ol style="font-size:0.83rem; color:#555; line-height:2; padding-left:1.2rem; margin-bottom:1rem;">
+                    <li>アドレスバー左側の鍵マーク、または設定アイコンを押す</li>
+                    <li>「マイク」を許可に変更する</li>
+                    <li>ページを再読み込みする</li>
+                    <li>もう一度、録音ボタンを押す</li>
+                </ol>
+                <button onclick="location.reload()"
+                    style="display:block; width:100%; background:#2563eb; color:white; border:none;
+                           padding:0.85rem; border-radius:10px; font-size:0.95rem; font-weight:700; cursor:pointer;">
+                    マイク設定後にもう一度試す
+                </button>
+                <p style="font-size:0.75rem; color:#888; margin-top:0.75rem; text-align:center; line-height:1.7;">
+                    ※ iPhoneの場合は、SafariまたはChromeのマイク許可設定をご確認ください。<br>
+                    ※ 許可してもうまく動かない場合は、ページを再読み込みしてください。
+                </p>
             </div>
         </div>
     </div>
