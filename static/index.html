@@ -212,6 +212,14 @@
 
         .record-guide strong { color: var(--primary); }
 
+        .record-example {
+            display: block;
+            margin: 0.28rem 0 0.18rem;
+            color: #0D1B2A;
+            font-weight: 800;
+            line-height: 1.65;
+        }
+
         .cta-note {
             margin-top: -0.35rem;
             margin-bottom: 0.65rem;
@@ -462,6 +470,108 @@
             border-radius: 50%;
         }
 
+        .action-insight-card {
+            background: linear-gradient(135deg, #fffaf0 0%, #ffffff 100%);
+            border-left: 4px solid #C9A227;
+        }
+
+        .action-insight-lead {
+            color: #0D1B2A;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            margin-bottom: 1rem;
+        }
+
+        .action-insight-box {
+            background: #ffffff;
+            border: 1px solid #eadfbf;
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .action-insight-label {
+            color: #8a6a10;
+            font-size: 0.78rem;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            margin-bottom: 0.35rem;
+        }
+
+        .action-insight-title {
+            color: #0D1B2A;
+            font-size: 1rem;
+            font-weight: 800;
+            margin-bottom: 0.45rem;
+        }
+
+        .action-insight-text {
+            color: #334155;
+            font-size: 0.92rem;
+            line-height: 1.85;
+        }
+
+        .btn-rerecord {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.9rem 1rem;
+            border: none;
+            border-radius: 8px;
+            background: #0D1B2A;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 800;
+        }
+
+        .btn-rerecord:hover {
+            background: #15283d;
+        }
+
+        .score-diff-wrap {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eadfbf;
+        }
+
+        .score-diff-title {
+            color: #0D1B2A;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 0.75rem;
+        }
+
+        .score-diff-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+
+        .score-diff-item {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 0.65rem 0.5rem;
+            text-align: center;
+        }
+
+        .score-diff-label {
+            color: #64748b;
+            font-size: 0.72rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .score-diff-value {
+            color: #0D1B2A;
+            font-size: 0.9rem;
+            font-weight: 800;
+        }
+
+        .diff-up { color: #2563eb; }
+        .diff-down { color: #dc2626; }
+        .diff-same { color: #64748b; }
         .line-card {
             text-align: center;
             padding: 2rem 1.75rem;
@@ -480,6 +590,37 @@
             color: #1f2933;
             font-size: 0.94rem;
             margin-bottom: 1.35rem;
+            line-height: 1.8;
+        }
+
+        .line-benefit {
+            max-width: 620px;
+            margin: 0 auto 1.3rem;
+            padding: 1rem;
+            border-radius: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(6,199,85,0.28);
+            text-align: left;
+        }
+
+        .line-benefit-label {
+            color: #075f35;
+            font-size: 0.82rem;
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+        }
+
+        .line-benefit-title {
+            color: #0D1B2A;
+            font-size: 0.95rem;
+            font-weight: 800;
+            line-height: 1.65;
+            margin-bottom: 0.45rem;
+        }
+
+        .line-benefit-text {
+            color: #334155;
+            font-size: 0.88rem;
             line-height: 1.8;
         }
 
@@ -552,6 +693,7 @@
             .chart-wrap { height: 180px; }
             .radar-wrap { height: 300px; }
             .score-legend { flex-direction: column; align-items: center; gap: 0.35rem; }
+            .score-diff-grid { grid-template-columns: repeat(2, 1fr); }
             .line-card { padding: 1.45rem 1rem; }
             .line-cta { width: 100%; font-size: 1rem; padding: 0.95rem 1rem; }
         }
@@ -590,7 +732,8 @@
             </div>
             <div class="record-guide">
                 <strong>話す内容：</strong>
-                「私は〇〇です」と<br>7秒ほど自然に話してください。
+                <span class="record-example">「私は〇〇です。今日は、<br>自分の声が相手にどう届いているのかを知りたいです。」</span>
+                と7秒ほど自然に話してください。
             </div>
             <div class="cta-note">無料・7秒で診断できます</div>
             <div class="buttons">
@@ -664,6 +807,14 @@
             </div>
         </div>
 
+        <div class="card action-insight-card hidden" id="actionInsightCard">
+            <div class="card-title">30秒改善アドバイス</div>
+            <div id="actionInsightContent"></div>
+            <div id="scoreDiff" class="score-diff-wrap hidden"></div>
+            <button class="btn-rerecord" type="button" id="rerecordBtn">
+                アドバイスを意識して、もう一度診断する
+            </button>
+        </div>
         <!-- AIアドバイス -->
         <div class="card" id="adviceCard">
             <div class="card-title">診断コメント</div>
@@ -680,8 +831,16 @@
         <div class="card line-card">
             <div class="card-title">🎯 次のステップ｜Zoom無料声診断を予約する</div>
             <p class="line-copy">
-                声の癖を根本から診てもらえる<strong>20分間のZoom無料声診断</strong>はこちらから
+                20分のZoom無料声診断では、あなたの声の強みと、改善するとさらに信頼されるポイントを専門家の視点でお伝えします。
             </p>
+            <div class="line-benefit">
+                <div class="line-benefit-label">LINE登録特典：</div>
+                <div class="line-benefit-title">逆効果になる「やってはいけない声の練習」リストをプレゼント</div>
+                <div class="line-benefit-text">
+                    自己流で頑張るほど、声が固くなったり、伝わりにくくなることがあります。<br>
+                    まずは、やらない方がいい練習を知ってください。
+                </div>
+            </div>
             <a class="line-cta" href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener">
                 <span class="line-icon" aria-hidden="true">▦</span>
                 <span>LINE友だち追加して予約する</span>
@@ -711,6 +870,7 @@ let pitchChartInst = null;
 let radarChartInst = null;
 let lastStats = null;
 let lastDuration = null;
+let previousScores = null;
 
 // ===== DOM 要素 =====
 const recordBtn    = document.getElementById('recordBtn');
@@ -721,7 +881,30 @@ const timerEl      = document.getElementById('timer');
 const audioPlayer  = document.getElementById('audioPlayer');
 const resultsEl    = document.getElementById('results');
 const analyzingEl  = document.getElementById('analyzingEl');
+const rerecordBtn  = document.getElementById('rerecordBtn');
 
+function trackEvent(name, params = {}) {
+    if (typeof window.gtag === 'function') {
+        window.gtag('event', name, params);
+    }
+}
+
+rerecordBtn.addEventListener('click', () => {
+    trackEvent('rerecord_click', {
+        event_category: 'engagement',
+        event_label: 'voice_app_v2_rerecord_button',
+    });
+    document.getElementById('recordBtn').scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+document.querySelectorAll('.line-cta').forEach(link => {
+    link.addEventListener('click', () => {
+        trackEvent('line_register_click', {
+            event_category: 'conversion',
+            event_label: 'voice_app_v2_line_button',
+        });
+    });
+});
 // ===== 録音開始 =====
 recordBtn.addEventListener('click', async () => {
     try {
@@ -855,6 +1038,8 @@ async function uploadAndAnalyze(wavBlob) {
 
 // ===== グラフ・結果の描画 =====
 function renderResults(data) {
+    const currentScores = data.stats && data.stats.scores ? { ...data.stats.scores } : null;
+    const isRerecord = Boolean(previousScores);
     lastStats = data.stats;
     lastDuration = data.duration;
     resultsEl.classList.remove('hidden');
@@ -862,11 +1047,111 @@ function renderResults(data) {
     drawPitch(data.pitch);
     drawStats(data.stats, data.duration, data.sample_rate);
     drawRadarChart(data.stats);
+    drawActionInsight(data.stats);
+    drawScoreDiff(currentScores, previousScores);
+    trackEvent('recording_complete', {
+        event_category: 'engagement',
+        event_label: 'voice_app_v2_recording_complete',
+    });
+    if (isRerecord) {
+        trackEvent('rerecord_complete', {
+            event_category: 'engagement',
+            event_label: 'voice_app_v2_rerecord_complete',
+        });
+    }
+    if (currentScores) previousScores = currentScores;
     resetAdviceCard();
     fetchAdvice(data.stats, data.duration);
     resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+const SCORE_LABELS = {
+    intonation: '抑揚の幅',
+    dynamics: '声の強弱',
+    brightness: '声の明るさ',
+    resonance: '声の響き',
+    tempo: '話す速さ',
+    sustain: '声の持続力',
+};
+
+const ACTION_HINTS = {
+    intonation: '語尾まで表情を乗せる意識で、少しだけ声の波をつけて話してみてください。言葉に温度が生まれ、伝わり方が自然に変わります。',
+    dynamics: '大事な言葉の前で一拍置き、強く言うより「丁寧に届ける」意識で話してみてください。声にメリハリが出やすくなります。',
+    brightness: '最初の一言を少し前に出すように話してみてください。明るさは大きな声ではなく、相手へ届く方向づけで変わります。',
+    resonance: '胸や喉だけで押し出さず、息をゆっくり流しながら話してみてください。声の響きが整うと、安心感が伝わりやすくなります。',
+    tempo: '一文ごとに短い間を入れてみてください。速さよりも「相手が受け取れる余白」を作ることで、信頼感が増します。',
+    sustain: '最後の言葉まで息を残す意識で話してみてください。語尾が安定すると、声全体の印象が落ち着いて聞こえます。',
+};
+
+const SCORE_PRIORITY = ['tempo', 'intonation', 'brightness', 'dynamics', 'sustain', 'resonance'];
+
+function drawActionInsight(stats) {
+    const card = document.getElementById('actionInsightCard');
+    const content = document.getElementById('actionInsightContent');
+    const scores = stats.scores || {};
+    const keys = Object.keys(SCORE_LABELS);
+    const lowItems = keys.filter(key => (scores[key] || 5) <= 4);
+
+    if (lowItems.length === 0) {
+        content.innerHTML = `
+            <p class="action-insight-lead">
+                すでに声の土台があります。さらに磨くことで、信頼感や伝わり方が大きく伸びる可能性があります。
+            </p>
+            <div class="action-insight-box">
+                <div class="action-insight-label">眠っている宝物</div>
+                <div class="action-insight-title">今の声には、まだ伸びる余白があります</div>
+                <div class="action-insight-text">
+                    数値が安定しているからこそ、声の響き・間・届け方を少し整えるだけで、相手に残る印象が大きく変わります。
+                </div>
+            </div>
+        `;
+        card.classList.remove('hidden');
+        return;
+    }
+
+    const minScore = Math.min(...lowItems.map(key => scores[key] || 0));
+    const tied = lowItems.filter(key => (scores[key] || 0) === minScore);
+    const key = SCORE_PRIORITY.find(item => tied.includes(item)) || tied[0];
+
+    content.innerHTML = `
+        <p class="action-insight-lead">
+            まずは一つだけ意識して、もう一度声を出してみてください。
+        </p>
+        <div class="action-insight-box">
+            <div class="action-insight-label">${SCORE_LABELS[key]}：${scores[key] || 0}点</div>
+            <div class="action-insight-title">30秒改善アドバイス</div>
+            <div class="action-insight-text">${ACTION_HINTS[key]}</div>
+        </div>
+    `;
+    card.classList.remove('hidden');
+}
+
+function drawScoreDiff(current, previous) {
+    const wrap = document.getElementById('scoreDiff');
+    if (!current || !previous) {
+        wrap.classList.add('hidden');
+        wrap.innerHTML = '';
+        return;
+    }
+
+    const items = Object.keys(SCORE_LABELS).map(key => {
+        const diff = (current[key] || 0) - (previous[key] || 0);
+        const text = diff > 0 ? `+${diff}` : diff < 0 ? `${diff}` : '±0';
+        const cls = diff > 0 ? 'diff-up' : diff < 0 ? 'diff-down' : 'diff-same';
+        return `
+            <div class="score-diff-item">
+                <div class="score-diff-label">${SCORE_LABELS[key]}</div>
+                <div class="score-diff-value ${cls}">${text}</div>
+            </div>
+        `;
+    }).join('');
+
+    wrap.innerHTML = `
+        <div class="score-diff-title">前回との比較</div>
+        <div class="score-diff-grid">${items}</div>
+    `;
+    wrap.classList.remove('hidden');
+}
 function resetAdviceCard() {
     if (window._adviceMsgTimer) {
         clearInterval(window._adviceMsgTimer);
@@ -1015,12 +1300,16 @@ async function fetchAdvice(stats, duration) {
                     const sections = [
                         { title: 'あなたの声の個性', key: 'voice_character' },
                         { title: 'この声の可能性',   key: 'potential' },
-                        { title: '次のステップへ',   key: 'next_step' },
+                        {
+                            title: '次のステップ｜Zoom無料声診断を予約する',
+                            key: 'next_step',
+                            fixedBody: '20分のZoom無料声診断では、あなたの声の強みと、改善するとさらに信頼されるポイントを専門家の視点でお伝えします。',
+                        },
                     ];
                     adviceSections.innerHTML = sections.map(s => `
                         <div class="advice-section">
                             <div class="advice-section-title">${s.title}</div>
-                            <div class="advice-section-body">${data.advice[s.key]}</div>
+                            <div class="advice-section-body">${s.fixedBody || data.advice[s.key]}</div>
                         </div>
                     `).join('');
                     adviceSections.classList.remove('hidden');
