@@ -657,6 +657,26 @@
             line-height: 1.75;
         }
 
+        .treasure-insight {
+            padding: 1rem;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #fff8e6 0%, #ffffff 100%);
+            border: 1px solid rgba(201, 162, 39, 0.32);
+        }
+
+        .treasure-insight .action-insight-label {
+            color: #8a6817;
+            margin-bottom: 0.7rem;
+        }
+
+        .treasure-message p {
+            margin: 0 0 0.65rem;
+        }
+
+        .treasure-message p:last-child {
+            margin-bottom: 0;
+        }
+
         .btn-rerecord {
             display: inline-flex;
             align-items: center;
@@ -1215,13 +1235,52 @@ const SCORE_LABELS = {
 };
 
 const ACTION_HINTS = {
-    intonation: '語尾まで表情を乗せる意識で、少しだけ声の波をつけて話してみてください。言葉に温度が生まれ、伝わり方が自然に変わります。',
-    dynamics: '大事な言葉の前で一拍置き、強く言うより「丁寧に届ける」意識で話してみてください。声にメリハリが出やすくなります。',
-    brightness: '最初の一言を少し前に出すように話してみてください。明るさは大きな声ではなく、相手へ届く方向づけで変わります。',
-    resonance: '胸や喉だけで押し出さず、息をゆっくり流しながら話してみてください。声の響きが整うと、安心感が伝わりやすくなります。',
-    tempo: '一文ごとに短い間を入れてみてください。速さよりも「相手が受け取れる余白」を作ることで、信頼感が増します。',
-    sustain: '話し終わる＋2秒後まで、気持ちを切らさず伝えてみてください。',
+    intonation: {
+        mid: '子どもに語りかけるように、声の高低を少しつけて話してみてください。',
+        low: '満面の笑顔で明るく楽しく話してみてください。',
+    },
+    dynamics: {
+        mid: '大事な言葉を1つだけ、少し強く言ってみてください。',
+        low: '相手に届けたい言葉を一つ決め、その前で一瞬だけ間を取ってみてください。',
+    },
+    brightness: {
+        mid: '相手が目の前にいるつもりで、少し口角を上げて笑顔で話してみてください。',
+        low: '口角を少し上げて、優しい目で目尻を1mm下げて話してみてください。',
+    },
+    resonance: {
+        mid: '背筋を伸ばし肩を下げて、相手に笑顔で語りかけるように話してみてください。',
+        low: '口角を少し上げニッコリして、「イ～～」と言いながら口の中の響きを確認してから話してみてください。',
+    },
+    tempo: {
+        slow: {
+            mid: 'オーケストラの指揮者の様に、手を軽快に振りながら話してみてください。',
+            low: '体の前で手のひらを合わせ、速くこすりながら話してみてください。',
+        },
+        fast: {
+            mid: '句読点（、）の場所で一瞬止まってから続けてみてください。',
+            low: '体の前で手のひらを合わせ、ゆっくりこすりながら話してみてください。',
+        },
+    },
+    sustain: {
+        mid: '最後の一音まで、最初と同じ音量で話し切ることを意識してみてください。',
+        low: '話し終わる+2秒後まで気持ちを切らさず伝えてみてください。',
+    },
 };
+
+function getTempoDirection(stats) {
+    const speechRate = Number(stats.speech_rate || 0);
+    return speechRate >= 2.0 ? 'fast' : 'slow';
+}
+
+function getActionHint(key, score, stats) {
+    const level = score <= 2 ? 'low' : 'mid';
+    if (key === 'tempo') {
+        const direction = getTempoDirection(stats);
+        return ACTION_HINTS.tempo[direction][level];
+    }
+    return ACTION_HINTS[key][level];
+}
+
 
 const SCORE_PRIORITY = ['tempo', 'intonation', 'brightness', 'dynamics', 'sustain', 'resonance'];
 
@@ -1413,20 +1472,28 @@ function drawActionInsight(stats) {
     const content = document.getElementById('actionInsightContent');
     const scores = stats.scores || {};
     const keys = Object.keys(SCORE_LABELS);
+    const allScoresAtLeastFive = keys.every(key => (scores[key] || 5) >= 5);
     const lowItems = keys.filter(key => (scores[key] || 5) <= 4);
 
-    if (lowItems.length === 0) {
+    if (allScoresAtLeastFive) {
         content.innerHTML = `
-            <div class="action-insight-box">
-                <div class="action-insight-label">眠っている宝物</div>
-                <div class="action-insight-text">
-                    すでに声の土台があります。さらに磨くことで、信頼感や伝わり方が大きく伸びる可能性があります。
+            <div class="action-insight-box treasure-insight">
+                <div class="action-insight-label">✨ 眠っている宝物があります</div>
+                <div class="action-insight-text treasure-message">
+                    <p>6項目すべてが5点以上。</p>
+                    <p>これは、なかなか出ない結果です。</p>
+                    <p>あなたの声は、すでに大きな強みを持っています。</p>
+                    <p>ただ、それはゴールではありません。</p>
+                    <p>基礎が整っている人ほど、<br>小さな改善が大きな差になります。</p>
+                    <p>あなたの声には、<br>まだ「眠っている宝物」があります。</p>
+                    <p>その宝物を目覚めさせることで、<br>伝わり方や評価はさらに変わる可能性があります。</p>
                 </div>
             </div>
         `;
         card.classList.remove('hidden');
         return;
     }
+
 
     const minScore = Math.min(...lowItems.map(key => scores[key] || 0));
     const tied = lowItems.filter(key => (scores[key] || 0) === minScore);
@@ -1435,7 +1502,7 @@ function drawActionInsight(stats) {
     content.innerHTML = `
         <div class="action-insight-box">
             <div class="action-insight-label">${SCORE_LABELS[key]} <span class="hint-score-badge">${scores[key] || 0}点</span></div>
-            <div class="action-insight-text">👉 ${ACTION_HINTS[key]}</div>
+            <div class="action-insight-text">👉 ${getActionHint(key, minScore, stats)}</div>
         </div>
     `;
     card.classList.remove('hidden');
