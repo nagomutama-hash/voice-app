@@ -474,6 +474,19 @@
             gap: 0.875rem;
         }
 
+        .advice-type-label {
+            display: inline-flex;
+            align-items: center;
+            align-self: flex-start;
+            margin-bottom: 0.15rem;
+            padding: 0.28rem 0.6rem;
+            border-radius: 999px;
+            background: #fff7df;
+            color: #725819;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
         .advice-section {
             background: var(--bg);
             border: 1px solid var(--border);
@@ -932,11 +945,12 @@
                 20分のZoom無料声診断では、あなたの声の強みと、改善するとさらに信頼されるポイントを専門家の視点でお伝えします。
             </p>
             <div class="line-benefit">
-                <div class="line-benefit-label">LINE登録特典：</div>
-                <div class="line-benefit-title">逆効果になる「やってはいけない声の練習」リストをプレゼント</div>
+                <div class="line-benefit-label">LINE登録特典</div>
+                <div class="line-benefit-title">その練習、本当に声が良くなっていますか？</div>
                 <div class="line-benefit-text">
-                    自己流で頑張るほど、声が固くなったり、伝わりにくくなることがあります。<br>
-                    まずは、やらない方がいい練習を知ってください。
+                    逆効果になる「やってはいけない声の練習」リストをプレゼント。<br>
+                    上達は才能ではなく、正しい練習の積み重ねです。<br>
+                    遠回りを防ぐために、まず避けるべき練習法をお伝えします。
                 </div>
             </div>
             <a class="line-cta" href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener">
@@ -969,6 +983,7 @@ let radarChartInst = null;
 let lastStats = null;
 let lastDuration = null;
 let previousScores = null;
+let previousScoresForAdvice = null;
 
 const recordBtn = document.getElementById('recordBtn');
 const stopBtn = document.getElementById('stopBtn');
@@ -1176,6 +1191,7 @@ function renderResults(data) {
     drawStats(data.stats, data.duration, data.sample_rate);
     drawRadarChart(data.stats);
     drawActionInsight(data.stats);
+    previousScoresForAdvice = previousScores ? { ...previousScores } : null;
     drawScoreDiff(currentScores, previousScores);
     trackEvent('recording_complete', {
         event_category: 'engagement',
@@ -1212,6 +1228,189 @@ const ACTION_HINTS = {
 };
 
 const SCORE_PRIORITY = ['tempo', 'intonation', 'brightness', 'dynamics', 'sustain', 'resonance'];
+
+const VOICE_TYPE_TEMPLATES = {
+    expressive: {
+        label: '表現者タイプ',
+        variants: {
+            A: {
+                voice_character: 'すでに聞きやすく、信頼感が伝わる声です。<br>話す土台が整っていて、安心して聞ける力があります。',
+                risk: '今でも十分伝わっています。<br>ただ、今の声のままでは、本来得られるはずの成果や評価を取りこぼしている可能性があります。<br>基礎が整っているからこそ、少しの変化が大きな差になります。',
+                potential: '声の使い方を整えると、信頼感に加えて存在感が出てきます。<br>「聞きやすい声」から「印象に残る声」へ変わる可能性があります。',
+                next_step: 'Zoom無料声診断では、あなたの声の癖、声で損しているポイント、伸びしろを具体的に見ます。<br>どこを改善すると、成果や評価にどうつながるのか。<br>あなたの声を、仕事で活きる形に整えるポイントをお伝えします。',
+            },
+            B: {
+                voice_character: '落ち着きがあり、相手が安心して聞ける声です。<br>大きな弱点よりも、伸ばせる余地が見えるタイプです。',
+                risk: 'ただ、伝わってはいても、相手の記憶に強く残りきれていない可能性があります。<br>商談、相談、発信の場で、本来選ばれるはずの場面を逃していることがあります。',
+                potential: '間の取り方や声の温度を整えると、印象の残り方が変わります。<br>安心感に、存在感と説得力を加えられる声です。',
+                next_step: 'Zoom無料声診断では、声の癖と、声で取りこぼしているポイントを確認します。<br>さらに伸ばせる強みと、改善するとどう変わるかを具体的に見ていきます。<br>あなたの声を、選ばれる声へ近づけるヒントをお伝えします。',
+            },
+        },
+    },
+    soft: {
+        label: 'ふわっと優しすぎタイプ',
+        variants: {
+            A: {
+                voice_character: 'やわらかく、安心して聞ける声です。<br>相手に圧をかけず、誠実さや優しさが伝わります。',
+                risk: 'ただ、このままだと「いい人ですね」で終わりやすい可能性があります。<br>安心感はあるのに、決断や期待まで届かず、大事な場面で選ばれにくくなることがあります。',
+                potential: '声に少し芯が加わるだけで、言葉の重みが変わります。<br>優しさを残したまま、信頼感や期待感まで伝えられる声になります。',
+                next_step: 'Zoom無料声診断では、あなたの声の癖、声で損しているポイント、伸びしろを具体的に見ます。<br>どこに芯を足すと、相手が動きやすくなるのか。<br>改善すると伝わり方がどう変わるかをお伝えします。',
+            },
+            B: {
+                voice_character: '穏やかで、相手を安心させる声です。<br>初対面でも警戒されにくい、やさしい印象があります。',
+                risk: 'ただ、声の印象が流れやすく、話の大事な部分が残りにくいことがあります。<br>相談や提案の場で、「良さそうだけど今すぐではない」と思われる可能性があります。',
+                potential: 'やさしい声にメリハリが加わると、伝わり方が変わります。<br>安心感だけでなく、「この人にお願いしたい」という期待感まで届きやすくなります。',
+                next_step: 'Zoom無料声診断では、あなたの声の癖と、選ばれにくくなっているポイントを確認します。<br>やさしさを残したまま、どこを改善すると信頼感が増すのか。<br>声の伸びしろを具体的にお伝えします。',
+            },
+        },
+    },
+    pushy: {
+        label: '圧強めセールスタイプ',
+        variants: {
+            A: {
+                voice_character: 'エネルギーがあり、熱量が伝わる声です。<br>本気度や行動力が相手に届きやすいタイプです。',
+                risk: 'ただ、力が入りすぎると、相手が少し身構えることがあります。<br>本人は一生懸命でも、相手には「売られている」「説得されている」と伝わる可能性があります。',
+                potential: '少し力を抜くだけで、熱量は信頼に変わります。<br>押す声ではなく、相手が安心して受け取れる声に整えられます。',
+                next_step: 'Zoom無料声診断では、声の癖と、圧が強く出ているポイントを具体的に見ます。<br>熱量を弱めるのではなく、どう整えると信頼に変わるのか。<br>改善すると印象がどう変わるかをお伝えします。',
+            },
+            B: {
+                voice_character: '伝えたい気持ちが強く、相手を動かす力があります。<br>声に勢いがあり、印象に残りやすいタイプです。',
+                risk: 'ただ、勢いが強すぎると、相手の心が追いつかないことがあります。<br>良い提案でも、声の圧が先に届くと、警戒されてしまう可能性があります。',
+                potential: '余白ややわらかさが加わると、声の印象は大きく変わります。<br>情熱を残したまま、安心して聞ける声にできます。',
+                next_step: 'Zoom無料声診断では、あなたの声の癖と、声で損しているポイントを確認します。<br>熱量が魅力として届くには、どこを改善すればいいのか。<br>改善後の伝わり方まで具体的に見ていきます。',
+            },
+        },
+    },
+    cerebral: {
+        label: '頭でっかち説明タイプ',
+        variants: {
+            A: {
+                voice_character: '説明が整理されていて、信頼感があります。<br>話の内容は伝わりやすく、安心して聞ける声です。',
+                risk: 'ただ、声から感じる体温が少ないため、相手には機械的な説明として聞こえている可能性があります。<br>内容は理解されても、感情が動かず、行動につながらないことがあります。',
+                potential: '声に感情の温度が加わると、印象が変わります。<br>「わかりやすい」から「お願いしたい」に近づきます。',
+                next_step: 'Zoom無料声診断では、声の癖と、声で損しているポイントを具体的に見ます。<br>どこで体温が伝わりにくくなっているのか。<br>改善すると相手の受け取り方がどう変わるかをお伝えします。',
+            },
+            B: {
+                voice_character: '理路整然としていて、きちんとした印象があります。<br>専門性や誠実さが伝わりやすい声です。',
+                risk: 'ただ、声が少し「情報」になりやすい可能性があります。<br>正しいことを話しているのに、相手の心が動かず、比較検討で止まってしまうことがあります。',
+                potential: '人柄や想いが声に乗ると、伝わり方が変わります。<br>説明のうまさを、信頼と行動につなげられます。',
+                next_step: 'Zoom無料声診断では、声の癖と、情報止まりになっているポイントを確認します。<br>どこを改善すると、心に届く声に変わるのか。<br>「わかる」から「選ばれる」声への伸びしろを具体的に見ていきます。',
+            },
+        },
+    },
+    unclear: {
+        label: 'こもり声・不鮮明タイプ',
+        variants: {
+            A: {
+                voice_character: '伝えたい内容そのものには価値があります。<br>落ち着きや誠実さも感じられる声です。',
+                risk: 'ただ、声が届きにくいことで、相手に聞く努力をさせてしまっている可能性があります。<br>内容が良くても、聞き取ることに意識が向くと、興味や集中力が下がってしまいます。',
+                potential: '聞き取りやすさが上がるだけで、印象は大きく変わります。<br>声が前に出ると、安心感や信頼感も伝わりやすくなります。',
+                next_step: 'Zoom無料声診断では、声の癖と、声で損しているポイントを具体的に見ます。<br>どこを改善すると、聞き取りやすさがどう変わるのか。<br>あなたの内容がきちんと届く声へ整えるヒントをお伝えします。',
+            },
+            B: {
+                voice_character: 'やさしく、落ち着いた印象のある声です。<br>相手に強く当たりすぎない良さがあります。',
+                risk: 'ただ、声が不鮮明だと、相手が聞くことに力を使ってしまいます。<br>その結果、話の内容より先に「少し聞き取りにくい」という印象が残ることがあります。',
+                potential: '声がクリアになると、話の価値が伝わりやすくなります。<br>聞く負担が減るだけで、信頼感や安心感は大きく変わります。',
+                next_step: 'Zoom無料声診断では、声の癖と、聞き取りにくさで損しているポイントを確認します。<br>改善すると、声の届き方や相手の集中の仕方がどう変わるのか。<br>あなたの良さが伝わる声へ整えるポイントをお伝えします。',
+            },
+        },
+    },
+};
+
+const TYPE_HINTS = {
+    intonation: '声の温度やメリハリが整うと、言葉の印象が残りやすくなります。',
+    dynamics: '声に少し芯が加わると、大事な言葉が相手に届きやすくなります。',
+    brightness: '声の明るさが整うと、第一印象と聞き取りやすさが変わります。',
+    resonance: '声の通り方が整うと、安心感や信頼感が伝わりやすくなります。',
+    tempo: '間の取り方が整うと、相手が受け取りやすい声になります。',
+    sustain: '語尾まで気持ちが残ると、言葉の信頼感が増します。',
+};
+
+function scoreValue(scores, key) {
+    return Number(scores[key] || 0);
+}
+
+function getAverageScore(scores) {
+    const values = Object.keys(SCORE_LABELS).map(key => scoreValue(scores, key) || 5);
+    return values.reduce((sum, value) => sum + value, 0) / values.length;
+}
+
+function getLowestScoreKey(scores) {
+    return Object.keys(SCORE_LABELS).reduce((lowest, key) =>
+        scoreValue(scores, key) < scoreValue(scores, lowest) ? key : lowest
+    , 'intonation');
+}
+
+function getHighestScoreKey(scores) {
+    return Object.keys(SCORE_LABELS).reduce((highest, key) =>
+        scoreValue(scores, key) > scoreValue(scores, highest) ? key : highest
+    , 'intonation');
+}
+
+function detectVoiceType(scores) {
+    const avg = getAverageScore(scores);
+    const lowCount = Object.keys(SCORE_LABELS).filter(key => scoreValue(scores, key) <= 4).length;
+
+    if (scoreValue(scores, 'dynamics') >= 8 || (scoreValue(scores, 'brightness') >= 8 && scoreValue(scores, 'tempo') >= 7)) return 'pushy';
+    if (lowCount === 0 && avg >= 6.2) return 'expressive';
+    if (scoreValue(scores, 'resonance') <= 4 || scoreValue(scores, 'brightness') <= 4) return 'unclear';
+    if (scoreValue(scores, 'dynamics') <= 4 || scoreValue(scores, 'sustain') <= 4) return 'soft';
+    return 'cerebral';
+}
+
+function chooseTemplateVariant(scores, previous) {
+    const avg = getAverageScore(scores);
+    const lowest = getLowestScoreKey(scores);
+    const previousLowest = previous ? getLowestScoreKey(previous) : null;
+    if (previous && previousLowest !== lowest) return 'B';
+    return Math.round(avg + scoreValue(scores, lowest)) % 2 === 0 ? 'A' : 'B';
+}
+
+function makeVariableLine(scores, previous) {
+    const lowest = getLowestScoreKey(scores);
+    const highest = getHighestScoreKey(scores);
+    const lowLabel = SCORE_LABELS[lowest];
+    const highLabel = SCORE_LABELS[highest];
+    const hint = TYPE_HINTS[lowest];
+
+    if (previous && previous[lowest] !== undefined) {
+        const diff = scoreValue(scores, lowest) - scoreValue(previous, lowest);
+        if (diff > 0) return lowLabel + 'が前回より少し上がっています。' + hint;
+        if (diff < 0) return lowLabel + 'が前回より下がっています。今日はここが声で損しやすいポイントかもしれません。';
+    }
+    return '今回のチャートでは、' + highLabel + 'が強みとして見えます。一方で、' + lowLabel + 'は伸びしろとして確認したいポイントです。';
+}
+
+function renderTemplateAdvice(stats) {
+    const adviceLoading = document.getElementById('adviceLoading');
+    const adviceSections = document.getElementById('adviceSections');
+    const adviceError = document.getElementById('adviceError');
+    const adviceNoPitch = document.getElementById('adviceNoPitch');
+    const scores = stats.scores || {};
+    const typeKey = detectVoiceType(scores);
+    const variantKey = chooseTemplateVariant(scores, previousScoresForAdvice);
+    const type = VOICE_TYPE_TEMPLATES[typeKey];
+    const template = type.variants[variantKey];
+    const variableLine = makeVariableLine(scores, previousScoresForAdvice);
+    const sections = [
+        { title: 'あなたの声の個性', body: template.voice_character },
+        { title: 'このままだと', body: template.risk },
+        { title: 'この声の可能性', body: template.potential + '<br>' + variableLine },
+        { title: '次のステップ', body: template.next_step },
+    ];
+
+    adviceSections.innerHTML = '<div class="advice-type-label">' + type.label + '｜パターン' + variantKey + '</div>' +
+        sections.map(section =>
+            '<div class="advice-section">' +
+                '<div class="advice-section-title">' + section.title + '</div>' +
+                '<div class="advice-section-body">' + section.body + '</div>' +
+            '</div>'
+        ).join('');
+    adviceError.classList.add('hidden');
+    adviceNoPitch.classList.add('hidden');
+    adviceLoading.classList.add('hidden');
+    adviceSections.classList.remove('hidden');
+}
 
 function drawActionInsight(stats) {
     const card = document.getElementById('actionInsightCard');
@@ -1356,114 +1555,7 @@ function drawRadarChart(stats) {
 }
 
 async function fetchAdvice(stats, duration) {
-    const adviceLoading   = document.getElementById('adviceLoading');
-    const adviceSections  = document.getElementById('adviceSections');
-    const adviceError     = document.getElementById('adviceError');
-    const adviceNoPitch   = document.getElementById('adviceNoPitch');
-
-    if (!stats.has_pitch) {
-        adviceLoading.classList.add('hidden');
-        adviceNoPitch.classList.remove('hidden');
-        return;
-    }
-
-    const scores = stats.scores || {};
-
-    try {
-        const res = await fetch('/advice', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                min_hz:           stats.min_hz,
-                max_hz:           stats.max_hz,
-                mean_hz:          stats.mean_hz,
-                min_note:         stats.min_note,
-                max_note:         stats.max_note,
-                mean_note:        stats.mean_note,
-                duration,
-                pitch_std:        stats.pitch_std      || 0,
-                voiced_ratio:     stats.voiced_ratio   || 0,
-                rms_cv:           stats.rms_cv         || 0,
-                brightness_hz:    stats.brightness_hz  || 0,
-                harmonic_ratio:   stats.harmonic_ratio || 0,
-                speech_rate:      stats.speech_rate    || 0,
-                rms_trend:        stats.rms_trend      || 0,
-                score_intonation: scores.intonation    || 5,
-                score_dynamics:   scores.dynamics      || 5,
-                score_brightness: scores.brightness    || 5,
-                score_resonance:  scores.resonance     || 5,
-                score_tempo:      scores.tempo         || 5,
-                score_sustain:    scores.sustain       || 5,
-            }),
-        });
-
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let buffer = '';
-
-        while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            buffer += decoder.decode(value, { stream: true });
-            const lines = buffer.split('\n');
-            buffer = lines.pop() || '';
-
-            for (const line of lines) {
-                if (!line.startsWith('data: ')) continue;
-                let data;
-                try { data = JSON.parse(line.slice(6)); } catch { continue; }
-
-                if (data.type === 'chunk') {
-                    // チャンク受信中はローディングメッセージを維持
-
-                } else if (data.type === 'done') {
-                    clearInterval(window._adviceMsgTimer);
-                    const sections = [
-                        { title: 'あなたの声の個性', key: 'voice_character' },
-                        { title: 'この声の可能性',   key: 'potential' },
-                        {
-                            title: '次のステップ｜Zoom無料声診断を予約する',
-                            key: 'next_step',
-                            fixedBody: '20分のZoom無料声診断では、あなたの声の強みと、改善するとさらに信頼されるポイントを専門家の視点でお伝えします。',
-                        },
-                    ];
-                    adviceSections.innerHTML = sections.map(s => `
-                        <div class="advice-section">
-                            <div class="advice-section-title">${s.title}</div>
-                            <div class="advice-section-body">${s.fixedBody || data.advice[s.key]}</div>
-                        </div>
-                    `).join('');
-                    adviceSections.classList.remove('hidden');
-                    adviceLoading.classList.add('hidden');
-                    return;
-
-                } else if (data.type === 'retrying') {
-                    document.getElementById('adviceLoadingMsg').textContent =
-                        `診断コメントの準備に少し時間がかかっています。自動で再試行中... (${data.attempt}回目)`;
-
-                } else if (data.type === 'error') {
-                    const isOverloaded = data.overloaded || (data.error && data.error.includes('overloaded'));
-                    throw Object.assign(new Error(data.error || 'アドバイス生成エラー'), { isOverloaded });
-                }
-            }
-        }
-    } catch (err) {
-        const msg = err.isOverloaded
-            ? '診断コメントの準備に時間がかかっています。<br>少し時間をおいて、もう一度お試しください。'
-            : '診断コメントの生成に失敗しました。<br>もう一度お試しください。';
-        adviceError.innerHTML = `
-            <div style="margin-bottom:12px;">${msg}</div>
-            <button onclick="retryAdvice()" style="
-                background:#0D1B2A; color:white; border:none; border-radius:8px;
-                padding:0.6rem 1.4rem; font-size:0.9rem; font-weight:600;
-                cursor:pointer; display:inline-flex; align-items:center; gap:0.4rem;">
-                🔄 もう一度診断する
-            </button>`;
-        adviceError.classList.remove('hidden');
-        adviceLoading.classList.add('hidden');
-        clearInterval(window._adviceMsgTimer);
-    }
+    renderTemplateAdvice(stats);
 }
 
 function retryAdvice() {
