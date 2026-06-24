@@ -1021,6 +1021,7 @@ let lastStats = null;
 let lastDuration = null;
 let previousScores = null;
 let previousScoresForAdvice = null;
+let diagnosisStartTracked = false;
 
 const recordBtn = document.getElementById('recordBtn');
 const stopBtn = document.getElementById('stopBtn');
@@ -1095,7 +1096,16 @@ async function startRecording() {
 }
 
 // ===== Recording controls =====
-recordBtn.addEventListener('click', startRecording);
+recordBtn.addEventListener('click', () => {
+    if (!diagnosisStartTracked) {
+        diagnosisStartTracked = true;
+        trackEvent('diagnosis_start', {
+            event_category: 'engagement',
+            event_label: 'voice_app_v2_diagnosis_start',
+        });
+    }
+    startRecording();
+});
 micRetryBtn.addEventListener('click', startRecording);
 
 if (rerecordBtn) {
