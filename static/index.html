@@ -737,12 +737,9 @@
         .line-benefit-title {
             display: flex;
             flex-direction: column;
-            gap: 0.18rem;
-            color: #b42318;
-            font-size: 1.12rem;
-            font-weight: 900;
-            line-height: 1.42;
-            margin-bottom: 0.55rem;
+            align-items: flex-start;
+            gap: 0.28rem;
+            margin-bottom: 0.7rem;
             letter-spacing: 0;
         }
 
@@ -750,15 +747,17 @@
             display: inline-flex;
             align-items: center;
             gap: 0.25rem;
-            color: #b42318;
-            font-size: 0.98rem;
-            font-weight: 900;
+            color: #c05621;
+            font-size: 0.92rem;
+            font-weight: 800;
+            line-height: 1.35;
         }
 
         .line-benefit-main {
-            color: #8f1d16;
-            font-size: 1.16rem;
-            font-weight: 900;
+            color: #b42318;
+            font-size: 1.6rem;
+            font-weight: 950;
+            line-height: 1.18;
         }
 
         .line-benefit-text {
@@ -836,8 +835,9 @@
             .score-diff-grid { grid-template-columns: repeat(2, 1fr); }
             .line-card { padding: 1.45rem 1rem; }
             .line-benefit { padding: 0.9rem; }
-            .line-benefit-title { font-size: 1.02rem; line-height: 1.45; }
-            .line-benefit-main { font-size: 1.07rem; }
+            .line-benefit-title { gap: 0.25rem; margin-bottom: 0.65rem; }
+            .line-benefit-warning { font-size: 0.84rem; }
+            .line-benefit-main { font-size: clamp(1.32rem, 6.2vw, 1.48rem); line-height: 1.24; }
             .line-cta { width: 100%; font-size: 1rem; padding: 0.95rem 1rem; }
         }
     </style>
@@ -994,9 +994,8 @@
                 <div class="line-benefit-label">LINE登録特典</div>
                 <div class="line-benefit-title"><span class="line-benefit-warning">⚠️ 逆効果になる</span><span class="line-benefit-main">「やってはいけない声の練習」リスト</span></div>
                 <div class="line-benefit-text">
-                    逆効果になる「やってはいけない声の練習」リストをプレゼント。<br>
-                    上達は才能ではなく、正しい練習の積み重ねです。<br>
-                    遠回りを防ぐために、まず避けるべき練習法をお伝えします。
+                    よくある声の練習の中には、やり方を間違えると声を固くし、伝わりにくくしてしまうものがあります。<br>
+                    自己流で遠回りしないために、まず避けるべき練習法を知ってください。
                 </div>
             </div>
             <a class="line-cta" href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener">
