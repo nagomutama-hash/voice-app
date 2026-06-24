@@ -735,11 +735,30 @@
         }
 
         .line-benefit-title {
-            color: #0D1B2A;
-            font-size: 0.95rem;
-            font-weight: 800;
-            line-height: 1.65;
-            margin-bottom: 0.45rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.18rem;
+            color: #b42318;
+            font-size: 1.12rem;
+            font-weight: 900;
+            line-height: 1.42;
+            margin-bottom: 0.55rem;
+            letter-spacing: 0;
+        }
+
+        .line-benefit-warning {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            color: #b42318;
+            font-size: 0.98rem;
+            font-weight: 900;
+        }
+
+        .line-benefit-main {
+            color: #8f1d16;
+            font-size: 1.16rem;
+            font-weight: 900;
         }
 
         .line-benefit-text {
@@ -816,6 +835,9 @@
             .score-legend { flex-direction: column; align-items: center; gap: 0.35rem; }
             .score-diff-grid { grid-template-columns: repeat(2, 1fr); }
             .line-card { padding: 1.45rem 1rem; }
+            .line-benefit { padding: 0.9rem; }
+            .line-benefit-title { font-size: 1.02rem; line-height: 1.45; }
+            .line-benefit-main { font-size: 1.07rem; }
             .line-cta { width: 100%; font-size: 1rem; padding: 0.95rem 1rem; }
         }
     </style>
@@ -970,7 +992,7 @@
             </p>
             <div class="line-benefit">
                 <div class="line-benefit-label">LINE登録特典</div>
-                <div class="line-benefit-title">その練習、本当に声が良くなっていますか？</div>
+                <div class="line-benefit-title"><span class="line-benefit-warning">⚠️ 逆効果になる</span><span class="line-benefit-main">「やってはいけない声の練習」リスト</span></div>
                 <div class="line-benefit-text">
                     逆効果になる「やってはいけない声の練習」リストをプレゼント。<br>
                     上達は才能ではなく、正しい練習の積み重ねです。<br>
