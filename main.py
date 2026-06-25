@@ -81,8 +81,10 @@ def _compute_voice_scores(
     """各声質指標を1〜10のスコアに変換する（10が最良）"""
     pitch_cv = (pitch_std / mean_hz * 100) if mean_hz > 0 else 0.0
 
-    if   pitch_cv < 3:  s_intonation = 3
-    elif pitch_cv < 8:  s_intonation = 6
+    if   pitch_cv < 2:  s_intonation = 2
+    elif pitch_cv < 3:  s_intonation = 3
+    elif pitch_cv < 5:  s_intonation = 4
+    elif pitch_cv < 8:  s_intonation = 5
     elif pitch_cv < 15: s_intonation = 9
     elif pitch_cv < 25: s_intonation = 7
     else:               s_intonation = 4
@@ -100,8 +102,10 @@ def _compute_voice_scores(
     elif brightness_hz < 1800: s_brightness = 6
     else:                      s_brightness = 4
 
-    if   harmonic_ratio < 30: s_resonance = 2
+    if   harmonic_ratio < 18: s_resonance = 2
+    elif harmonic_ratio < 30: s_resonance = 3
     elif harmonic_ratio < 40: s_resonance = 4
+    elif harmonic_ratio < 50: s_resonance = 5
     elif harmonic_ratio < 55: s_resonance = 6
     elif harmonic_ratio < 65: s_resonance = 8
     else:                     s_resonance = 10
@@ -113,7 +117,8 @@ def _compute_voice_scores(
     elif speech_rate < 2.5: s_tempo = 5
     else:                   s_tempo = 3
 
-    if   rms_trend < -30: s_sustain = 2
+    if   rms_trend < -35: s_sustain = 2
+    elif rms_trend < -28: s_sustain = 3
     elif rms_trend < -20: s_sustain = 4
     elif rms_trend < 10:  s_sustain = 9
     elif rms_trend < 25:  s_sustain = 7
