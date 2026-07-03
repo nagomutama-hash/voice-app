@@ -771,8 +771,25 @@
         .line-copy {
             color: #1f2933;
             font-size: 0.94rem;
-            margin-bottom: 1.35rem;
-            line-height: 1.8;
+            margin: 0 auto 1.35rem;
+            line-height: 1.85;
+            max-width: 680px;
+        }
+
+        .line-copy p {
+            margin: 0 0 0.85rem;
+        }
+
+        .line-copy p:last-child {
+            margin-bottom: 0;
+        }
+
+        .treasure-phrase {
+            display: inline-block;
+            color: #8a6412;
+            font-weight: 900;
+            background: linear-gradient(transparent 58%, rgba(201,162,39,0.22) 58%);
+            padding: 0 0.08em;
         }
 
         .line-benefit {
@@ -822,6 +839,14 @@
             color: #334155;
             font-size: 0.88rem;
             line-height: 1.8;
+        }
+
+        .line-reassurance {
+            margin-top: 0.75rem;
+            color: #365142;
+            font-size: 0.82rem;
+            font-weight: 700;
+            line-height: 1.65;
         }
 
         .line-cta {
@@ -1043,22 +1068,23 @@
 
         <!-- LINE友達追加ボタン -->
         <div class="card line-card">
-            <div class="card-title">🎯 次のステップ｜Zoom無料声診断を予約する</div>
-            <p class="line-copy">
-                20分のZoom無料声診断では、あなたの声の強みと、改善するとさらに信頼されるポイントを専門家の視点でお伝えします。
-            </p>
+            <div class="card-title">Zoom無料声診断</div>
+            <div class="line-copy">
+                <p>今回の診断は、AIによる7秒の簡易診断です。</p>
+                <p>Zoom無料声診断では、35年以上・2万人以上の声を見てきたプロが、あなたの声の強みと改善ポイントをさらに詳しくお伝えします。</p>
+                <p>少し整えるだけで、声や伝わり方が大きく変わった方もたくさんいらっしゃいます。</p>
+                <p>あなたの声には、まだ<span class="treasure-phrase">眠っている宝物</span>がたくさんあります。</p>
+                <p>その宝物を目覚めさせることで、あなたの魅力や伝わる力はもっと伸びていきます。</p>
+            </div>
             <div class="line-benefit">
                 <div class="line-benefit-label">LINE登録特典</div>
-                <div class="line-benefit-title"><span class="line-benefit-warning">⚠️ 逆効果になる</span><span class="line-benefit-main">「やってはいけない声の練習」リスト</span></div>
-                <div class="line-benefit-text">
-                    よくある声の練習の中には、やり方を間違えると声を固くし、伝わりにくくしてしまうものがあります。<br>
-                    自己流で遠回りしないために、まず避けるべき練習法を知ってください。
-                </div>
+                <div class="line-benefit-title"><span class="line-benefit-main">「やってはいけない声の練習」リスト</span></div>
             </div>
             <a class="line-cta" href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener">
-                <span class="line-icon" aria-hidden="true">▦</span>
-                <span>LINE友だち追加して予約する</span>
+                <span class="line-icon" aria-hidden="true">🟢</span>
+                <span>LINE登録でZoom無料声診断を受ける</span>
             </a>
+            <div class="line-reassurance">無理な勧誘や営業は一切ありません。<br>安心してお気軽にご利用ください。</div>
         </div>
 
 
