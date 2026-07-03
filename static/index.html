@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>玉井智の信頼される声診断</title>
+    <title>7秒無料声診断</title>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-R9X1LQ8HG2"></script>
     <script>
@@ -97,11 +97,19 @@
             font-weight: 700;
         }
 
+        .hero-tagline {
+            margin: 0 0 0.38rem;
+            color: rgba(255,255,255,0.72);
+            font-size: 0.92rem;
+            font-weight: 600;
+            letter-spacing: 0;
+        }
+
         .hero-lead {
             max-width: 700px;
-            margin: 0.75rem auto 0;
+            margin: 0.6rem auto 0;
             font-size: 1rem;
-            line-height: 1.65;
+            line-height: 1.55;
             overflow-wrap: anywhere;
             word-break: break-all;
         }
@@ -177,6 +185,7 @@
         .record-card {
             margin-top: 0;
             border-top: 4px solid var(--accent);
+            padding-top: 1.05rem;
         }
 
         .diagnosis-summary {
@@ -213,33 +222,41 @@
         }
 
         .record-guide {
-            margin: 0.56rem auto 0.62rem;
-            padding: 0.64rem 0.82rem;
+            margin: 0.68rem auto 0.42rem;
+            padding: 0.48rem 0.68rem;
             border-radius: 8px;
             background: #f7f4ed;
             border: 1px solid #e6d8b6;
             color: #493d2d;
-            text-align: left;
-            max-width: 680px;
+            font-size: 0.8rem;
+            line-height: 1.5;
+            max-width: 540px;
             overflow-wrap: anywhere;
             word-break: break-all;
         }
 
-        .record-guide strong { color: var(--primary); }
+        .record-guide strong {
+            display: inline-block;
+            color: var(--primary);
+            font-size: 0.76rem;
+            margin-bottom: 0.16rem;
+        }
 
         .record-example {
             display: block;
-            margin: 0.2rem 0 0.12rem;
+            margin: 0.04rem 0 0.08rem;
             color: #0D1B2A;
             font-weight: 800;
-            line-height: 1.55;
+            font-size: 0.9rem;
+            line-height: 1.45;
         }
 
         .buttons {
             display: flex;
-            gap: 1rem;
             justify-content: center;
-            margin-bottom: 0.5rem;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            margin-bottom: 0;
         }
 
         .btn {
@@ -256,16 +273,29 @@
         }
 
         .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; box-shadow: none !important; }
+        .btn-stop:disabled { display: none; }
 
         .btn-record {
-            background: var(--primary);
-            color: white;
-            box-shadow: 0 6px 18px rgba(13,27,42,0.28);
-            border: 1px solid rgba(201,162,39,0.55);
+            min-width: min(460px, 100%);
+            min-height: 72px;
+            padding: 1.18rem 1.7rem;
+            background: linear-gradient(180deg, #2fd86b 0%, #08a640 52%, #057a31 100%);
+            color: #ffffff;
+            font-size: 1.16rem;
+            font-weight: 900;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.26);
+            box-shadow:
+                0 18px 34px rgba(6, 166, 64, 0.38),
+                inset 0 1px 0 rgba(255,255,255,0.42),
+                inset 0 -4px 0 rgba(0,0,0,0.16);
+            border: 1px solid rgba(185, 242, 196, 0.72);
         }
         .btn-record:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 10px 24px rgba(13,27,42,0.35);
+            box-shadow:
+                0 22px 42px rgba(6, 166, 64, 0.44),
+                inset 0 1px 0 rgba(255,255,255,0.42),
+                inset 0 -4px 0 rgba(0,0,0,0.16);
         }
         .btn-record.is-recording {
             background: var(--danger);
@@ -814,10 +844,11 @@
         }
 
         @media (max-width: 580px) {
-            header { padding: 0.92rem 0.82rem 0.62rem; }
-            header h1 { font-size: 1.62rem; }
-            .hero-eyebrow { margin-bottom: 0.38rem; font-size: 0.72rem; }
-            .hero-lead { font-size: 0.9rem; margin-top: 0.36rem; line-height: 1.52; }
+            header { padding: 0.82rem 0.82rem 0.52rem; }
+            header h1 { font-size: 1.82rem; }
+            .hero-eyebrow { margin-bottom: 0.28rem; font-size: 0.72rem; }
+            .hero-tagline { font-size: 0.76rem; margin-bottom: 0.28rem; }
+            .hero-lead { font-size: 0.9rem; margin-top: 0.32rem; line-height: 1.45; }
             .authority-strip { gap: 0.3rem; margin-top: 0.48rem; }
             .authority-item { padding: 0.24rem 0.46rem; font-size: 0.68rem; }
             .authority-value, .authority-label { font-size: 0.68rem; }
@@ -826,13 +857,13 @@
             .card { padding: 0.78rem; }
             .card-title { margin-bottom: 0.48rem; }
             .diagnosis-summary { font-size: 0.84rem; margin-bottom: 0.55rem; }
-            .pre-diagnosis-copy { margin: 0.42rem auto 0.4rem; padding: 0.5rem 0.62rem; }
-            .pre-diagnosis-copy strong { font-size: 0.92rem; }
-            .pre-diagnosis-copy span { font-size: 0.8rem; line-height: 1.48; }
-            .record-guide { margin: 0.42rem auto 0.5rem; padding: 0.5rem 0.62rem; font-size: 0.81rem; }
-            .record-example { margin: 0.16rem 0 0.08rem; line-height: 1.48; }
-            .buttons { flex-direction: column; gap: 0.58rem; margin-bottom: 0.42rem; }
+            .record-card { padding-top: 0.88rem; }
+            .pre-diagnosis-copy { display: none; }
+            .record-guide { margin: 0.58rem auto 0.42rem; padding: 0.44rem 0.56rem; font-size: 0.76rem; }
+            .record-example { margin: 0.02rem 0 0.06rem; line-height: 1.38; font-size: 0.84rem; }
+            .buttons { flex-direction: column; gap: 0.5rem; margin-bottom: 0; }
             .btn { justify-content: center; width: 100%; padding: 0.78rem 1.05rem; font-size: 0.97rem; }
+            .btn-record { min-height: 68px; padding: 1.06rem 1rem; font-size: 1.08rem; }
 
             .mic-error-help { margin-top: 0.58rem; padding: 0.68rem; }
             .mic-error-title { font-size: 0.92rem; }
@@ -861,9 +892,10 @@
 
 <header>
     <div class="hero-inner">
-        <div class="hero-eyebrow">リアル・ボイストレーニング 代表 玉井智</div>
-        <h1>玉井智の<br>信頼される声診断</h1>
-        <p class="hero-lead">35年の現場経験から生まれた、<br>声の強みと伸びしろがわかる無料診断です。</p>
+        <div class="hero-eyebrow">リアル・ボイストレーニング</div>
+        <p class="hero-tagline">話し方より、声でした。</p>
+        <h1>7秒無料声診断</h1>
+        <p class="hero-lead">あなたの声の特徴と<br>改善ポイントがわかります。</p>
         <div class="authority-strip" aria-label="玉井智の実績">
             <div class="authority-item">
                 <div class="authority-value">35年以上</div>
@@ -871,7 +903,7 @@
             </div>
             <div class="authority-item">
                 <div class="authority-value">2万人以上</div>
-                <div class="authority-label">受講者累計</div>
+                <div class="authority-label">受講</div>
             </div>
         </div>
         <p class="profile-line">現役MC・ナレーター・ラジオDJ・スタジアムDJの視点から診断します。</p>
@@ -883,22 +915,18 @@
     <!-- 録音カード -->
     <div class="card record-card">
         <div class="record-area">
-            <div class="pre-diagnosis-copy">
-                <strong>あなたの声の強みを分析します</strong>
-                <span>7秒話すだけで、<br>あなたの声の特徴と伸びしろがわかります。</span>
-            </div>
-            <div class="record-guide">
-                <strong>話す内容：</strong>
-                <span class="record-example">「私は〇〇です。今日は、<br>自分の声が相手にどう届いているのかを知りたいです。」</span>
-                と7秒ほど自然に話してください。
-            </div>
             <div class="buttons">
                 <button class="btn btn-record" id="recordBtn">
-                    &#9210; &nbsp;声を録音して無料診断する
+                    🎤 今すぐ診断する
                 </button>
                 <button class="btn btn-stop" id="stopBtn" disabled>
                     &#9209; &nbsp;録音を止める
                 </button>
+            </div>
+            <div class="record-guide">
+                <strong>話す内容（例）</strong>
+                <span class="record-example">「〇〇です。声の診断をお願いします。」</span>
+                など、7秒ほど自然に話してください。
             </div>
             <div class="timer" id="timer">0:00</div>
             <div class="status-row">
