@@ -7,5 +7,16 @@ knowledge_archive/
 # local Codex/Claude settings
 .claude/
 
+# voice-app-v2 screenshot reports
+reports/**/*.png
+reports/**/*.jpg
+reports/**/*.jpeg
+reports/**/*.webp
+reports/**/*.gif
+reports/**/*.bmp
+reports/**/*.tif
+reports/**/*.tiff
+!reports/**/*.txt
+
 # Render needs this file
 !requirements.txt
