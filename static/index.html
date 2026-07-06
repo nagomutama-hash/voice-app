@@ -485,6 +485,122 @@
             .radar-wrap { height: 260px; }
         }
 
+        /* ---- Voice Type Label ---- */
+        .advice-type-label {
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+        }
+        .advice-type-label strong {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+        .advice-type-divider { color: var(--border); }
+
+        /* ---- Advice Sections ---- */
+        .advice-section { margin-bottom: 1.1rem; }
+        .advice-section:last-child { margin-bottom: 0; }
+        .advice-section-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 0.45rem;
+        }
+        .advice-section-body {
+            font-size: 0.93rem;
+            line-height: 1.75;
+            color: #374151;
+        }
+        .advice-section.is-risk {
+            background: #fff7ed;
+            border-left: 3px solid #f97316;
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1rem;
+            margin-left: -1rem;
+        }
+        .advice-section.is-risk .advice-section-title { color: #c2410c; }
+        .advice-section.is-next {
+            background: #f0fff4;
+            border-left: 3px solid #06C755;
+            border-radius: 0 8px 8px 0;
+            padding: 0.75rem 1rem;
+            margin-left: -1rem;
+        }
+        .advice-section.is-next .advice-section-title { color: #047857; }
+
+        /* ---- LINE Card ---- */
+        .line-card {
+            background: #fff;
+            border: 1.5px solid #06C755;
+            border-radius: 14px;
+            padding: 1.5rem 1.25rem;
+            text-align: center;
+        }
+        .line-card .card-title { color: #047857; font-size: 0.95rem; }
+        .line-benefit-box {
+            background: #f0fff4;
+            border: 1px solid #bbf7d0;
+            border-radius: 10px;
+            padding: 0.85rem 1rem;
+            margin: 1rem 0;
+            text-align: left;
+        }
+        .line-benefit-tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: #047857;
+            margin-bottom: 0.3rem;
+        }
+        .line-benefit-title {
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #1a2433;
+            line-height: 1.5;
+        }
+        .line-benefit-sub {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.2rem;
+        }
+        .line-copy-text {
+            font-size: 0.88rem;
+            color: #374151;
+            line-height: 1.65;
+            margin-bottom: 1.1rem;
+        }
+        .line-cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.6rem;
+            background: #06C755;
+            color: #fff;
+            font-weight: 800;
+            font-size: 1rem;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            width: 100%;
+            box-sizing: border-box;
+            animation: linePulse 2s ease-in-out infinite;
+        }
+        @keyframes linePulse {
+            0%, 100% { box-shadow: 0 4px 18px rgba(6,199,85,0.35); }
+            50%       { box-shadow: 0 4px 28px rgba(6,199,85,0.6); }
+        }
+        .line-reassurance {
+            font-size: 0.75rem;
+            color: #94a3b8;
+            margin-top: 0.85rem;
+            line-height: 1.6;
+        }
+
         /* ---- Hints ---- */
         .hint-item {
             padding: 0.85rem 0;
@@ -712,31 +828,23 @@
         </div>
 
         <!-- LINE友達追加ボタン -->
-        <div class="card" style="text-align:center; padding: 1.75rem; background: linear-gradient(135deg, #f0fff4, #dcfce7); border: 2px solid #06C755;">
-            <div class="card-title" style="color:#047857; font-size:1rem;">🎯 次のステップ｜Zoom無料声診断を予約する</div>
-
-            <!-- LINE登録特典 -->
-            <div style="background:#fff; border:1px solid #bbf7d0; border-radius:10px; padding:0.9rem 1rem; margin-bottom:1.25rem; text-align:left;">
-                <div style="font-size:0.75rem; font-weight:700; color:#047857; margin-bottom:0.4rem;">🎁 LINE友だち追加特典</div>
-                <div style="font-size:0.95rem; font-weight:800; color:#1a2433; line-height:1.5;">
-                    やってはいけない<br>「逆効果になる声の練習」リスト
-                </div>
-                <div style="font-size:0.78rem; color:#64748b; margin-top:0.3rem;">友だち追加後すぐにお届けします</div>
+        <div class="line-card">
+            <div class="card-title">🎯 Zoom無料声診断を受ける</div>
+            <div class="line-benefit-box">
+                <div class="line-benefit-tag">🎁 LINE登録特典</div>
+                <div class="line-benefit-title">やってはいけない<br>「逆効果になる声の練習」リスト</div>
+                <div class="line-benefit-sub">友だち追加後すぐにお届けします</div>
             </div>
-
-            <p style="color:#374151; font-size:0.9rem; margin-bottom:1.25rem; line-height:1.6;">
-                声の癖を根本から診てもらえる<strong>20分間のZoom無料声診断</strong>はこちらから
+            <p class="line-copy-text">
+                Zoom無料声診断では、35年以上・2万人以上の声を見てきたプロが、<br>
+                あなたの声の強みと、声で損しているポイントをさらに詳しくお伝えします。
             </p>
-            <a href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener"
-               onclick="gtag('event', 'line_register_click', { event_category: 'conversion', event_label: '声診断アプリ_LINEボタン' });"
-               style="display:inline-flex; align-items:center; justify-content:center; gap:0.6rem;
-                      background:#06C755; color:white; font-weight:800;
-                      font-size:1.1rem; padding:1.1rem 2rem; border-radius:12px;
-                      text-decoration:none; width:100%; max-width:360px;
-                      box-shadow:0 4px 20px rgba(6,199,85,0.5);
-                      animation: linePulse 2s ease-in-out infinite;">
-                📲　LINE友だち追加して予約する
+            <a class="line-cta-btn" href="https://lin.ee/0uZqUu4" target="_blank" rel="noopener"
+               onclick="gtag('event', 'line_register_click', { event_category: 'conversion', event_label: '声診断アプリ_LINEボタン' });">
+                <span aria-hidden="true">🟢</span>
+                <span>LINE登録でZoom無料声診断を受ける</span>
             </a>
+            <p class="line-reassurance">無理な勧誘・営業は一切ありません。<br>安心してお気軽にご利用ください。</p>
         </div>
 
         <!-- 複数回診断のすすめ -->
@@ -1072,24 +1180,15 @@ async function fetchAdvice(stats, duration) {
 
                 } else if (data.type === 'done') {
                     clearInterval(window._adviceMsgTimer);
-                    const sections = [
-                        { title: 'あなたの声の個性', key: 'voice_character' },
-                        { title: 'この声の可能性',   key: 'potential' },
-                    ];
-                    adviceSections.innerHTML = sections.map(s => `
-                        <div class="advice-section">
-                            <div class="advice-section-title">${s.title}</div>
-                            <div class="advice-section-body">${data.advice[s.key]}</div>
-                        </div>
-                    `).join('') + `
-                        <div class="advice-section" style="border-left-color:#06C755; background:#f0fff4;">
-                            <div class="advice-section-title" style="color:#047857;">次のステップへ</div>
-                            <div class="advice-section-body">
-                                この声の癖と可能性を、玉井智が直接20分で診断します。<br>
-                                LINEを友だち追加して、<strong>Zoom無料声診断</strong>にお申し込みください。
-                            </div>
-                        </div>
-                    `;
+                    const scores  = (stats && stats.scores) ? stats.scores : {};
+                    const typeKey = detectVoiceType(scores);
+                    const tmpl    = VOICE_TYPE_TEMPLATES[typeKey];
+                    adviceSections.innerHTML =
+                        `<div class="advice-type-label"><span>あなたの声タイプ</span><span class="advice-type-divider">｜</span><strong>${tmpl.label}</strong></div>` +
+                        `<div class="advice-section"><div class="advice-section-title">あなたの声の個性</div><div class="advice-section-body">${data.advice.voice_character}</div></div>` +
+                        `<div class="advice-section is-risk"><div class="advice-section-title">⚠ このままだと</div><div class="advice-section-body">${tmpl.risk}</div></div>` +
+                        `<div class="advice-section"><div class="advice-section-title">この声の可能性</div><div class="advice-section-body">${data.advice.potential}</div></div>` +
+                        `<div class="advice-section is-next"><div class="advice-section-title">次のステップ</div><div class="advice-section-body">${tmpl.next_step}</div></div>`;
                     adviceSections.classList.remove('hidden');
                     adviceLoading.classList.add('hidden');
                     return;
@@ -1261,6 +1360,47 @@ const TEMPO_HINTS = {
         very_low: '体の前で手のひらを合わせ、ゆっくりこすりながら話してみてください',
     },
 };
+
+// ===== 声タイプ判定 =====
+const VOICE_TYPE_TEMPLATES = {
+    expressive: {
+        label: '安心感・信頼タイプ',
+        risk: '今でも十分伝わっています。<br>ただ、今の声のままでは、本来得られるはずの評価や信頼をまだ取りこぼしている可能性があります。<br>基礎が整っているからこそ、少しの変化が大きな差につながります。',
+        next_step: 'Zoom無料声診断では、あなたの声の癖、声で損しているポイント、伸びしろを具体的に見ます。<br>どこを整えると、さらに選ばれる声になるのか。<br>あなたの声の次の一手をお伝えします。',
+    },
+    soft: {
+        label: 'やさしさ先行タイプ',
+        risk: 'このままだと「いい人ですね」で終わりやすい可能性があります。<br>安心感はあるのに、決断や期待まで届かず、大事な場面で選ばれにくくなることがあります。',
+        next_step: 'Zoom無料声診断では、あなたの声の癖、声で損しているポイント、伸びしろを具体的に見ます。<br>やさしさを残したまま、どこに芯を足すと相手が動きやすくなるのか。<br>改善すると伝わり方がどう変わるかをお伝えします。',
+    },
+    pushy: {
+        label: '熱量・存在感タイプ',
+        risk: '力が入りすぎると、相手が少し身構えることがあります。<br>本人は一生懸命でも、相手には「売られている」「説得されている」と伝わる可能性があります。',
+        next_step: 'Zoom無料声診断では、声の癖と、圧が強く出ているポイントを具体的に見ます。<br>熱量を弱めるのではなく、どう整えると信頼に変わるのか。<br>改善すると印象がどう変わるかをお伝えします。',
+    },
+    cerebral: {
+        label: '誠実・説明上手タイプ',
+        risk: '声から感じる体温が少ないため、相手には機械的な説明として聞こえている可能性があります。<br>内容は理解されても、感情が動かず、行動につながらないことがあります。',
+        next_step: 'Zoom無料声診断では、声の癖と、声で損しているポイントを具体的に見ます。<br>どこで体温が伝わりにくくなっているのか。<br>「わかりやすい」から「お願いしたい」に変わるポイントをお伝えします。',
+    },
+    unclear: {
+        label: 'のびしろ大きいタイプ',
+        risk: '声が届きにくいことで、相手に聞く努力をさせてしまっている可能性があります。<br>内容が良くても、聞き取ることに意識が向くと、興味や集中力が下がってしまいます。',
+        next_step: 'Zoom無料声診断では、声の癖と、声で損しているポイントを具体的に見ます。<br>どこを改善すると、聞き取りやすさがどう変わるのか。<br>あなたの内容がきちんと届く声へ整えるヒントをお伝えします。',
+    },
+};
+
+function detectVoiceType(scores) {
+    const v = k => Number(scores[k] || 5);
+    const keys = ['intonation', 'dynamics', 'brightness', 'resonance', 'tempo', 'sustain'];
+    const avg = keys.reduce((s, k) => s + v(k), 0) / 6;
+    const lowCount = keys.filter(k => v(k) <= 4).length;
+    if (v('dynamics') >= 8 || (v('brightness') >= 8 && v('tempo') >= 7)) return 'pushy';
+    if (lowCount === 0 && avg >= 6.2) return 'expressive';
+    if (v('resonance') <= 4 || v('brightness') <= 4) return 'unclear';
+    if (v('dynamics') <= 4 || v('sustain') <= 4) return 'soft';
+    return 'cerebral';
+}
 
 // ===== ヒント表示 =====
 function drawHints(stats) {
