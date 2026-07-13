@@ -759,11 +759,13 @@
             margin-top: 1rem;
             padding: 1rem 1.05rem;
             border-radius: 8px;
-            border: 1px solid rgba(201,162,39,0.42);
+            border: 1px solid rgba(6,199,85,0.34);
             background: linear-gradient(135deg, rgba(13,27,42,0.96), rgba(25,45,65,0.96));
             color: #fff8df;
             text-align: left;
-            box-shadow: 0 12px 26px rgba(13,27,42,0.12);
+            box-shadow:
+                inset 4px 0 0 rgba(6,199,85,0.38),
+                0 12px 26px rgba(13,27,42,0.12);
         }
 
         .soft-line-jump-title {
@@ -786,17 +788,17 @@
             align-items: center;
             justify-content: center;
             padding: 0.62rem 0.9rem;
-            border: 1px solid rgba(242,211,122,0.7);
+            border: 1px solid rgba(6,199,85,0.52);
             border-radius: 8px;
-            background: rgba(255,255,255,0.06);
-            color: #f7df96;
+            background: rgba(6,199,85,0.1);
+            color: #c6f6d5;
             font-size: 0.86rem;
             font-weight: 850;
             cursor: pointer;
         }
 
         .soft-line-jump-btn:hover {
-            background: rgba(242,211,122,0.12);
+            background: rgba(6,199,85,0.16);
         }
 
         .line-card {
@@ -853,6 +855,10 @@
 
         .line-copy p:last-child {
             margin-bottom: 0;
+        }
+
+        .line-copy p.line-change-copy {
+            margin-bottom: 0.35rem;
         }
 
         .treasure-phrase {
@@ -1165,8 +1171,8 @@
             </div>
             <div class="card-title">Zoom無料声診断</div>
             <div class="line-copy">
-                <p>Zoom無料声診断では、35年以上・2万人以上の声を見てきたプロが、あなたの声の強みと改善ポイントをさらに詳しくお伝えします。</p>
-                <p>少し整えるだけで、声や伝わり方が大きく変わった方もたくさんいらっしゃいます。</p>
+                <p>35年以上・2万人以上の声を見てきたプロが、あなたの声の強みと改善ポイントを詳しくお伝えします。</p>
+                <p class="line-change-copy">少し整えるだけで、声や伝わり方が大きく変わった方もたくさんいらっしゃいます。</p>
                 <p>あなたの声には、まだ<span class="treasure-phrase">眠っている宝物</span>がたくさんあります。</p>
             </div>
             <div class="line-benefit">
