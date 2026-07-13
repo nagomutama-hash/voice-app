@@ -754,6 +754,51 @@
         .btn-rerecord:hover {
             background: #15283d;
         }
+
+        .soft-line-jump {
+            margin-top: 1rem;
+            padding: 1rem 1.05rem;
+            border-radius: 8px;
+            border: 1px solid rgba(201,162,39,0.42);
+            background: linear-gradient(135deg, rgba(13,27,42,0.96), rgba(25,45,65,0.96));
+            color: #fff8df;
+            text-align: left;
+            box-shadow: 0 12px 26px rgba(13,27,42,0.12);
+        }
+
+        .soft-line-jump-title {
+            color: #f2d37a;
+            font-size: 0.98rem;
+            font-weight: 900;
+            line-height: 1.35;
+            margin-bottom: 0.35rem;
+        }
+
+        .soft-line-jump-copy {
+            color: rgba(255,248,223,0.9);
+            font-size: 0.86rem;
+            line-height: 1.65;
+            margin-bottom: 0.7rem;
+        }
+
+        .soft-line-jump-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.62rem 0.9rem;
+            border: 1px solid rgba(242,211,122,0.7);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.06);
+            color: #f7df96;
+            font-size: 0.86rem;
+            font-weight: 850;
+            cursor: pointer;
+        }
+
+        .soft-line-jump-btn:hover {
+            background: rgba(242,211,122,0.12);
+        }
+
         .line-card {
             text-align: center;
             padding: 2rem 1.75rem;
@@ -768,13 +813,30 @@
             margin-bottom: 1rem;
         }
 
-        .line-bridge {
-            max-width: 640px;
-            margin: 0 auto 1.05rem;
+        .line-next-step {
+            max-width: 620px;
+            margin: 0 auto 1.15rem;
+            padding: 0.85rem 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #C9A227;
+            background: #fff7dc;
+            text-align: left;
+            box-shadow: 0 8px 22px rgba(201,162,39,0.12);
+        }
+
+        .line-next-label {
+            color: #0D1B2A;
+            font-size: 0.92rem;
+            font-weight: 900;
+            margin-bottom: 0.35rem;
+        }
+
+        .line-next-copy {
+            margin: 0;
             color: #1f2933;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: 700;
-            line-height: 1.75;
+            line-height: 1.65;
         }
 
         .line-copy {
@@ -935,8 +997,13 @@
             .radar-wrap { height: 300px; }
             .score-legend { flex-direction: column; align-items: center; gap: 0.35rem; }
             .score-diff-grid { grid-template-columns: repeat(2, 1fr); }
+            .soft-line-jump { margin-top: 0.82rem; padding: 0.9rem; }
+            .soft-line-jump-title { font-size: 0.92rem; }
+            .soft-line-jump-copy { font-size: 0.8rem; line-height: 1.55; }
+            .soft-line-jump-btn { width: 100%; font-size: 0.82rem; }
             .line-card { padding: 1.45rem 1rem; }
-            .line-bridge { font-size: 0.9rem; line-height: 1.65; margin-bottom: 0.9rem; }
+            .line-next-step { padding: 0.78rem 0.82rem; margin-bottom: 0.9rem; }
+            .line-next-copy { font-size: 0.84rem; line-height: 1.6; }
             .line-benefit { padding: 0.9rem; }
             .line-benefit-title { gap: 0.25rem; margin-bottom: 0.65rem; }
             .line-benefit-warning { font-size: 0.84rem; }
@@ -1073,6 +1140,12 @@
         </div>
 
         <!-- AIアドバイス -->
+        <div class="soft-line-jump" id="lineGuideCta">
+            <div class="soft-line-jump-title">プロが直接、あなたの声を無料診断します</div>
+            <div class="soft-line-jump-copy">AIでは見えにくい声の癖や伸びしろを、一緒に確認できます。</div>
+            <button class="soft-line-jump-btn" type="button" id="lineGuideBtn">無料声診断について見る ↓</button>
+        </div>
+
         <div class="card" id="adviceCard">
             <div class="card-title">診断コメント</div>
             <div id="adviceLoading" class="advice-loading">
@@ -1086,13 +1159,12 @@
 
         <!-- LINE友達追加ボタン -->
         <div class="card line-card">
-            <p class="line-bridge">
-                診断コメントで見えた声の強みや伸びしろを、次の一歩につなげたい方へ。<br>
-                AI診断だけでは見えにくい声の癖を、無料声診断で一緒に確認できます。
-            </p>
+            <div class="line-next-step" id="lineNextStep">
+                <div class="line-next-label">次のステップ</div>
+                <p class="line-next-copy">あなただけの声の癖や伸びしろには、<br>AI診断だけでは見えにくい部分があります。</p>
+            </div>
             <div class="card-title">Zoom無料声診断</div>
             <div class="line-copy">
-                <p>今回の診断は、AIによる7秒の簡易診断です。</p>
                 <p>Zoom無料声診断では、35年以上・2万人以上の声を見てきたプロが、あなたの声の強みと改善ポイントをさらに詳しくお伝えします。</p>
                 <p>少し整えるだけで、声や伝わり方が大きく変わった方もたくさんいらっしゃいます。</p>
                 <p>あなたの声には、まだ<span class="treasure-phrase">眠っている宝物</span>がたくさんあります。</p>
@@ -1140,6 +1212,8 @@ const micErrorHelp = document.getElementById('micErrorHelp');
 const micRetryBtn = document.getElementById('micRetryBtn');
 const rerecordBtn = document.getElementById('rerecordBtn');
 const lineCta = document.querySelector('.line-cta');
+const lineGuideBtn = document.getElementById('lineGuideBtn');
+const lineNextStep = document.getElementById('lineNextStep');
 
 function trackEvent(name, params = {}) {
     if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
@@ -1240,6 +1314,12 @@ if (lineCta) {
             event_category: 'conversion',
             event_label: 'voice_app_v2_line_register_click',
         });
+    });
+}
+
+if (lineGuideBtn && lineNextStep) {
+    lineGuideBtn.addEventListener('click', () => {
+        lineNextStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
     });
 }
 
@@ -1597,7 +1677,6 @@ function renderTemplateAdvice(stats) {
         { title: 'あなたの声の個性', body: template.voice_character },
         { title: '⚠ このままだと', body: template.risk, tone: 'risk' },
         { title: 'この声の可能性', body: template.potential + '<br>' + variableLine },
-        { title: '次のステップ', body: template.next_step },
     ];
 
     adviceSections.innerHTML = '<div class="advice-type-label"><span>あなたの声タイプ</span><span class="advice-type-divider">｜</span><strong>' + type.label + '</strong></div>' +
