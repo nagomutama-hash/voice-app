@@ -146,17 +146,45 @@ async def lifespan(app: FastAPI):
     pdf_count = len(list(KNOWLEDGE_DIR.glob("*.pdf")))
     print(f"PDF知識読み込み完了: {pdf_count}ファイル / {len(_knowledge_text)}文字")
     print(f"APIキー: {'設定済み' if _API_KEY else '未設定！'}")
+    # 初回のライブラリ初期化を利用者の録音ではなく起動時に済ませる。
+    sample = np.arange(96000) / 16000
+    buffer = io.BytesIO()
+    sf.write(buffer, 0.1 * np.sin(2 * np.pi * 150 * sample), 16000, format='WAV')
+    buffer.seek(0)
+    warmup_file = UploadFile(filename='startup-warmup.wav', file=buffer)
+    result = analyze_audio(warmup_file, 'five_preview', DIAGNOSIS_CONFIG['reading']['id'], True)
+    if result.status_code != 200:
+        raise RuntimeError('Voice analysis startup check failed')
+    buffer.close()
     yield
 
 
 app = FastAPI(title="声診断アプリ", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=str(Path(__file__).resolve().parent / "static")), name="static")
+ACCESS_CLOSED = True  # 完成後の新しい期間限定入口を用意するまで診断を停止する。
+
+
+@app.middleware("http")
+async def preparation_gate(request, call_next):
+    if ACCESS_CLOSED:
+        if request.method in ('GET', 'HEAD'):
+            from fastapi.responses import HTMLResponse
+            return HTMLResponse('<!doctype html><html lang="ja"><meta charset="utf-8">'
+                '<meta name="viewport" content="width=device-width,initial-scale=1">'
+                '<title>声診断・準備中</title><main style="max-width:600px;margin:15vh auto;padding:24px;font-family:sans-serif">'
+                '<h1>声診断は現在準備中です</h1><p>このURLからのご利用は終了しました。</p>'
+                '<p>準備が整いましたら、新しいテスト用URLをご案内します。</p></main></html>',
+                headers={'Cache-Control': 'no-store', 'Permissions-Policy': 'microphone=()'})
+        return JSONResponse({'success': False, 'code': 'test_closed',
+                             'error': 'このURLからのご利用は終了しました。新しいテスト用URLのご案内をお待ちください。'},
+                            status_code=403, headers={'Cache-Control': 'no-store'})
+    return await call_next(request)
 
 
 @app.middleware("http")
 async def microphone_policy(request, call_next):
     response = await call_next(request)
-    response.headers["Permissions-Policy"] = "microphone=(self)"
+    response.headers["Permissions-Policy"] = "microphone=()" if ACCESS_CLOSED else "microphone=(self)"
     return response
 
 
