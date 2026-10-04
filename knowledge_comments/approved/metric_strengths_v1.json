@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "COMMENT-METRIC-SPEED-STRENGTH-001",
+      "version": 1,
+      "draft_id": "METRIC-SPEED-STRENGTH-DRAFT-001",
+      "metric": "speed",
+      "section": "strength",
+      "intended_type": "unclear",
+      "text": "速すぎず、遅すぎず、聞きやすい速度で話せています。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-30",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "本人が聞きやすい速度を含めるよう希望し、修正全文の確定確認に「ＯＫです！」と承認。",
+      "previous_draft": "速すぎず、遅すぎない話し方です。",
+      "revision_note": "本人の要望に沿って聞きやすい速度という評価を追加。速度の良さを述べる文で、滑舌・声量等を含む総合的な聞き取りやすさの評価とは区別する。",
+      "sources": [
+        {
+          "source_id": "SRC-017",
+          "source_path": "sources/voice-app/knowledge/発展知識_レッスンから抽出7.txt",
+          "source_sha256": "d3fe56ce509153ff71edffe9d428a6c8ad950e444492a889bf0282dd23ceaea4",
+          "source_lines": [
+            1,
+            4
+          ],
+          "source_location": "速度の3ゾーン把握法",
+          "provenance_note": "既存の整理・抽出TXT。元講義との逐語一致と作成経緯は未確認。本文は本人による別途監修・承認済み。"
+        }
+      ],
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    },
+    {
+      "id": "COMMENT-METRIC-BRIGHTNESS-STRENGTH-001",
+      "version": 1,
+      "draft_id": "METRIC-BRIGHTNESS-STRENGTH-DRAFT-001",
+      "metric": "brightness",
+      "section": "strength",
+      "intended_type": "unclear",
+      "text": "声に明るさが感じられます。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-30",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "全文確認に対する本人回答「明るさもＯＫです。」",
+      "revision_note": "資料の明るさという観点を短い評価文にした本人承認済み修正文。親しみやすさや性格の推定は含めない。",
+      "sources": [
+        {
+          "source_id": "SRC-016",
+          "source_path": "sources/voice-app/knowledge/発展知識_レッスンから抽出6.txt",
+          "source_sha256": "4f7393b2e4329d019f200f10e3cc74717ce8e26a898b54872bbb64ae70cfb1f6",
+          "source_lines": [
+            43,
+            45
+          ],
+          "source_location": "アクセントの音程幅が声の明るさを決める",
+          "provenance_note": "既存の整理・抽出TXT。元講義との逐語一致と作成経緯は未確認。本文は本人が別途監修・承認。"
+        }
+      ],
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    },
+    {
+      "id": "COMMENT-METRIC-ARTICULATION-STRENGTH-001",
+      "version": 1,
+      "metric": "articulation",
+      "section": "strength",
+      "intended_type": "unclear",
+      "text": "一音一音がはっきりしていて、言葉を聞き取りやすく発音できています。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-30",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "滑舌・声の強さ・響きの3文に対し、本人が「3つすべてＯＫです」と承認。",
+      "revision_note": "承認原資料の処方箋9ページ「一音一音を明確に作り出す」、抽出TXT5の30行「一音一音の粒をしっかりすることが滑舌の基本」。逐語引用ではなく調整案。",
+      "sources": [
+        {
+          "source_id": "SRC-015",
+          "source_path": "sources/voice-app/knowledge/発展知識_レッスンから抽出5.txt",
+          "source_sha256": "799c8e685231ea96287e0ecf6a7f5661e00deed85dfd8f9fcf8c65267445bd21",
+          "source_lines": [
+            30,
+            31
+          ],
+          "provenance_note": "既存の整理・抽出TXT。元講義との逐語一致と作成経緯は未確認。表示本文は本人が別途承認済み。"
+        }
+      ],
+      "display_note": "発音の明確さが確認できた場合のみ。こもり声という分類名だけで非表示/表示を決めない。",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    },
+    {
+      "id": "COMMENT-METRIC-POWER-STRENGTH-001",
+      "version": 1,
+      "metric": "power",
+      "section": "strength",
+      "intended_type": "unclear",
+      "text": "声にしっかりとした強さが感じられます。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-30",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "滑舌・声の強さ・響きの3文に対し、本人が「3つすべてＯＫです」と承認。",
+      "revision_note": "抽出TXT4の31〜33行に声量と響きの説明。説明を短い評価文にした調整案。元の発声方法や息の効率まで診断できたとは扱わない。",
+      "sources": [
+        {
+          "source_id": "SRC-014",
+          "source_path": "sources/voice-app/knowledge/発展知識_レッスンから抽出4.txt",
+          "source_sha256": "6bd83229372f5eb10e8ac0169813e148d166915d7c55340ba88920eb07ae471b",
+          "source_lines": [
+            31,
+            33
+          ],
+          "provenance_note": "既存の整理・抽出TXT。元講義との逐語一致と作成経緯は未確認。表示本文は本人が別途承認済み。"
+        }
+      ],
+      "display_note": "音量の大きさだけでなく、過剰でない適切な強さを確認する基準が必要。安定性・相手への伝達までは本文に含めない。",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    },
+    {
+      "id": "COMMENT-METRIC-RESONANCE-STRENGTH-001",
+      "version": 1,
+      "metric": "resonance",
+      "section": "strength",
+      "intended_type": "unclear",
+      "text": "声がよく響いています。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-30",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "滑舌・声の強さ・響きの3文に対し、本人が「3つすべてＯＫです」と承認。",
+      "revision_note": "抽出TXT4の31〜33行の響きの説明を評価文にした調整案。逐語引用ではない。",
+      "sources": [
+        {
+          "source_id": "SRC-014",
+          "source_path": "sources/voice-app/knowledge/発展知識_レッスンから抽出4.txt",
+          "source_sha256": "6bd83229372f5eb10e8ac0169813e148d166915d7c55340ba88920eb07ae471b",
+          "source_lines": [
+            31,
+            33
+          ],
+          "provenance_note": "既存の整理・抽出TXT。元講義との逐語一致と作成経緯は未確認。表示本文は本人が別途承認済み。"
+        }
+      ],
+      "display_note": "響きの良さを確認できた場合のみ。深み・安心感まで自動的に評価しない。",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    }
+  ]
+}

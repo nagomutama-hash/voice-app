@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "COMMENT-UNCLEAR-POTENTIAL-001",
+      "version": 1,
+      "draft_id": "UNCLEAR-POTENTIAL-DRAFT-001",
+      "type": "unclear",
+      "section": "potential",
+      "text": "声や言葉が明確になると、相手が聞き取りやすく、言葉が届く声へ近づきます。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "本人の「一音一音が明確になると→声や言葉が明確になると」という修正提案を反映して全文確認し、「確定でｏｋです」と承認。",
+      "previous_draft": "一音一音が明確になると、相手が聞き取りやすく、言葉が届く声へ近づきます。",
+      "revision_note": "本人の指摘により、滑舌だけに限定される一音一音を声や言葉へ変更。こもり声・不鮮明の両方を含む表現にした。旧案は未承認で表示未使用。",
+      "sources": [
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 9,
+          "source_location": "輪郭形成・期待効果",
+          "original_excerpts": [
+            "眠っている舌や口周りの筋肉を正しく起動させ、一音一音を明確に作り出す。",
+            "あなたの話が相手の脳へノイズなくダイレクトに届くようになります。"
+          ]
+        }
+      ],
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    }
+  ]
+}

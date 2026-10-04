@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "COMMENT-EXPRESSIVE-STRENGTH-001",
+      "version": 1,
+      "draft_id": "EXPRESSIVE-STRENGTH-DRAFT-001",
+      "type": "expressive",
+      "section": "strength",
+      "text": "相手に安心感を与え、信頼関係を築く土台が整った声です。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "本人の「特徴・良さはＯＫです」による良さの本文承認。特徴は既存承認済み。",
+      "revision_note": "原文の安心感・信頼関係の土台を短い一文にし、完成していますを整った声ですへ調整。",
+      "sources": [
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 2,
+          "source_location": "分析の冒頭",
+          "original_excerpt": "相手に安心感を与える力を持っており、信頼関係を築く土台は完成しています。"
+        }
+      ],
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    },
+    {
+      "id": "COMMENT-EXPRESSIVE-POTENTIAL-001",
+      "version": 1,
+      "draft_id": "EXPRESSIVE-POTENTIAL-DRAFT-001",
+      "type": "expressive",
+      "section": "potential",
+      "text": "まだまだ眠っている宝物があります。その魅力を引き出せば、相手の心に響く声へ近づきます。",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "本人修正案の全文を再提示し確定確認したところ「ｏｋです。」と承認。",
+      "previous_draft": "声に眠っている魅力を引き出すことで、相手の心に響く声へ近づきます。",
+      "revision_note": "本人がまだまだ眠っている宝物という表現へ修正。可能性と伸びしろの多さを伝え、すでに話せている人にもさらに学ぶ意義を感じてもらう意図。受講率への効果は未検証。",
+      "sources": [
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 2,
+          "source_location": "伸びしろ（さらなる未来）の冒頭および分析の一部",
+          "original_excerpts": [
+            "現状でも支障はありませんが、あなたの声には『眠っている宝物』がまだたくさんあります。",
+            "相手の心に響いたり魂を揺さぶったり、"
+          ]
+        }
+      ],
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false
+    }
+  ]
+}

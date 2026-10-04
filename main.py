@@ -2,15 +2,20 @@ import io
 import json
 import math
 import os
+import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
 
 import anthropic
 import librosa
 import numpy as np
+import soundfile as sf
 import pdfplumber
 from dotenv import load_dotenv
-from fastapi import FastAPI, File, UploadFile
+from fastapi import FastAPI, File, Form, UploadFile
+from diagnosis import CONFIG as DIAGNOSIS_CONFIG, build_diagnosis
+from asr_speed import measure as measure_speech_speed
+from fixed_reading_speed import measure as measure_fixed_reading_speed
 from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -146,6 +151,23 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="声診断アプリ", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=str(Path(__file__).resolve().parent / "static")), name="static")
+
+
+@app.middleware("http")
+async def microphone_policy(request, call_next):
+    response = await call_next(request)
+    response.headers["Permissions-Policy"] = "microphone=(self)"
+    return response
+
+
+@app.get("/help/microphone")
+async def microphone_help():
+    return FileResponse(Path(__file__).resolve().parent / "static" / "microphone-help.html")
+
+
+@app.get("/mic-test")
+async def microphone_test():
+    return FileResponse(Path(__file__).resolve().parent / "static" / "microphone-test.html")
 
 
 class AdviceRequest(BaseModel):
@@ -325,17 +347,51 @@ async def generate_advice(req: AdviceRequest):
 
 
 @app.get("/")
+@app.get("/speed-retest")
 async def root():
     return FileResponse(str(Path(__file__).resolve().parent / "static" / "index.html"))
 
 
+MAX_AUDIO_BYTES = 8 * 1024 * 1024
+MIN_AUDIO_SECONDS = 5.0
+MAX_AUDIO_SECONDS = 21.0  # 画面は20秒で停止。端末の停止処理に1秒の余裕を持たせる。
+
+
+def recording_error(code: str, message: str, status: int = 422):
+    return JSONResponse({"success": False, "code": code, "error": message}, status_code=status)
+
+
 @app.post("/analyze")
-async def analyze_audio(file: UploadFile = File(...)):
+def analyze_audio(file: UploadFile = File(...), measurement_mode: str = Form('legacy'),
+                  prompt_id: str = Form(''), reading_complete: bool = Form(False)):
+    # 同期ルートとして解析をワーカースレッドへ移し、他のHTTP処理を止めない。
     try:
-        contents = await file.read()
+        contents = file.file.read(MAX_AUDIO_BYTES + 1)
+        if not contents:
+            return recording_error("empty_file", "録音が空です。もう一度、5〜10秒ほど話してください。")
+        if len(contents) > MAX_AUDIO_BYTES:
+            return recording_error("file_too_large", "録音データが大きすぎます。5〜10秒ほどで録音し直してください。", 413)
+        try:
+            info = sf.info(io.BytesIO(contents))
+        except Exception:
+            return recording_error("invalid_audio", "録音を読み取れませんでした。もう一度録音してください。")
+        if info.duration < MIN_AUDIO_SECONDS:
+            return recording_error("too_short", "録音が短すぎます。5〜10秒ほど話してから止めてください。")
+        if info.duration > MAX_AUDIO_SECONDS:
+            return recording_error("too_long", "録音が長すぎます。5〜10秒ほどで録音し直してください。")
+        if info.channels > 2 or info.samplerate > 192000:
+            return recording_error("invalid_audio", "この録音形式は利用できません。ブラウザから録音し直してください。")
         # 16 kHz にダウンサンプリング：pyin の計算量を大幅削減
         audio_data, sr = librosa.load(io.BytesIO(contents), sr=16000, mono=True)
         duration = len(audio_data) / sr
+        if not np.all(np.isfinite(audio_data)):
+            return recording_error("invalid_audio", "録音を読み取れませんでした。もう一度録音してください。")
+        signal_rms = librosa.feature.rms(y=audio_data, hop_length=256)[0]
+        # 暫定の入力品質基準。5項目の採点基準とは別に管理する。
+        audible = signal_rms >= 10 ** (-55 / 20)
+        overall_rms = float(np.sqrt(np.mean(audio_data ** 2)))
+        if overall_rms < 10 ** (-55 / 20) or np.sum(audible) * 256 / sr < 0.3:
+            return recording_error("silence", "話し声を十分に確認できませんでした。マイクとの距離を確認し、普段の声で5秒以上話してください。")
 
         target_points = 1500
         step = max(1, len(audio_data) // target_points)
@@ -358,6 +414,10 @@ async def analyze_audio(file: UploadFile = File(...)):
         pitch_hz = [float(v) if _fmin < v <= _fmax else None for v in f0]
 
         voiced_f0 = [x for x in pitch_hz if x is not None]
+        valid_pitch = np.array([x is not None for x in pitch_hz])
+        voiced_frames = valid_pitch & audible[:len(valid_pitch)]
+        if np.mean(voiced_frames) < 0.08 or np.sum(voiced_frames) * 256 / sr < 0.2:
+            return recording_error("no_voice", "話し声を十分に確認できませんでした。静かな場所で、普段の声で5〜10秒ほど話して録音し直してください。")
         stats: dict = {"has_pitch": len(voiced_f0) > 0}
         if voiced_f0:
             min_hz = float(min(voiced_f0))
@@ -420,8 +480,15 @@ async def analyze_audio(file: UploadFile = File(...)):
                 "scores": voice_scores,
             })
 
+        speed_result = None
+        if measurement_mode == 'five_preview':
+            speed_result = measure_fixed_reading_speed(audio_data, sr, prompt_id, reading_complete,
+                                                      DIAGNOSIS_CONFIG['speed_retest'])
+        diagnosis = build_diagnosis(audio_data, sr, prompt_id, reading_complete,
+            speed_measurement=speed_result) if measurement_mode == 'five_preview' else None
         return JSONResponse({
             "success": True,
+            **({"diagnosis": diagnosis} if diagnosis else {}),
             "waveform": {
                 "time": time_waveform.tolist(),
                 "amplitude": waveform_samples.tolist(),
@@ -435,9 +502,17 @@ async def analyze_audio(file: UploadFile = File(...)):
             "stats": stats,
         })
 
-    except Exception as e:
-        import traceback
-        return JSONResponse(
-            {"success": False, "error": str(e), "detail": traceback.format_exc()},
-            status_code=500,
-        )
+    except Exception:
+        logging.exception("Audio analysis failed")
+        return recording_error("analysis_failed", "解析に失敗しました。少し待って、もう一度録音してください。", 500)
+
+
+@app.get('/api/diagnosis-config')
+def diagnosis_config():
+    base = Path(__file__).parent / 'knowledge_comments'
+    policy = json.loads((base / 'recording_change_policy_v1.json').read_text(encoding='utf-8'))
+    entries = json.loads((base / 'approved' / 'recording_change_comments_v1.json').read_text(encoding='utf-8'))['entries']
+    totals = json.loads((base / 'approved' / 'high_score_comments_v1.json').read_text(encoding='utf-8'))['entries']
+    return {**DIAGNOSIS_CONFIG, 'change_policy': policy,
+            'change_comments': [{k: e[k] for k in ('id', 'section', 'text', 'text_without_comparison_audio') if k in e} for e in entries],
+            'total_comments': [{k: e[k] for k in ('id', 'text', 'score_min_inclusive', 'score_max_exclusive') if k in e} for e in totals]}

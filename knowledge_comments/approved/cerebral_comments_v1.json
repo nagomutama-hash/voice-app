@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "version": 1,
+      "type": "cerebral",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "良さ・伸びしろ2文の確定確認に対する本人回答「確定でｏｋです」",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false,
+      "id": "COMMENT-CEREBRAL-STRENGTH-001",
+      "draft_id": "CEREBRAL-STRENGTH-DRAFT-001",
+      "section": "strength",
+      "text": "言葉を正確に伝えようとする話し方です。",
+      "revision_note": "原文の正確に伝えようとする面を長所として取り出した本人承認済み修正文。",
+      "sources": [
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 5,
+          "source_location": "分析の冒頭の一部",
+          "original_excerpt": "頭で考えた「正しい言葉や構成」を正確に伝えようとしすぎて、"
+        }
+      ]
+    },
+    {
+      "version": 1,
+      "type": "cerebral",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "良さ・伸びしろ2文の確定確認に対する本人回答「確定でｏｋです」",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false,
+      "id": "COMMENT-CEREBRAL-POTENTIAL-001",
+      "draft_id": "CEREBRAL-POTENTIAL-DRAFT-001",
+      "section": "potential",
+      "text": "声に体温や感情が乗ると、相手の心に響く話し方へ近づきます。",
+      "revision_note": "原資料の体温・感情と相手の感情を踏まえて改善後の方向を表す本人承認済み修正文。具体的な練習は指定しない。",
+      "sources": [
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 5,
+          "source_location": "分析の一部",
+          "original_excerpt": "声に体温や感情が乗っていません。"
+        },
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 8,
+          "source_location": "期待効果",
+          "original_excerpt": "あなたの言葉が「理屈」を超えて、相手の「感情」を直接揺さぶるようになります。"
+        }
+      ]
+    }
+  ]
+}

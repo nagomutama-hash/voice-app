@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "COMMENT-TOTAL-HIGH-001",
+      "version": 1,
+      "section": "total_score_praise",
+      "text": "高水準の声です！声の良さがしっかり表れています。",
+      "content_kind": "tamai_approved_proposal",
+      "source_kind": "conversation",
+      "source_note": "本人の『85点は高水準、90点以上はファンタスティック！！！』という評価に基づく提案文。PDF等の原文引用ではない。",
+      "approved_at": "2026-09-30",
+      "approval_evidence": "本人が2文を再掲し『このコメント案はgoogだと思います。』と承認。ぼいぴを参考に仮設定で開始し、データで修正する方針。",
+      "approval_scope": "本文と仮の点数帯。アプリへの接続は未実施。",
+      "display_conditions_status": "approved_provisional",
+      "total_score_scale": 100,
+      "score_min_inclusive": 85,
+      "score_max_exclusive": 90,
+      "runtime_enabled": true,
+      "runtime_scope": "five_preview_only"
+    },
+    {
+      "id": "COMMENT-TOTAL-FANTASTIC-001",
+      "version": 1,
+      "section": "total_score_praise",
+      "text": "ファンタスティック！素晴らしい高得点です！",
+      "content_kind": "tamai_approved_proposal",
+      "source_kind": "conversation",
+      "source_note": "本人の『85点は高水準、90点以上はファンタスティック！！！』という評価に基づく提案文。PDF等の原文引用ではない。",
+      "approved_at": "2026-09-30",
+      "approval_evidence": "本人が2文を再掲し『このコメント案はgoogだと思います。』と承認。ぼいぴを参考に仮設定で開始し、データで修正する方針。",
+      "approval_scope": "本文と仮の点数帯。アプリへの接続は未実施。",
+      "display_conditions_status": "approved_provisional",
+      "total_score_scale": 100,
+      "score_min_inclusive": 90,
+      "score_max_inclusive": 100,
+      "runtime_enabled": true,
+      "runtime_scope": "five_preview_only"
+    }
+  ]
+}

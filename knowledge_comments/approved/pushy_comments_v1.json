@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "version": 1,
+      "type": "pushy",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "第3回の良さ・伸びしろ2文への回答「ＯＫです！進めてください」",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false,
+      "id": "COMMENT-PUSHY-STRENGTH-001",
+      "draft_id": "PUSHY-STRENGTH-DRAFT-001",
+      "section": "strength",
+      "text": "声から情熱が感じられます。",
+      "revision_note": "原文の情熱は感じるという長所を一文として取り出す承認済み修正文。",
+      "sources": [
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 4,
+          "source_location": "赤い見出し",
+          "original_excerpt": "情熱は感じるが、声や話し方に「圧」と「作為」がある"
+        }
+      ]
+    },
+    {
+      "version": 1,
+      "type": "pushy",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "第3回の良さ・伸びしろ2文への回答「ＯＫです！進めてください」",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false,
+      "id": "COMMENT-PUSHY-POTENTIAL-001",
+      "draft_id": "PUSHY-POTENTIAL-DRAFT-001",
+      "section": "potential",
+      "text": "力みが抜けて余裕が生まれると、相手が「もっと聴きたい」と感じる声へ近づきます。",
+      "revision_note": "力みの解放・余裕・もっと聴きたいをまとめ、日常会話にも使える表現へ調整。効果検証済みとは扱わない。",
+      "sources": [
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 7,
+          "source_location": "処方箋（改善の鍵）の見出し",
+          "original_excerpt": "「力みを解放するトーンダウンと間（ま）」"
+        },
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 7,
+          "source_location": "処方箋（改善の鍵）の一部",
+          "original_excerpt": "「勢い」を「余裕」に変換し、"
+        },
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 7,
+          "source_location": "期待効果",
+          "original_excerpt": "あなたがリラックスして話すことで、相手も「もっと聴きたい」と身を乗り出すようになります。"
+        }
+      ]
+    }
+  ]
+}

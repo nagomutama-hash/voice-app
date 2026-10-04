@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "score_scale": 20,
+  "status": "approved_provisional",
+  "approved_at": "2026-10-01",
+  "approval_evidence": "点差区切り承認後、第14回の4文・音声なし短縮・高得点維持条件と優先順位の提示に、本人「ＯＫです、進めてください」。",
+  "bands": [
+    {
+      "id": "clear_rise",
+      "min_inclusive": 2.0,
+      "max_exclusive": null
+    },
+    {
+      "id": "rise",
+      "min_inclusive": 0.5,
+      "max_exclusive": 2.0
+    },
+    {
+      "id": "roughly_maintained",
+      "min_exclusive": -0.5,
+      "max_exclusive": 0.5
+    },
+    {
+      "id": "decline",
+      "min_inclusive": null,
+      "max_inclusive": -0.5
+    }
+  ],
+  "comparison_reference_status": "approved_provisional",
+  "high_score_override_status": "approved_provisional",
+  "measurement_validation_status": "not_validated",
+  "runtime_enabled": true,
+  "note": "科目20点用の承認済み仮基準。総合100点へ流用しない。速度は適正速度維持を別途確認。日付境界・丸め・復元の詳細は未確定。アプリ未接続。",
+  "comparison_reference": "previous_comparable_success",
+  "high_score_baseline": "first_comparable_success_of_current_day",
+  "high_score_baseline_min": 18.5,
+  "high_score_current_min": 18.0,
+  "large_decline_max": -2.0,
+  "priority": [
+    "large_decline",
+    "rise",
+    "high_score_maintained",
+    "delta_band"
+  ],
+  "runtime_scope": "five_preview_only"
+}

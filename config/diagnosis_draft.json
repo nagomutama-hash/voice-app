@@ -1,0 +1,175 @@
+{
+  "schema_version": "five-metric-diagnosis-1",
+  "measurement_version": "v2-acoustic-fixed-reading-speed-draft-5",
+  "calibration_version": "v2-calibration-teacher-three-anchor-draft-9",
+  "approved_for_public": false,
+  "score_status": "draft",
+  "reading": {
+    "id": "v2-fixed-known-mora-03",
+    "text": "私の声は、どんなふうに聞こえるのでしょうか。いつもの声で自然に話してみます。",
+    "recommended_seconds": [
+      5,
+      10
+    ],
+    "mora_count": 41
+  },
+  "metrics": {
+    "brightness": {
+      "label": "明るさ",
+      "unit": "Hz",
+      "raw_breakpoints": [
+        350,
+        900,
+        1800,
+        3200
+      ],
+      "score_breakpoints": [
+        4,
+        15,
+        20,
+        12
+      ],
+      "target_range": [
+        700,
+        1300
+      ]
+    },
+    "articulation": {
+      "label": "滑舌",
+      "unit": "index",
+      "raw_breakpoints": [
+        0,
+        0.25,
+        0.5,
+        0.75,
+        1
+      ],
+      "score_breakpoints": [
+        4,
+        8,
+        12,
+        16,
+        20
+      ],
+      "target_range": [
+        0.5,
+        1
+      ]
+    },
+    "power": {
+      "label": "声の安定感",
+      "unit": "RMS CV %",
+      "raw_breakpoints": [
+        0,
+        53.103,
+        74.932,
+        76.119,
+        200
+      ],
+      "score_breakpoints": [
+        20,
+        19,
+        15.7,
+        15.7,
+        1
+      ],
+      "target_range": [
+        0,
+        76.119
+      ]
+    },
+    "speed": {
+      "label": "話す速度",
+      "unit": "estimated_mora/s",
+      "raw_breakpoints": [
+        0,
+        3,
+        4.8,
+        5.5,
+        6.408094435075886,
+        7.0,
+        7.8,
+        8.018867924528301,
+        9,
+        11,
+        15,
+        20
+      ],
+      "score_breakpoints": [
+        1,
+        6,
+        13,
+        16,
+        19.3,
+        20,
+        19,
+        17.5,
+        12,
+        4,
+        1,
+        1
+      ],
+      "target_range": [
+        6.81006160164271,
+        6.947638603696099
+      ],
+      "method": "teacher_piecewise_linear",
+      "anchors": {
+        "slow": [
+          6.467181467181468,
+          15.0
+        ],
+        "ideal": [
+          6.878850102669404,
+          19.4
+        ],
+        "fast": [
+          7.623318385650224,
+          16.0
+        ]
+      },
+      "hold_below_score": 7.0
+    },
+    "resonance": {
+      "label": "響き",
+      "unit": "%",
+      "raw_breakpoints": [
+        7.5,
+        14.6,
+        23.3,
+        35.8,
+        50.2,
+        65
+      ],
+      "score_breakpoints": [
+        5,
+        9,
+        13,
+        16,
+        19,
+        20
+      ],
+      "target_range": [
+        35.8,
+        100
+      ]
+    }
+  },
+  "comparison": {
+    "reference_change_threshold": 0.5,
+    "allow_improvement_claim": false,
+    "provisional_approved_at": "2026-10-01"
+  },
+  "history": {
+    "max_records": 20,
+    "max_age_days": 30
+  },
+  "score_scale": 20,
+  "speed_retest": {
+    "id": "v2-fixed-known-mora-03",
+    "text": "私の声は、どんなふうに聞こえるのでしょうか。いつもの声で自然に話してみます。",
+    "mora_count": 41,
+    "url": "/speed-retest?preview=five"
+  },
+  "speed_measurement_method": "fixed_known_mora"
+}

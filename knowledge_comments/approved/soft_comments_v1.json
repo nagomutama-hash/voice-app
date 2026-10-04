@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "version": 1,
+      "type": "soft",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "良さ・伸びしろの2文の確認に対するユーザー回答「ＯＫです」",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false,
+      "id": "COMMENT-SOFT-STRENGTH-001",
+      "draft_id": "SOFT-STRENGTH-DRAFT-001",
+      "section": "strength",
+      "text": "やさしく丁寧で、相手に安心感を与える声です。",
+      "revision_note": "原文のやさしい・丁寧・安心感を、声の印象を表す一文にまとめた承認済み修正文。",
+      "sources": [
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 1,
+          "source_location": "①ふわっと優しすぎ",
+          "original_excerpt": "やさしい、丁寧、誠実。"
+        },
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 3,
+          "source_location": "相手の心理の冒頭",
+          "original_excerpt": "「いい人」という安心感はありますが、"
+        }
+      ]
+    },
+    {
+      "version": 1,
+      "type": "soft",
+      "content_kind": "tamai_supervised_revision",
+      "approved_at": "2026-09-29",
+      "approval_scope": "コメント素材の本文",
+      "approval_evidence": "良さ・伸びしろの2文の確認に対するユーザー回答「ＯＫです」",
+      "display_conditions_status": "pending_consultation",
+      "runtime_enabled": false,
+      "id": "COMMENT-SOFT-POTENTIAL-001",
+      "draft_id": "SOFT-POTENTIAL-DRAFT-001",
+      "section": "potential",
+      "text": "やさしさに声の芯が加わると、頼もしさも伝わる声へ近づきます。",
+      "revision_note": "原本の声の芯・優しさ・頼れるという方向をまとめ、営業場面以外でも使える表現にした承認済み修正文。効果検証済みという意味ではない。",
+      "sources": [
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 6,
+          "source_location": "期待効果の冒頭",
+          "original_excerpt": "「いい人」から「頼れるパートナー」へ昇格します。"
+        },
+        {
+          "source_id": "SRC-008",
+          "source_path": "sources/voice-app/knowledge/タイプ別・声の処方箋.pdf",
+          "source_sha256": "db5ce5366180b304d202de4dd193564f5e5985648a5e6b4a4cb452f16cbe5ab5",
+          "source_page": 6,
+          "source_location": "原因（声の成分）の冒頭",
+          "original_excerpt": "声の「芯」となる呼気圧（息の力）が弱く、語尾が消えている。"
+        },
+        {
+          "source_id": "SRC-072",
+          "source_path": "sources/type_reference/声のタイプ4+1タイプ声診断.pdf",
+          "source_sha256": "9125ef68fc38fa384eb678bb7da7406ba0d89d2d527af6d0e257351e704c5838",
+          "source_page": 3,
+          "source_location": "赤い見出し",
+          "original_excerpt": "「BGMのような声」 心地はいいが「芯」がほしい"
+        }
+      ]
+    }
+  ]
+}

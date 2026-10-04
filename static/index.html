@@ -5,16 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>7秒無料声診断</title>
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R9X1LQ8HG2"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-R9X1LQ8HG2');
+      const localPreview = ['localhost', '127.0.0.1', '[::1]'].includes(location.hostname);
+      if (!localPreview) {
+        const tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=G-R9X1LQ8HG2';
+        document.head.appendChild(tag);
+        gtag('config', 'G-R9X1LQ8HG2');
+      }
     </script>
     <!-- Meta Pixel Code -->
     <script>
-      !function(f,b,e,v,n,t,s)
+      if (!localPreview) !function(f,b,e,v,n,t,s)
       {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
       n.callMethod.apply(n,arguments):n.queue.push(arguments)};
       if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -22,10 +28,12 @@
       t.src=v;s=b.getElementsByTagName(e)[0];
       s.parentNode.insertBefore(t,s)}(window, document,'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '899381905754598');
-      fbq('track', 'PageView');
+      if (!localPreview) {
+        fbq('init', '899381905754598');
+        fbq('track', 'PageView');
+      }
     </script>
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=899381905754598&ev=PageView&noscript=1" /></noscript>
+    <noscript>声診断にはJavaScriptが必要です。ブラウザの設定を確認してください。</noscript>
     <!-- End Meta Pixel Code -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -301,6 +309,7 @@
                 inset 0 -4px 0 rgba(0,0,0,0.16);
         }
         .btn-record.is-recording {
+            display: none;
             background: linear-gradient(180deg, #94a3b8 0%, #64748b 55%, #475569 100%);
             color: #ffffff;
             opacity: 1;
@@ -396,18 +405,22 @@
         }
 
         .btn-stop {
+            min-width: min(500px, 100%);
             min-height: 72px;
             padding: 1.18rem 1.6rem;
-            background: #f1f5f9;
-            color: var(--text);
-            border: 2px solid var(--border);
-            font-weight: 800;
-            box-shadow: 0 10px 22px rgba(13, 27, 42, 0.08);
+            background: #b42318;
+            color: #fff;
+            border: 2px solid #b42318;
+            font-size: 1.16rem;
+            font-weight: 900;
+            box-shadow: 0 10px 22px rgba(180, 35, 24, 0.25);
         }
         .btn-stop:hover:not(:disabled) {
             transform: translateY(-2px);
-            background: #e2e8f0;
+            background: #912018;
         }
+        #recordBtn, #stopBtn { scroll-margin-top: 20px; }
+        #fiveReadyHint { text-align: left; padding: 12px; margin: 16px 0 0; background: #fff8e7; border-left: 4px solid #C9A227; border-radius: 6px; }
 
         .timer {
             font-size: 2.35rem;
@@ -518,6 +531,38 @@
         }
 
         .hidden { display: none; }
+        #fiveResults h2 { font-size: 1.3rem; }
+        #fiveResults h3 { font-size: 1.1rem; }
+        #fiveResults p { margin-top: .65rem; line-height: 1.8; }
+        .five-score { float: right; font-size: 1.4rem; color: #174b79; }
+        .five-score small { font-size: .8rem; font-weight: normal; }
+        .five-change { font-weight: 700; }
+        .five-overview { border-top: 4px solid #2597bf; }
+        .five-eyebrow { color: #32617c; font-weight: 700; font-size: .85rem; margin-bottom: 8px; }
+        .five-draft-note { font-size: .85rem; line-height: 1.7; color: #536578; }
+        .five-jump { display: inline-block; padding: 12px 0; color: #176d90; font-weight: 700; }
+        .five-radar { margin: 12px 0 0; }
+        .five-radar svg { display: block; width: 100%; max-width: 420px; margin: auto; }
+        .five-radar figcaption { text-align: center; font-size: .8rem; color: #536578; }
+        .five-chart-note { color: #536578; }
+        .five-zoom { border: 1px solid #95bbcf; background: linear-gradient(155deg,#f0f8fc,#fff); }
+        .five-zoom ul { padding-left: 1.3em; line-height: 1.8; margin: 16px 0; }
+        .five-exit { display: block; background: #174967; color: #fff; padding: 16px; border-radius: 10px; text-align: center; font-weight: 700; text-decoration: none; }
+        .five-exit span { display: block; font-size: .8rem; font-weight: 400; margin-top: 4px; }
+        .five-exit:focus-visible, .five-jump:focus-visible { outline: 3px solid #2597bf; outline-offset: 4px; }
+        .five-pending { padding: 14px; background: #eaf1f5; border-radius: 8px; }
+        #fiveAudioCompare label { display: block; margin: 16px 0 6px; font-weight: 700; }
+        #fiveAudioCompare audio { display: block; width: 100%; max-width: 100%; }
+        #fiveHintChoices { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        #fiveHintChoices .btn-rerecord { width: auto; flex: 1 1 130px; margin: 0; }
+        #fiveHintText { line-height: 1.8; }
+        .five-optional > summary { cursor: pointer; font-weight: 700; padding: 10px 0; color: #24445f; }
+        .five-optional > summary:focus-visible { outline: 3px solid #14779e; outline-offset: 4px; }
+        .five-optional-content { padding-top: 16px; }
+        #fiveOtherHint { padding: 10px 16px; margin-top: 10px; border: 1px solid #a6bfd2; border-radius: 8px; background: #fff; color: #174b79; cursor: pointer; }
+        #readingReview { margin-top: 1rem; padding: 1rem; background: #fff7df; border-radius: 8px; }
+        #readingReview button { margin: .4rem; }
+        #fiveDeleteHistory { margin-top: .6rem; padding: .5rem; cursor: pointer; }
 
         /* ---- AI Advice ---- */
         .advice-loading {
@@ -1010,6 +1055,7 @@
             .line-cta { width: 100%; font-size: 1rem; padding: 0.95rem 1rem; }
         }
     </style>
+    <link rel="stylesheet" href="/static/studio-preview.css?v=20261002-linebridge1">
 </head>
 <body>
 
@@ -1019,7 +1065,7 @@
         <p class="hero-tagline">話し方より、声でした。</p>
         <h1>7秒無料声診断</h1>
         <p class="hero-lead">あなたの声の特徴と<br>改善ポイントがわかります。</p>
-        <div class="authority-strip" aria-label="玉井智の実績">
+        <div class="authority-strip" aria-label="担当ボイストレーナーの実績">
             <div class="authority-item">
                 <div class="authority-value">35年以上</div>
                 <div class="authority-label">現場経験</div>
@@ -1029,7 +1075,7 @@
                 <div class="authority-label">受講</div>
             </div>
         </div>
-        <p class="profile-line">現役MC・ナレーター・ラジオDJ・スタジアムDJの視点から診断します。</p>
+        <p class="profile-line">プロのボイストレーナー・現役MC・ナレーター・ラジオDJの視点から診断します。</p>
     </div>
 </header>
 
@@ -1046,6 +1092,7 @@
                     &#9209; &nbsp;録音を止める
                 </button>
             </div>
+            <p id="fiveReadyHint" class="hidden"></p>
             <div class="record-guide">
                 <strong>話す内容（例）</strong>
                 <span class="record-example">「〇〇です。声の診断をお願いします。」</span>
@@ -1054,15 +1101,22 @@
             <div class="timer" id="timer">0:00</div>
             <div class="status-row">
                 <span class="rec-dot" id="recDot"></span>
-                <span id="statusText">ボタンを押して7秒ほど話してください</span>
-                <span class="record-hint">&#9201; 推奨：5〜10秒（長いと結果表示が遅くなります）</span>
+                <span id="statusText" role="status" aria-live="polite">ボタンを押して7秒ほど話してください</span>
+                <span class="record-hint">&#9201; 推奨：5〜10秒（20秒で自動停止します）</span>
             </div>
+            <p id="audioPreviewLabel" class="hidden">録音内容の確認（診断結果と対応する音声は、結果欄で聴けます）</p>
             <audio id="audioPlayer" controls class="hidden"></audio>
+            <div id="readingReview" class="hidden" role="group" aria-label="読み終わりの確認">
+                <p>画面の文章を、最後まで読めましたか？</p>
+                <button id="readingConfirmed" type="button" class="mic-retry-btn">最後まで読めた・診断する</button>
+                <button id="readingRetry" type="button" class="mic-retry-btn">読み直す</button>
+            </div>
+            <p id="inAppHelp" class="mic-error-note hidden">アプリ内の画面では録音できない場合があります。<a href="/help/microphone" target="_blank" rel="noopener">Safari・Chromeで開く方法を見る</a></p>
 
             <!-- マイクエラー時のヘルプ -->
             <div id="micErrorHelp" class="mic-error-help hidden" role="alert" aria-live="polite">
-                <div class="mic-error-title">マイクが許可されていません</div>
-                <p class="mic-error-copy">
+                <div class="mic-error-title" id="micErrorTitle">マイクが許可されていません</div>
+                <p class="mic-error-copy" id="micErrorCopy">
                     診断するには、ブラウザのマイク使用を許可してください。
                 </p>
                 <div class="mic-error-steps">
@@ -1075,8 +1129,10 @@
                     </ol>
                 </div>
                 <button class="mic-retry-btn" type="button" id="micRetryBtn">
-                    マイク設定後にもう一度試す
+                    マイクをもう一度試す
                 </button>
+                <p><a href="/help/microphone" target="_blank" rel="noopener">設定方法を見る</a> ／ <a href="/mic-test" target="_blank" rel="noopener">マイク動作確認</a></p>
+                <p class="mic-error-note" id="micErrorCode"></p>
                 <p class="mic-error-note">
                     ※iPhoneの場合は、SafariまたはChromeのマイク許可設定をご確認ください。<br>
                     ※許可しても動かない場合は、ページを再読み込みしてください。
@@ -1088,9 +1144,11 @@
     <!-- 診断中インジケーター -->
     <div class="analyzing" id="analyzingEl">
         <div class="spinner"></div>
-        <div>玉井智の視点で、声の印象を診断しています...</div>
+        <div>録音した声の特徴を分析しています...</div>
     </div>
 
+    <div id="fiveHistoryNotice" class="card hidden"></div>
+    <div id="fiveResults" class="hidden"></div>
     <!-- 結果エリア -->
     <div id="results" class="hidden">
 
@@ -1183,8 +1241,28 @@
     </div>
 </div>
 
+<script src="/static/recording-support.js"></script>
+<script src="/static/hint-engine.js"></script>
+<link rel="stylesheet" href="/static/type-review.css?v=20261001-fix2">
+<script src="/static/type-review.js?v=20261001-fix2"></script>
+<script src="/static/recording-change.js?v=20261001"></script>
+<script src="/static/type-comment-material.js?v=20261002-simple2"></script>
+<script src="/static/type-candidate.js?v=20261004-fixedreading2"></script>
+<script src="/static/three-step-material.js?v=20261002-wording1"></script>
+<script src="/static/three-step-comments.js?v=20261002-wording1"></script>
+<script src="/static/result-experience.js?v=20261004-fixedreading2"></script>
+<script src="/static/audio-comparison.js"></script>
+<script src="/static/diagnosis-preview.js?v=20261004-fixedreading2"></script>
+<script src="/static/preview-navigation.js"></script>
 <script>
 // ===== 状態管理 =====
+const FIVE_METRIC_PREVIEW = typeof location !== 'undefined' && new URLSearchParams(location.search).get('preview') === 'five';
+let recordingState = 'idle';
+let autoStopTimer = null;
+let recordingUrl = null;
+let recordingAborted = false;
+let micFailureSeen = false;
+let recordingGeneration = 0;
 let mediaRecorder = null;
 let recordedChunks = [];
 let startTime = null;
@@ -1212,8 +1290,15 @@ const rerecordBtn = document.getElementById('rerecordBtn');
 const lineCta = document.querySelector('.line-cta');
 const lineGuideBtn = document.getElementById('lineGuideBtn');
 const lineNextStep = document.getElementById('lineNextStep');
+if (/FBAN|FBAV|Instagram|Line\//i.test(navigator.userAgent)) document.getElementById('inAppHelp').classList.remove('hidden');
+if (FIVE_METRIC_PREVIEW) {
+    setRecordingState('initializing');
+    FiveMetricUI.init().then(()=>setRecordingState('idle')).catch(error=>setStatus(error.message));
+}
 
 function trackEvent(name, params = {}) {
+    if (typeof localPreview !== 'undefined' && localPreview) return;
+    params = { app_version: 'v2-recording-recovery-1', ...params };
     if (typeof window !== 'undefined' && typeof window.gtag === 'function') {
         window.gtag('event', name, params);
     }
@@ -1229,56 +1314,99 @@ function trackEvent(name, params = {}) {
     }
 }
 
-function isMicPermissionError(err) {
-    return err && (
-        err.name === 'NotAllowedError' ||
-        err.name === 'PermissionDeniedError' ||
-        /permission|denied|notallowed|not allowed|blocked/i.test(err.message || '')
-    );
+function setRecordingState(state) {
+    recordingState = state;
+    if (FIVE_METRIC_PREVIEW) FiveMetricUI.setPlaybackBusy?.(state !== 'idle');
+    recordBtn.disabled = state !== 'idle';
+    micRetryBtn.disabled = state !== 'idle';
+    stopBtn.disabled = state !== 'recording';
+    recordBtn.classList.toggle('is-recording', state === 'recording');
+    recDot.classList.toggle('active', state === 'recording');
 }
 
-function showMicError() {
-    setStatus('マイクが許可されていません。');
+async function showMicError(err, stage, generation = recordingGeneration) {
+    if (generation !== recordingGeneration) return;
+    micFailureSeen = true;
+    const name = err?.name || 'UnknownError';
+    const [title, copy] = RecordingSupport.errorCopy(name);
+    setStatus(title);
+    document.getElementById('micErrorTitle').textContent = title;
+    document.getElementById('micErrorCopy').textContent = copy;
+    document.querySelector('.mic-error-steps').classList.add('hidden');
     micErrorHelp.classList.remove('hidden');
     micErrorHelp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    const permission = await RecordingSupport.permissionState();
+    if (generation !== recordingGeneration) return;
+    document.getElementById('micErrorCode').textContent = `確認コード：${name} / ${permission} / ${stage}`;
+    trackEvent('mic_permission_error', { error_name: name, permission_state: permission, failure_stage: stage,
+        secure_context: window.isSecureContext, media_devices_available: Boolean(navigator.mediaDevices?.getUserMedia),
+        media_recorder_available: typeof MediaRecorder === 'function', app_version: 'v2-recording-recovery-1' });
 }
 
 async function startRecording() {
+    if (recordingState !== 'idle') return;
+    audioPlayer.pause?.();
+    audioPlayer.classList.add('hidden');
+    document.getElementById('audioPreviewLabel').classList.add('hidden');
+    if (FIVE_METRIC_PREVIEW) FiveMetricUI.beginRecording();
+    setRecordingState('requesting');
+    const generation = ++recordingGeneration;
+    let stream = null;
+    let stage = 'permission';
     try {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            throw new Error('このブラウザではマイク録音に対応していません。');
-        }
-
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+        setStatus('マイクの許可を確認しています...');
+        stream = await RecordingSupport.acquireMicrophone();
+        if (generation !== recordingGeneration) { RecordingSupport.stopStream(stream); return; }
+        stage = 'recorder';
         recordedChunks = [];
-
-        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-            ? 'audio/webm;codecs=opus' : 'audio/webm';
-
-        mediaRecorder = new MediaRecorder(stream, { mimeType });
-        mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
-        mediaRecorder.onstop = onRecordingStop;
+        recordingAborted = false;
+        mediaRecorder = RecordingSupport.createRecorder(stream);
+        mediaRecorder.ondataavailable = e => { if (generation === recordingGeneration && e.data.size > 0) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = () => { if (generation === recordingGeneration) onRecordingStop(); };
+        mediaRecorder.onerror = async e => {
+            if (generation !== recordingGeneration) return;
+            recordingAborted = true;
+            mediaRecorder.onstop = null;
+            mediaRecorder.ondataavailable = null;
+            stopRecording();
+            await showMicError(e.error || e, 'recording', generation);
+            if (generation === recordingGeneration) setRecordingState('idle');
+        };
+        // A disconnected microphone must not turn a partial recording into a diagnosis.
+        for (const track of stream.getTracks()) {
+            track.addEventListener?.('ended', () => {
+                if (generation !== recordingGeneration || recordingState !== 'recording') return;
+                recordingAborted = true;
+                mediaRecorder.onstop = null;
+                mediaRecorder.ondataavailable = null;
+                stopRecording();
+                recordedChunks = [];
+                setRecordingState('idle');
+                setStatus('マイクとの接続が切れました。接続を確認して、もう一度録音してください。');
+            }, { once: true });
+        }
         mediaRecorder.start(100);
 
         startTime = Date.now();
         timerInterval = setInterval(updateTimer, 200);
 
-        recordBtn.disabled = true;
-        recordBtn.classList.add('is-recording');
-        stopBtn.disabled = false;
-        recDot.classList.add('active');
-        setStatus('声の印象を受け取っています...');
+        setRecordingState('recording');
+        timerEl.textContent = '0:00';
+        autoStopTimer = setTimeout(stopRecording, 20000);
+        setStatus('録音中です。読み終えたら「録音を止める」を押してください。');
         micErrorHelp.classList.add('hidden');
         resultsEl.classList.add('hidden');
         analyzingEl.classList.remove('show');
+        if (micFailureSeen) {
+            trackEvent('mic_recovery_success', { app_version: 'v2-recording-recovery-1' });
+            micFailureSeen = false;
+        }
 
     } catch (err) {
-        if (isMicPermissionError(err)) {
-            showMicError();
-        } else {
-            setStatus('マイクを開始できませんでした。設定をご確認ください。');
-            micErrorHelp.classList.remove('hidden');
-        }
+        RecordingSupport.stopStream(stream);
+        if (generation !== recordingGeneration) return;
+        await showMicError(err, stage, generation);
+        if (generation === recordingGeneration) setRecordingState('idle');
     }
 }
 
@@ -1294,6 +1422,7 @@ recordBtn.addEventListener('click', () => {
     startRecording();
 });
 micRetryBtn.addEventListener('click', startRecording);
+micRetryBtn.addEventListener('click', () => trackEvent('mic_retry', { failure_stage: 'retry' }));
 
 if (rerecordBtn) {
     rerecordBtn.addEventListener('click', () => {
@@ -1321,16 +1450,40 @@ if (lineGuideBtn && lineNextStep) {
     });
 }
 
-stopBtn.addEventListener('click', () => {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        mediaRecorder.stream.getTracks().forEach(t => t.stop());
-    }
+function stopRecording() {
+    if (recordingState !== 'recording') return;
+    const generation = recordingGeneration;
+    setRecordingState('processing');
+    clearTimeout(autoStopTimer);
     clearInterval(timerInterval);
-    recordBtn.disabled = false;
-    recordBtn.classList.remove('is-recording');
-    stopBtn.disabled = true;
-    recDot.classList.remove('active');
+    try {
+        if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+    } catch (error) {
+        recordingAborted = true;
+        showMicError(error, 'stop', generation).finally(() => { if (generation === recordingGeneration) setRecordingState('idle'); });
+    } finally { RecordingSupport.stopStream(mediaRecorder?.stream); }
+}
+stopBtn.addEventListener('click', stopRecording);
+window.addEventListener('pagehide', () => {
+    if (FIVE_METRIC_PREVIEW) { FiveMetricUI.finishReading(false); FiveMetricUI.clearAudio(); }
+    audioPlayer.pause?.();
+    audioPlayer.removeAttribute?.('src');
+    audioPlayer.load?.();
+    audioPlayer.classList.add('hidden');
+    document.getElementById('audioPreviewLabel').classList.add('hidden');
+    if (recordingUrl) { URL.revokeObjectURL(recordingUrl); recordingUrl=null; }
+    recordedChunks=[];
+    recordingGeneration += 1;
+    recordingAborted = true;
+    stopRecording();
+    RecordingSupport.stopStream(mediaRecorder?.stream);
+});
+window.addEventListener('pageshow', () => {
+    if (recordingAborted || recordingState === 'requesting') {
+        analyzingEl.classList.remove('show');
+        setRecordingState('idle');
+        setStatus('もう一度、録音ボタンを押してください。');
+    }
 });
 
 function updateTimer() {
@@ -1340,22 +1493,54 @@ function updateTimer() {
 
 // ===== 録音完了後の処理 =====
 async function onRecordingStop() {
-    const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-    audioPlayer.src = URL.createObjectURL(blob);
+    const generation = recordingGeneration;
+    clearTimeout(autoStopTimer);
+    clearInterval(timerInterval);
+    RecordingSupport.stopStream(mediaRecorder?.stream);
+    if (recordingAborted) { setRecordingState('idle'); return; }
+    setRecordingState('processing');
+    const blob = new Blob(recordedChunks, { type: mediaRecorder.mimeType || recordedChunks[0]?.type || '' });
+    if (recordingUrl) URL.revokeObjectURL(recordingUrl);
+    recordingUrl = URL.createObjectURL(blob);
+    audioPlayer.src = recordingUrl;
     audioPlayer.classList.remove('hidden');
+    if (FIVE_METRIC_PREVIEW) document.getElementById('audioPreviewLabel').classList.remove('hidden');
 
     setStatus('声の強みを診断しています...');
     analyzingEl.classList.add('show');
 
     try {
+        if (FIVE_METRIC_PREVIEW) {
+            analyzingEl.classList.remove('show');
+            setStatus('5項目の参考値を確認しています...');
+            analyzingEl.classList.add('show');
+        }
         const wavBlob = await convertToWav(blob);
+        if (generation !== recordingGeneration) return;
+        if (FIVE_METRIC_PREVIEW && !(await FiveMetricUI.prepareReading())) throw new Error('指定の文章を最後まで読んで、もう一度録音してください。');
+        if (generation !== recordingGeneration) return;
         const data = await uploadAndAnalyze(wavBlob);
-        renderResults(data);
+        if (generation !== recordingGeneration) return;
+        renderResults(data,blob);
+        if (FIVE_METRIC_PREVIEW) {
+            audioPlayer.pause?.();
+            audioPlayer.removeAttribute('src');
+            audioPlayer.load();
+            audioPlayer.classList.add('hidden');
+            document.getElementById('audioPreviewLabel').classList.add('hidden');
+            if (recordingUrl) { URL.revokeObjectURL(recordingUrl); recordingUrl=null; }
+        }
+        recordedChunks=[];
         setStatus('診断が完了しました');
     } catch (err) {
+        if (generation !== recordingGeneration) return;
         setStatus('診断エラー: ' + err.message);
+        trackEvent('analysis_failed', { error_code: err.code || 'client_error', app_version: 'v2-recording-recovery-1' });
     } finally {
-        analyzingEl.classList.remove('show');
+        if (generation === recordingGeneration) {
+            analyzingEl.classList.remove('show');
+            setRecordingState('idle');
+        }
     }
 }
 
@@ -1363,10 +1548,14 @@ function setStatus(msg) { statusText.textContent = msg; }
 
 // ===== WebM → WAV 変換 =====
 async function convertToWav(blob) {
-    const audioCtx = new AudioContext();
-    const arrayBuf = await blob.arrayBuffer();
-    const audioBuf = await audioCtx.decodeAudioData(arrayBuf);
-    return encodeWav(audioBuf);
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context) throw new Error('SafariまたはChromeで録音し直してください。');
+    const audioCtx = new Context();
+    try {
+        const audioBuf = await audioCtx.decodeAudioData(await blob.arrayBuffer());
+        if (audioBuf.duration < 5) throw new Error('録音が短すぎます。5〜10秒ほど話してから止めてください。');
+        return encodeWav(audioBuf);
+    } finally { await audioCtx.close(); }
 }
 
 function encodeWav(audioBuf) {
@@ -1413,14 +1602,37 @@ function encodeWav(audioBuf) {
 async function uploadAndAnalyze(wavBlob) {
     const fd = new FormData();
     fd.append('file', wavBlob, 'recording.wav');
-    const res = await fetch('/analyze', { method: 'POST', body: fd });
-    const data = await res.json();
-    if (!data.success) throw new Error(data.error || '不明なエラー');
-    return data;
+    if (FIVE_METRIC_PREVIEW) FiveMetricUI.addRequestFields(fd);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 60000);
+    try {
+        const res = await fetch('/analyze', { method: 'POST', body: fd, signal: controller.signal });
+        const data = await res.json();
+        if (!res.ok || !data.success) {
+            const error = new Error(data.error || '解析できませんでした。もう一度録音してください。');
+            error.code = data.code || 'server_error';
+            throw error;
+        }
+        return data;
+    } catch (error) {
+        if (error.name === 'AbortError') throw new Error('解析に時間がかかっています。少し待ってからもう一度お試しください。');
+        throw error;
+    } finally { clearTimeout(timeout); }
 }
 
 // ===== グラフ・結果の描画 =====
-function renderResults(data) {
+function renderResults(data,blob=null) {
+    if (FIVE_METRIC_PREVIEW) {
+        resultsEl.classList.add('hidden');
+        const repeated = FiveMetricUI.render(data,blob);
+        trackEvent('five_diagnosis_complete', { measurement_version: data.diagnosis.measurement_version,
+            calibration_version: data.diagnosis.calibration_version, prompt_id: data.diagnosis.prompt_id, is_repeat: repeated });
+        return;
+    }
+    if (!RecordingSupport.validStats(data.stats)) {
+        resultsEl.classList.add('hidden');
+        throw new Error('話し声を十分に確認できませんでした。普段の声で5秒以上話してください。');
+    }
     const currentScores = data.stats && data.stats.scores ? { ...data.stats.scores } : null;
     const isRerecord = Boolean(previousScores);
     lastStats = data.stats;
@@ -1630,7 +1842,7 @@ function detectVoiceType(scores) {
     const avg = getAverageScore(scores);
     const lowCount = Object.keys(SCORE_LABELS).filter(key => scoreValue(scores, key) <= 4).length;
 
-    if (scoreValue(scores, 'dynamics') >= 8 || (scoreValue(scores, 'brightness') >= 8 && scoreValue(scores, 'tempo') >= 7)) return 'pushy';
+    // 適正さの点数から、声の圧が強いとは推定できない。
     if (lowCount === 0 && avg >= 6.2) return 'expressive';
     if (scoreValue(scores, 'resonance') <= 4 || scoreValue(scores, 'brightness') <= 4) return 'unclear';
     if (scoreValue(scores, 'dynamics') <= 4 || scoreValue(scores, 'sustain') <= 4) return 'soft';

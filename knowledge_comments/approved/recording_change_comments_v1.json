@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "entries": [
+    {
+      "id": "COMMENT-RECORDING-DECLINE-001",
+      "version": 1,
+      "section": "recording_change_decline",
+      "text": "今回は、前回より点数が下がりました。力を入れたり、声を作ろうとしたりせず、リラックスして、素直にヒントを試してみてください。",
+      "content_kind": "tamai_approved_revision",
+      "source_kind": "conversation",
+      "source_note": "2026-10-01の本人案を、本人のアレンジ許可により調整。資料からの引用ではない。下降原因を力みや声を作ることだと断定しない。",
+      "source_original_text": "前回より下がってしましました。力を入れたり作ったりせずリラックスして素直にヒントを実行してみてください。",
+      "approved_at": "2026-10-01",
+      "approval_evidence": "調整案の全文提示後、本人『文章はＯＫです、進めてください』。",
+      "approval_scope": "本文。具体的な点差・比較元・表示優先順位は別途相談。",
+      "display_conditions_status": "approved_provisional",
+      "runtime_enabled": true,
+      "runtime_scope": "five_preview_only"
+    },
+    {
+      "id": "COMMENT-RECORDING-CLEAR-RISE-001",
+      "version": 1,
+      "section": "recording_change_clear_rise",
+      "text": "前回より点数がしっかり上がりました！今回の声の変化を、聴き比べて確かめてみてください。",
+      "content_kind": "tamai_approved_proposal",
+      "source_kind": "conversation",
+      "source_note": "第14回相談の提案文。資料原文引用ではない。",
+      "approved_at": "2026-10-01",
+      "approval_evidence": "4文・音声なし時の短縮・高得点維持条件と優先順位の提示後、本人「ＯＫです、進めてください」。",
+      "approval_scope": "本文と提示した仮条件。画面接続は20点換算の確定後。",
+      "display_conditions_status": "approved_provisional",
+      "runtime_enabled": true,
+      "text_without_comparison_audio": "前回より点数がしっかり上がりました！",
+      "runtime_scope": "five_preview_only"
+    },
+    {
+      "id": "COMMENT-RECORDING-RISE-001",
+      "version": 1,
+      "section": "recording_change_rise",
+      "text": "前回より点数が上がりました。この調子で、ヒントを試してみてください。",
+      "content_kind": "tamai_approved_proposal",
+      "source_kind": "conversation",
+      "source_note": "第14回相談の提案文。資料原文引用ではない。",
+      "approved_at": "2026-10-01",
+      "approval_evidence": "4文・音声なし時の短縮・高得点維持条件と優先順位の提示後、本人「ＯＫです、進めてください」。",
+      "approval_scope": "本文と提示した仮条件。画面接続は20点換算の確定後。",
+      "display_conditions_status": "approved_provisional",
+      "runtime_enabled": true,
+      "runtime_scope": "five_preview_only"
+    },
+    {
+      "id": "COMMENT-RECORDING-MAINTAINED-001",
+      "version": 1,
+      "section": "recording_change_maintained",
+      "text": "今回は、前回とほぼ同じ点数でした。焦らず、リラックスしてヒントを試してみてください。",
+      "content_kind": "tamai_approved_proposal",
+      "source_kind": "conversation",
+      "source_note": "第14回相談の提案文。資料原文引用ではない。",
+      "approved_at": "2026-10-01",
+      "approval_evidence": "4文・音声なし時の短縮・高得点維持条件と優先順位の提示後、本人「ＯＫです、進めてください」。",
+      "approval_scope": "本文と提示した仮条件。画面接続は20点換算の確定後。",
+      "display_conditions_status": "approved_provisional",
+      "runtime_enabled": true,
+      "runtime_scope": "five_preview_only"
+    },
+    {
+      "id": "COMMENT-RECORDING-HIGH-MAINTAINED-001",
+      "version": 1,
+      "section": "recording_change_high_maintained",
+      "text": "今回も高い点数を保てています！声の良さが引き続き表れています。",
+      "content_kind": "tamai_approved_proposal",
+      "source_kind": "conversation",
+      "source_note": "第14回相談の提案文。資料原文引用ではない。",
+      "approved_at": "2026-10-01",
+      "approval_evidence": "4文・音声なし時の短縮・高得点維持条件と優先順位の提示後、本人「ＯＫです、進めてください」。",
+      "approval_scope": "本文と提示した仮条件。画面接続は20点換算の確定後。",
+      "display_conditions_status": "approved_provisional",
+      "runtime_enabled": true,
+      "runtime_scope": "five_preview_only"
+    }
+  ]
+}
