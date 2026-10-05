@@ -16,7 +16,8 @@ from fastapi import FastAPI, File, Form, UploadFile
 from diagnosis import CONFIG as DIAGNOSIS_CONFIG, build_diagnosis
 from asr_speed import measure as measure_speech_speed
 from fixed_reading_speed import measure as measure_fixed_reading_speed
-from fastapi.responses import FileResponse, JSONResponse, StreamingResponse
+from fastapi.responses import FileResponse, JSONResponse, StreamingResponse, HTMLResponse
+from test_entry import TEST_PREFIX, entry_access_allowed, render_entry_html
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -161,12 +162,13 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="声診断アプリ", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=str(Path(__file__).resolve().parent / "static")), name="static")
+app.mount(TEST_PREFIX + "/static", StaticFiles(directory=str(Path(__file__).resolve().parent / "static")), name="test-static")
 ACCESS_CLOSED = True  # 完成後の新しい期間限定入口を用意するまで診断を停止する。
 
 
 @app.middleware("http")
 async def preparation_gate(request, call_next):
-    if ACCESS_CLOSED:
+    if ACCESS_CLOSED and not entry_access_allowed(request.url.path, request.method):
         if request.method in ('GET', 'HEAD'):
             from fastapi.responses import HTMLResponse
             return HTMLResponse('<!doctype html><html lang="ja"><meta charset="utf-8">'
@@ -184,7 +186,10 @@ async def preparation_gate(request, call_next):
 @app.middleware("http")
 async def microphone_policy(request, call_next):
     response = await call_next(request)
-    response.headers["Permissions-Policy"] = "microphone=()" if ACCESS_CLOSED else "microphone=(self)"
+    allowed = not ACCESS_CLOSED or entry_access_allowed(request.url.path, request.method)
+    response.headers["Permissions-Policy"] = "microphone=(self)" if allowed else "microphone=()"
+    response.headers['Cache-Control'] = 'no-store'
+    response.headers['X-Robots-Tag'] = 'noindex, nofollow'
     return response
 
 
@@ -380,6 +385,23 @@ async def root():
     return FileResponse(str(Path(__file__).resolve().parent / "static" / "index.html"))
 
 
+@app.get(TEST_PREFIX)
+@app.get(TEST_PREFIX + '/')
+@app.get(TEST_PREFIX + '/speed-retest')
+async def test_root():
+    return HTMLResponse(render_entry_html('index.html'))
+
+
+@app.get(TEST_PREFIX + '/help/microphone')
+async def test_microphone_help():
+    return HTMLResponse(render_entry_html('microphone-help.html'))
+
+
+@app.get(TEST_PREFIX + '/mic-test')
+async def test_microphone_check():
+    return HTMLResponse(render_entry_html('microphone-test.html'))
+
+
 MAX_AUDIO_BYTES = 8 * 1024 * 1024
 MIN_AUDIO_SECONDS = 5.0
 MAX_AUDIO_SECONDS = 21.0  # 画面は20秒で停止。端末の停止処理に1秒の余裕を持たせる。
@@ -535,6 +557,15 @@ def analyze_audio(file: UploadFile = File(...), measurement_mode: str = Form('le
         return recording_error("analysis_failed", "解析に失敗しました。少し待って、もう一度録音してください。", 500)
 
 
+@app.post(TEST_PREFIX + '/analyze')
+def analyze_test_audio(file: UploadFile = File(...), measurement_mode: str = Form(''),
+                       prompt_id: str = Form(''), reading_complete: bool = Form(False)):
+    if measurement_mode != 'five_preview':
+        return recording_error('invalid_mode', 'この入口では指定の文章による声診断をご利用ください。')
+    return analyze_audio(file, measurement_mode, prompt_id, reading_complete)
+
+
+@app.get(TEST_PREFIX + '/api/diagnosis-config')
 @app.get('/api/diagnosis-config')
 def diagnosis_config():
     base = Path(__file__).parent / 'knowledge_comments'

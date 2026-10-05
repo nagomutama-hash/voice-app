@@ -43,7 +43,19 @@
             previous.trial.hint_id!==last.trial.hint_id && !highMaintained(previous,rows) && previous.trial.speed_direction===last.trial.speed_direction && delta(previous)!==null && delta(previous)<0.5?last.trial.target_metric:null;
     }
     function shouldSwitch(rows,catalog,d){return Boolean(switchMetric(rows,catalog,d));}
-    const api={eligible,next,delta,shouldSwitch,switchMetric};
+    function recommendGroup(catalog,d,groups){
+        const available=groups.filter(group=>catalog.some(h=>h.group===group&&eligible(d,h)));
+        const type=root.TypeCandidate?.classify(d)?.type;
+        // 顔の表情、響き、速すぎる場合の間を、既存の方向に合うヒントへ接続。
+        // 音量安定感を声の芯や力みの代用にしない。
+        const preferred={cerebral:'brightness',soft:'resonance',pushy:'speed_fast'}[type];
+        if(available.includes(preferred))return preferred;
+        return available.slice().sort((a,b)=>{
+            const metric=group=>catalog.find(h=>h.group===group&&eligible(d,h)).target_metric;
+            return d.metrics[metric(a)].reference_score-d.metrics[metric(b)].reference_score;
+        })[0]||null;
+    }
+    const api={eligible,next,delta,shouldSwitch,switchMetric,recommendGroup};
     root.HintEngine=api;
     if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

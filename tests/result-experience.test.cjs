@@ -5,6 +5,24 @@ const experience=require('../static/result-experience.js');
 const make=()=>({schema_version:'five-metric-diagnosis-1',measurement_version:'m1',calibration_version:'c1',prompt_id:'p1',metrics:Object.fromEntries(['brightness','articulation','power','speed','resonance'].map(k=>[k,{status:'provisional',direction:k==='speed'?'fast':'low',raw_value:1,reference_score:6}]))});
 const missing=(d,k)=>{d.metrics[k]={status:'unavailable',direction:'unknown',raw_value:null,reference_score:null};return d;};
 
+test('unclassified complete results keep motivation separate from action and end with a future',()=>{
+ const d=make();d.score_scale=20;
+ const old=experience.summaryHTML(d,null,null,false);
+ const next=experience.summaryHTML(d,null,null,false,{inlineSupplements:true,supplement:{kind:'focus',targets:['speed'],text:'まずは速度を一つ。'}});
+ const challenge=next.match(/<h3>このままだと<\/h3><p>([^<]*)/)[1];
+ const potential=next.match(/<h3>この声の可能性<\/h3><p>([^<]*)/)[1];
+ assert.match(challenge,/相手が内容を追いにくく/);assert.doesNotMatch(challenge,/まずは|ヒント/);
+ assert.match(potential,/「話す速度」/);assert.match(potential,/届く話し方へ近づきます。$/);
+ assert.ok(next.length<=old.length);
+ missing(d,'speed');assert.equal(experience.summaryHTML(d,null,null,false,{inlineSupplements:true}),experience.summaryHTML(d,null,null,false));
+});
+test('radar recommendation follows the chosen hint instead of the lowest score',()=>{
+ const d=make();d.metrics.articulation.reference_score=3;
+ const html=experience.summaryHTML(d,null,null,false,{recommendedMetric:'resonance'});
+ assert.match(html,/<title>響き 6.0点：次に試す項目<\/title>/);
+ assert.doesNotMatch(html,/<title>滑舌 3.0点：次に試す項目<\/title>/);
+});
+
 test('coaching praises a measured reference feature and excludes wrong-direction challenges',()=>{
  const d=make();d.metrics.speed.direction='optimal';d.metrics.speed.reference_score=10;
  d.metrics.brightness.direction='high';d.metrics.brightness.reference_score=2;

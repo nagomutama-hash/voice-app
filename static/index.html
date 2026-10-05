@@ -560,8 +560,6 @@
         .five-optional > summary:focus-visible { outline: 3px solid #14779e; outline-offset: 4px; }
         .five-optional-content { padding-top: 16px; }
         #fiveOtherHint { padding: 10px 16px; margin-top: 10px; border: 1px solid #a6bfd2; border-radius: 8px; background: #fff; color: #174b79; cursor: pointer; }
-        #readingReview { margin-top: 1rem; padding: 1rem; background: #fff7df; border-radius: 8px; }
-        #readingReview button { margin: .4rem; }
         #fiveDeleteHistory { margin-top: .6rem; padding: .5rem; cursor: pointer; }
 
         /* ---- AI Advice ---- */
@@ -1106,11 +1104,6 @@
             </div>
             <p id="audioPreviewLabel" class="hidden">録音内容の確認（診断結果と対応する音声は、結果欄で聴けます）</p>
             <audio id="audioPlayer" controls class="hidden"></audio>
-            <div id="readingReview" class="hidden" role="group" aria-label="読み終わりの確認">
-                <p>画面の文章を、最後まで読めましたか？</p>
-                <button id="readingConfirmed" type="button" class="mic-retry-btn">最後まで読めた・診断する</button>
-                <button id="readingRetry" type="button" class="mic-retry-btn">読み直す</button>
-            </div>
             <p id="inAppHelp" class="mic-error-note hidden">アプリ内の画面では録音できない場合があります。<a href="/help/microphone" target="_blank" rel="noopener">Safari・Chromeで開く方法を見る</a></p>
 
             <!-- マイクエラー時のヘルプ -->
@@ -1241,22 +1234,24 @@
     </div>
 </div>
 
+<script src="/static/test-entry.js?v=20261005"></script>
 <script src="/static/recording-support.js"></script>
-<script src="/static/hint-engine.js"></script>
+<script src="/static/hint-engine.js?v=20261005-numeric2"></script>
 <link rel="stylesheet" href="/static/type-review.css?v=20261001-fix2">
 <script src="/static/type-review.js?v=20261001-fix2"></script>
 <script src="/static/recording-change.js?v=20261001"></script>
 <script src="/static/type-comment-material.js?v=20261002-simple2"></script>
-<script src="/static/type-candidate.js?v=20261004-fixedreading2"></script>
+<script src="/static/type-candidate.js?v=20261005-flexband1"></script>
 <script src="/static/three-step-material.js?v=20261002-wording1"></script>
-<script src="/static/three-step-comments.js?v=20261002-wording1"></script>
-<script src="/static/result-experience.js?v=20261004-fixedreading2"></script>
+<script src="/static/three-step-comments.js?v=20261005-flexband1"></script>
+<script src="/static/result-experience.js?v=20261005-flexband1"></script>
 <script src="/static/audio-comparison.js"></script>
-<script src="/static/diagnosis-preview.js?v=20261004-fixedreading2"></script>
+<script src="/static/supplement-comments.js?v=20261005-supplement1"></script>
+<script src="/static/diagnosis-preview.js?v=20261005-flexband1"></script>
 <script src="/static/preview-navigation.js"></script>
 <script>
 // ===== 状態管理 =====
-const FIVE_METRIC_PREVIEW = typeof location !== 'undefined' && new URLSearchParams(location.search).get('preview') === 'five';
+const FIVE_METRIC_PREVIEW = globalThis.VOICE_TEST_ENTRY || (typeof location !== 'undefined' && new URLSearchParams(location.search).get('preview') === 'five');
 let recordingState = 'idle';
 let autoStopTimer = null;
 let recordingUrl = null;
@@ -1606,7 +1601,7 @@ async function uploadAndAnalyze(wavBlob) {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
     try {
-        const res = await fetch('/analyze', { method: 'POST', body: fd, signal: controller.signal });
+        const res = await fetch(voiceAppPath('/analyze'), { method: 'POST', body: fd, signal: controller.signal });
         const data = await res.json();
         if (!res.ok || !data.success) {
             const error = new Error(data.error || '解析できませんでした。もう一度録音してください。');

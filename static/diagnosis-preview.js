@@ -1,5 +1,6 @@
 (function(root) {
     'use strict';
+    const appPath = path => typeof root.voiceAppPath === 'function' ? root.voiceAppPath(path) : path;
     const KEYS = ['brightness','articulation','power','speed','resonance'];
     const STORAGE_KEY = 'voice-app-v2:five-metric-history:1';
     const DIRECTIONS = ['low','high','within_reference','slow','fast','optimal','unknown'];
@@ -77,7 +78,7 @@
     root.FiveMetricCore=api;
     if (typeof module !== 'undefined') module.exports=api;
 
-    let config, history, panel, reviewResolve=null, catalog=[], pending=null, armed=null, activeTrial=null, experience={}, audioStore;
+    let config, history, panel, catalog=[], pending=null, armed=null, activeTrial=null, experience={}, audioStore;
     let fixedMode=false, completedReading=false;
     function pauseAudio(){
         for(const audio of document.querySelectorAll('#fiveResults audio, #audioPlayer'))audio.pause();
@@ -95,6 +96,7 @@
         }
     }
     let shown=[];
+    let supplementSuccesses=0,lastNaturalShown=-Infinity,inlineVariant=-1;
     const groupLabels={brightness:'明るさ',articulation:'滑舌',power:'声の安定感',speed_fast:'速度を少し下げる',speed_slow:'速度を少し上げる',resonance:'響き'};
     function hintEvent(name,t){if(typeof root.trackEvent==='function')root.trackEvent(name,{hint_id:t.hint_id,hint_version:t.hint_version,target_metric:t.target_metric,speed_direction:t.speed_direction||'none',app_version:'v2-five-preview-1'});}
     function hintPanel(d){
@@ -110,10 +112,9 @@
         const available=switchMetric?groups.filter(g=>!catalog.some(h=>h.group===g&&h.target_metric===switchMetric)):groups;
         if(!groups.length)section.querySelector('#fiveHintText').textContent='今回は方向に合うヒントを選べません。録音条件をそろえて、もう一度お試しください。';
         const offered=available.length?available:groups;
-        const recommended=offered.slice().sort((a,b)=>{
-            const ka=catalog.find(h=>h.group===a)?.target_metric,kb=catalog.find(h=>h.group===b)?.target_metric;
-            return d.metrics[ka].reference_score-d.metrics[kb].reference_score;
-        })[0];
+        const clips=audioStore?.snapshot()||{};
+        const supplement=root.SupplementComments?.build(d,catalog,rows,{excludeMetric:switchMetric,audioAvailable:Boolean(clips.current&&clips.previous)});
+        const recommended=supplement?.targets.length? (supplement.targets.length===1?offered.find(g=>catalog.some(h=>h.group===g&&h.target_metric===supplement.targets[0]&&root.HintEngine.eligible(d,h)))||null:null):root.HintEngine.recommendGroup(catalog,d,offered);
         [recommended,...offered.filter(group=>group!==recommended)].filter(Boolean).forEach(group=>{
             const button=document.createElement('button');button.type='button';
             button.className='btn-rerecord'+(group===recommended?' five-recommended':'');
@@ -133,7 +134,12 @@
                 const record=document.getElementById('recordBtn');if(record.disabled)return;
                 armed=pending;hintEvent('five_hint_rerecord_click',armed);
                 const reminder=document.getElementById('fiveReadyHint');
-                reminder.textContent='今回のヒント：'+hint.hint_text;reminder.classList.remove('hidden');
+                const previous=rows.at(-2)?.diagnosis;
+                const comments=KEYS.map(k=>root.RecordingChange?.select(d,previous,baseline(rows,d,rows.at(-1)?.at??Date.now()),k,false)?.text||'').join(' ');
+                const change=root.RecordingChange?.select(d,previous,baseline(rows,d,rows.at(-1)?.at??Date.now()),hint.target_metric,false);
+                const natural=supplement?.text||supplement?.trial?'':root.SupplementComments?.naturalText({state:change?.state,existingText:comments,hintText:hint.hint_text,successCount:supplementSuccesses,lastShown:lastNaturalShown,variant:supplementSuccesses,complete:KEYS.every(k=>d.metrics[k].status==='provisional')});
+                if(natural)lastNaturalShown=supplementSuccesses;
+                reminder.textContent='今回のヒント：'+hint.hint_text+(natural?' '+natural:'');reminder.classList.remove('hidden');
                 document.getElementById('statusText').textContent='準備ができたら「録音を始める」を押してください。';
                 record.scrollIntoView({behavior:'smooth',block:'start'});record.focus({preventScroll:true});
             };
@@ -162,19 +168,28 @@
         return {low:'参考範囲より低め',high:'参考範囲より高め',within_reference:'参考範囲内'}[m.direction];
     }
     function display(d, previous, restored) {
+        if(inlineVariant<0)inlineVariant=Math.max(0,history.read().length-1);
+        else if(!restored)inlineVariant++;
         const latest=history.read().at(-1),compared=compare(d,previous);
         const delta=compared && Object.values(compared).some(value=>typeof value==='number')?compared:null;
         const first=baseline(history.read(),d,latest?.at ?? Date.now());
         const dayDelta=compare(d,first);
         const clips=audioStore?.snapshot()||{};
-        const context={baseline:first,audioAvailable:Boolean(clips.current&&clips.previous),excludeMetric:root.HintEngine.switchMetric(history.read(),catalog,d),commentVariant:Math.max(0,history.read().length-1)};
+        const context={baseline:first,audioAvailable:Boolean(clips.current&&clips.previous),excludeMetric:root.HintEngine.switchMetric(history.read(),catalog,d),commentVariant:inlineVariant};
+        const eligibleGroups=Object.keys(groupLabels).filter(group=>catalog.some(h=>h.group===group&&root.HintEngine.eligible(d,h)));
+        const availableGroups=context.excludeMetric?eligibleGroups.filter(g=>!catalog.some(h=>h.group===g&&h.target_metric===context.excludeMetric)):eligibleGroups;
+        const recommendedGroup=root.HintEngine.recommendGroup(catalog,d,availableGroups.length?availableGroups:eligibleGroups);
+        context.recommendedMetric=catalog.find(h=>h.group===recommendedGroup&&root.HintEngine.eligible(d,h))?.target_metric??null;
+        const supplement=root.SupplementComments?.build(d,catalog,history.read(),context);
+        context.inlineSupplements=true;context.supplement=supplement;
+        if(supplement?.targets.length)context.recommendedMetric=supplement.targets.length===1?supplement.targets[0]:null;
         const view=root.ResultExperience.describe(d,previous,latest?.trial,context);
         panel.classList.remove('hidden');
         pauseAudio();
         panel.innerHTML = root.ResultExperience.summaryHTML(d,previous,latest?.trial,restored,context);
         if(d.metrics.speed.reference_score===null){
             const retry=document.createElement('section');retry.className='card';
-            retry.innerHTML='<h2>速度を適切に判定できませんでした</h2><p>ほかの4項目は下で確認できます。総合点は保留しています。</p><p>指定の文章で測り直してください。'+(fixedMode?'再測定でも判定できない場合は、速度を保留します。':'ページを移動すると、聴き比べ用の音声は消えます。')+'</p><a class="btn-rerecord" href="/speed-retest?preview=five">指定の文章で測り直す</a>';
+            retry.innerHTML='<h2>速度を適切に判定できませんでした</h2><p>ほかの4項目は下で確認できます。総合点は保留しています。</p><p>指定の文章で測り直してください。'+(fixedMode?'再測定でも判定できない場合は、速度を保留します。':'ページを移動すると、聴き比べ用の音声は消えます。')+'</p><a class="btn-rerecord" href="'+appPath('/speed-retest?preview=five')+'">指定の文章で測り直す</a>';
             panel.prepend(retry);
         }
         if(delta){
@@ -205,6 +220,17 @@
         hintPanel(d);
         panel.insertAdjacentHTML('beforeend',root.ResultExperience.zoomHTML(view,experience.exit));
         panel.insertAdjacentHTML('beforeend', `<details class="card five-optional"><summary>項目ごとの数値・説明を見る</summary><div class="five-optional-content">${metricHTML}</div></details>` + audioHTML());
+        if(['127.0.0.1','localhost'].includes(location.hostname)&&root.TypeCandidate?.explain){
+            const report=root.TypeCandidate.explain(d);
+            const details=document.createElement('details');details.className='card five-optional';
+            details.innerHTML='<summary>先生用：タイプ判定の記録</summary><p>判定基準・各項目の点数・低さの数を保存できます。音声は含みません。</p><pre style="white-space:pre-wrap;overflow-wrap:anywhere"></pre><button type="button" class="btn-rerecord">判定記録を保存</button>';
+            details.querySelector('pre').textContent=JSON.stringify(report,null,2);
+            details.querySelector('button').addEventListener('click',()=>{
+                const url=URL.createObjectURL(new Blob([JSON.stringify(report,null,2)],{type:'application/json'}));
+                const a=document.createElement('a');a.href=url;a.download='voice-type-decision-'+Date.now()+'.json';
+                document.body.append(a);try{a.click();}finally{a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+            });panel.append(details);
+        }
         const audioDetails=document.getElementById('fiveAudioCompare');
         audioDetails.addEventListener('toggle',()=>{if(!audioDetails.open)pauseAudio();});
         connectAudio();
@@ -216,17 +242,17 @@
     root.FiveMetricUI = {
         async init() {
             document.body.classList.add('studio-preview');
-            const response = await fetch('/api/diagnosis-config');
+            const response = await fetch(appPath('/api/diagnosis-config'));
             if(!response.ok)throw new Error('診断の準備ができませんでした。ページを再読み込みしてください。');
             config=await response.json();
             fixedMode=true;
             if(fixedMode)config.reading={...config.reading,id:config.speed_retest.id,text:config.speed_retest.text};
             root.RecordingChange.configure(config);
-            const hints=await fetch('/static/hints-draft.json');
+            const hints=await fetch(appPath('/static/hints-draft.json'));
             if(!hints.ok)throw new Error('ヒントの準備ができませんでした。ページを再読み込みしてください。');
             catalog=await hints.json();
             // 案内先の設定取得に失敗しても、録音・診断は続けられる。
-            try{const r=await fetch('/static/experience-config.json');experience=r.ok?await r.json():{};}catch(_){experience={};}
+            try{const r=await fetch(appPath('/static/experience-config.json'));experience=r.ok?await r.json():{};}catch(_){experience={};}
             if(!experience||typeof experience!=='object')experience={};
             let storage;try{storage=root.localStorage}catch(_){}
             history=createHistory(storage);
@@ -259,25 +285,23 @@
                 document.getElementById('fiveStorageStatus').textContent=cleared?'この端末の診断履歴を消しました。':
                     '画面内の履歴と音声は消しましたが、ブラウザに保存した履歴を削除できませんでした。ブラウザの設定から、このサイトのデータを削除してください。';
             });
-            document.getElementById('readingConfirmed').addEventListener('click',()=>this.finishReading(true));
-            document.getElementById('readingRetry').addEventListener('click',()=>this.finishReading(false));
             const last=rows.at(-1)?.diagnosis;
             if(last && last.measurement_version===config.measurement_version && last.calibration_version===config.calibration_version && last.prompt_id===config.reading.id) display(last,rows.at(-2)?.diagnosis,true);
             root.TypeReview?.notice();
             root.dispatchEvent(new Event('five-preview-ready'));
         },
-        finishReading(value){document.getElementById('readingReview').classList.add('hidden');if(reviewResolve){const resolve=reviewResolve;reviewResolve=null;resolve(value);}},
         beginRecording(){completedReading=false;pauseAudio();if(!armed)document.getElementById('fiveReadyHint').classList.add('hidden');activeTrial=armed;armed=null;},
         setPlaybackBusy(busy){for(const audio of document.querySelectorAll('#fiveResults audio')){audio.controls=!busy;if(busy)audio.pause();}},
         clearAudio(){pauseAudio();audioStore?.clear();const section=document.getElementById('fiveAudioCompare');if(section)section.innerHTML='<summary>録音した声を聴き比べる（任意）</summary><p>音声の一時保持を終了しました。新たに録音すると、声を聴いて確認できます。</p>';},
-        confirmReading(){this.finishReading(false);document.getElementById('readingReview').classList.remove('hidden');document.getElementById('readingConfirmed').focus();return new Promise(resolve=>{reviewResolve=resolve})},
-        async prepareReading(){if(!fixedMode)return true;completedReading=await this.confirmReading();return completedReading;},
+        // 指定文の案内を前提に停止後すぐ診断する。完読を自動検証する機能ではない。
+        async prepareReading(){completedReading=fixedMode;return true;},
         addRequestFields(form){form.append('measurement_mode','five_preview');form.append('prompt_id',config.reading.id);form.append('reading_complete',completedReading?'true':'false')},
         render(data,blob=null){
             const d=compact(data.diagnosis),priorRow=history.read().at(-1),last=priorRow?.diagnosis;
             // 補助測定は今回の表示だけに使い、音声・高さ推移を履歴へ保存しない。
             d.type_auxiliary=data.diagnosis.type_auxiliary;
             history.append(d,activeTrial);
+            supplementSuccesses++;
             pauseAudio();audioStore?.commit(blob,history.read().at(-1),priorRow);
             if(activeTrial)hintEvent('five_hint_rerecord_complete',activeTrial);
             activeTrial=null;pending=null;
