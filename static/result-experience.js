@@ -145,7 +145,7 @@
     function zoomHTML(view,config){
         const link=destination(config);
         const button=link?`<a class="five-exit" href="${esc(link.url)}" target="_blank" rel="noopener noreferrer">${link.label}</a>`:'';
-        return `<section class="card five-next-step"><h3>次のSTEP</h3><p>Zoom無料声診断では、オンラインで実際の声を聴きながら、あなたの声の癖や、伝わりにくくなっているポイントを一緒に確認します。今ある声の良さを活かし、もっと伝わりやすくなるための改善方法を、その場でお伝えします。</p><p>Zoom無料声診断は、LINE登録から無料で受けられます。登録特典もご用意しています。</p></section><section class="card five-zoom" id="fiveZoom"><h2>Zoom無料声診断を受ける</h2><div class="five-line-gift"><p>🎁 LINE登録特典</p><strong>やってはいけない<br>「逆効果になる声の練習」リスト</strong><p>友だち追加後すぐにお届けします。</p></div><p>35年以上・2万人以上の声を見てきたプロが、あなたの声の強みや、声で損しているポイントを確認し、あなたに合った改善方法をわかりやすくお伝えします。</p>${button}<p class="five-line-reassurance">無理な勧誘・営業は一切ありません。<br>安心してお気軽にご利用ください。</p></section>`;
+        return `<section class="card five-next-step"><h3>次のSTEP</h3><p>30分のZoom無料声診断では、オンラインで実際の声を聴きながら、あなたの声の癖や、伝わりにくくなっているポイントを一緒に確認します。今ある声の良さを活かし、もっと伝わりやすくなるための改善方法を、その場でお伝えします。</p><p>Zoom無料声診断は、LINE登録から無料で受けられます。登録特典もご用意しています。すでにLINE登録済みで、まだ診断を受けていない方もご利用いただけます。</p></section><section class="card five-zoom" id="fiveZoom"><h2>Zoom無料声診断を受ける</h2><div class="five-line-gift"><p>🎁 LINE登録特典</p><strong>やってはいけない<br>「逆効果になる声の練習」リスト</strong><p>友だち追加後すぐにお届けします。</p></div><p>35年以上・2万人以上の声を見てきたプロが、あなたの声の強みや、声で損しているポイントを確認し、あなたに合った改善方法をわかりやすくお伝えします。</p>${button}<p class="five-line-reassurance">無理な勧誘・営業は一切ありません。<br>安心してお気軽にご利用ください。</p></section>`;
     }
     const api={describe,radar,summaryHTML,destination,zoomCopy,zoomHTML,metricChangeHTML,deltaClass,coaching,typeGalleryHTML,typeCommentHTML};root.ResultExperience=api;
     if(typeof module!=='undefined')module.exports=api;
