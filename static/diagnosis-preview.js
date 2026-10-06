@@ -187,6 +187,7 @@
         panel.classList.remove('hidden');
         pauseAudio();
         panel.innerHTML = root.ResultExperience.summaryHTML(d,previous,latest?.trial,restored,context);
+        panel.querySelector('.five-overview').insertAdjacentHTML('beforeend', `<p><a href="${appPath('/static/voice-types.html')}" target="_blank" rel="noopener noreferrer">5つの声タイプの説明を見る ↗</a></p>`);
         if(d.metrics.speed.reference_score===null){
             const retry=document.createElement('section');retry.className='card';
             retry.innerHTML='<h2>速度を適切に判定できませんでした</h2><p>ほかの4項目は下で確認できます。総合点は保留しています。</p><p>指定の文章で測り直してください。'+(fixedMode?'再測定でも判定できない場合は、速度を保留します。':'ページを移動すると、聴き比べ用の音声は消えます。')+'</p><a class="btn-rerecord" href="'+appPath('/speed-retest?preview=five')+'">指定の文章で測り直す</a>';
