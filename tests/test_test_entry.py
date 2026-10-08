@@ -52,8 +52,11 @@ def test_new_analysis_only_accepts_fixed_reading_mode(monkeypatch):
     assert called[0][1:] == ('five_preview', 'prompt', True)
 
 
-def test_october_deadline_and_exact_namespace():
-    before = datetime(2026, 10, 31, 14, 59, 59, tzinfo=timezone.utc)
+def test_november_deadline_and_exact_namespace():
+    assert TEST_END == datetime(2026, 11, 30, 15, 0, tzinfo=timezone.utc)
+    # Already-invited participants can continue through the former deadline.
+    assert entry_access_allowed(TEST_PREFIX, 'GET', datetime(2026, 11, 1, tzinfo=timezone.utc))
+    before = datetime(2026, 11, 30, 14, 59, 59, tzinfo=timezone.utc)
     assert entry_access_allowed(TEST_PREFIX, 'GET', before)
     assert entry_access_allowed(TEST_PREFIX + '/analyze', 'POST', before)
     for path in [TEST_PREFIX, TEST_PREFIX + '/analyze', TEST_PREFIX + '/static/index.html']:

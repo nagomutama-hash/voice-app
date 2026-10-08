@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 TEST_PREFIX = '/test-202610'
-TEST_END = datetime(2026, 10, 31, 15, 0, tzinfo=timezone.utc)  # 11/1 00:00 JST
+TEST_END = datetime(2026, 11, 30, 15, 0, tzinfo=timezone.utc)  # 12/1 00:00 JST
 READ_PATHS = {
     TEST_PREFIX, TEST_PREFIX + '/', TEST_PREFIX + '/speed-retest',
     TEST_PREFIX + '/help/microphone', TEST_PREFIX + '/mic-test',
